@@ -1,0 +1,8 @@
+# Original kits and historical examples are browsed intentionally, not during code searches.
+resources/packs/
+resources/references/
+work/
+dist/
+node_modules/
+
+resources/archive/

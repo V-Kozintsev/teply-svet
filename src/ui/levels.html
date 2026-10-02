@@ -1,0 +1,26 @@
+<div class="level-selection">
+  <ol class="level-grid" aria-label="Выбор уровня" tabindex="0"></ol>
+  <nav class="levels-navigation" aria-label="Страницы уровней" data-levels-navigation>
+    <button
+      type="button"
+      class="level-arrow"
+      data-level-page="previous"
+      aria-label="Предыдущие уровни"
+    >
+      <img src="./assets/menu/arrow-left.png" alt="" draggable="false" />
+    </button>
+    <span
+      class="level-counter levels-page-counter"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      <span class="counter-current" data-level-page-current></span>
+      <span class="counter-divider">/</span>
+      <span class="counter-total" data-level-page-total></span>
+    </span>
+    <button type="button" class="level-arrow" data-level-page="next" aria-label="Следующие уровни">
+      <img src="./assets/menu/arrow-right.png" alt="" draggable="false" />
+    </button>
+  </nav>
+</div>

@@ -1,0 +1,411 @@
+@font-face {
+  font-family: WarmDigits;
+  src: url('/assets/fonts/kenney-future-narrow.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  unicode-range: U+0030-0039;
+}
+
+.game-dialog[data-view='levels'] {
+  width: min(1000px, calc(100% - 2 * var(--dialog-inset-x)));
+  height: min(1040px, calc(var(--game-height, 100vh) - 2 * var(--dialog-inset-y)));
+  padding: 31px 32px 29px;
+  user-select: none;
+}
+.game-dialog[data-view='levels'] h2 {
+  flex: none;
+  margin-bottom: 24px;
+}
+.game-dialog[data-view='levels'] .levels-dialog-heading {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  margin: 0 36px 26px;
+  text-align: center;
+}
+.levels-dialog-kicker {
+  display: grid;
+  grid-template-columns: 42px auto 42px;
+  align-items: center;
+  gap: 11px;
+  color: #dfb568;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: 0.35px;
+}
+.levels-dialog-kicker::before,
+.levels-dialog-kicker::after {
+  content: '';
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #d0a057);
+}
+.levels-dialog-kicker::after {
+  background: linear-gradient(90deg, #d0a057, transparent);
+}
+.levels-dialog-title {
+  color: #ffe8b0;
+  font-size: 36px;
+  line-height: 1.08;
+  text-shadow: 0 2px 0 #142f34;
+}
+.game-dialog[data-view='levels'] .dialog-content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  container-type: inline-size;
+}
+.level-selection {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.level-counter {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  font:
+    24px/1.1 WarmDigits,
+    WarmMarmelad,
+    sans-serif;
+  white-space: nowrap;
+}
+.counter-current {
+  color: #ffedbb;
+  text-shadow: 0 2px 0 #695439;
+}
+.counter-divider {
+  color: #789a91;
+  font:
+    22px/1 WarmMarmelad,
+    sans-serif;
+}
+.counter-total {
+  color: #b6cdc2;
+  font-size: 20px;
+}
+.level-grid {
+  --level-columns: 4;
+  --level-size: 76px;
+  --level-max-size: 120;
+  --level-min-size: 56;
+  --level-gap: 12px;
+  --level-grid-padding: 8px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(var(--level-columns), var(--level-size));
+  grid-auto-rows: var(--level-size);
+  flex: 1 1 0;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+  max-height: 100%;
+  gap: var(--level-gap);
+  min-height: 0;
+  margin: 0 auto;
+  padding: var(--level-grid-padding);
+  list-style: none;
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+.level-grid > li {
+  min-width: 0;
+  height: var(--level-size);
+  container-type: inline-size;
+}
+.level-tile {
+  --score-star-size: clamp(12px, calc(var(--level-size) * 0.25), 30px);
+  --score-gap: clamp(1px, calc(var(--level-size) * 0.015), 2px);
+  --score-padding: clamp(1px, calc(var(--level-size) * 0.025), 3px);
+  --score-bottom: calc(var(--level-size) * 0.13);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1;
+  padding: 0 0 5px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #fff0cf;
+  cursor: pointer;
+  transition: transform 80ms ease;
+}
+.level-tile:not(:disabled):active,
+.level-tile[data-selecting='true'] {
+  transform: translateY(2px) scale(0.95);
+}
+.level-tile:not(:disabled)[data-selecting='true']::before {
+  filter: brightness(1.18) saturate(0.8) drop-shadow(0 0 5px #ffcf70);
+}
+@media (prefers-reduced-motion: reduce) {
+  .level-tile {
+    transition: none;
+  }
+  .level-tile:not(:disabled):active,
+  .level-tile[data-selecting='true'] {
+    transform: none;
+  }
+}
+.level-grid:focus-visible {
+  outline: 2px solid #ffdd91;
+  outline-offset: 2px;
+}
+.level-tile::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: url('/assets/menu/setting-off.png') center / contain no-repeat;
+  filter: brightness(0.64) sepia(0.2);
+  pointer-events: none;
+}
+.level-tile-number {
+  position: absolute;
+  z-index: 1;
+  inset: 0 0 clamp(4px, 9cqw, 7px);
+  display: grid;
+  place-items: center;
+  font:
+    clamp(14px, calc(var(--level-size) * 0.34), 36px) / 1 WarmDigits,
+    WarmMarmelad,
+    sans-serif;
+  text-shadow: 0 2px 0 #554533;
+}
+.level-tile[data-state='current'],
+.level-tile[data-state='completed'] {
+  color: #5b361d;
+}
+.level-tile[data-state='current']::before,
+.level-tile[data-state='completed']::before {
+  background-image: url('/assets/menu/setting-on.png');
+  filter: saturate(0.65) sepia(0.12);
+}
+.level-tile[data-state='current'] .level-tile-number,
+.level-tile[data-state='completed'] .level-tile-number {
+  text-shadow: 0 1px 0 #fff0b1;
+}
+.level-tile[data-state='completed'] .level-tile-number {
+  inset-block-start: calc(var(--level-size) * 0.06);
+  inset-block-end: calc(
+    var(--score-bottom) + var(--score-star-size) + 2 * var(--score-padding) + var(--level-size) *
+      0.03
+  );
+}
+.level-score {
+  position: absolute;
+  z-index: 2;
+  inset-inline: 0;
+  bottom: var(--score-bottom);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  margin-inline: auto;
+  gap: var(--score-gap);
+  padding: var(--score-padding);
+  border-radius: calc(var(--level-size) * 0.06);
+  pointer-events: none;
+}
+.level-score img {
+  flex: none;
+  width: var(--score-star-size);
+  height: var(--score-star-size);
+  aspect-ratio: 1;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 1px #684316cc);
+}
+.level-complete {
+  position: absolute;
+  z-index: 2;
+  top: -2px;
+  right: -2px;
+  width: clamp(11px, 32cqw, 27px);
+  height: auto;
+  filter: drop-shadow(0 2px 1px #08262db3);
+  pointer-events: none;
+}
+.level-tile:disabled {
+  color: #c1cbc7;
+  cursor: default;
+}
+.level-tile:disabled::before {
+  filter: brightness(0.43) saturate(0.4);
+}
+.level-lock {
+  position: absolute;
+  z-index: 2;
+  right: clamp(2px, 8cqw, 7px);
+  top: clamp(2px, 7cqw, 6px);
+  width: clamp(6px, 17cqw, 14px);
+  height: auto;
+  aspect-ratio: 1;
+  stroke-width: 3;
+  color: #becbc4;
+  pointer-events: none;
+}
+.levels-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  gap: 16px;
+  margin-top: 18px;
+}
+.levels-navigation[hidden] {
+  display: none;
+}
+.level-arrow {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid #71938b66;
+  border-radius: 10px;
+  background: #31565a;
+  box-shadow:
+    inset 0 2px 0 #92b3a833,
+    0 3px 0 #0a2830;
+  cursor: pointer;
+}
+@media (max-width: 360px) {
+  .levels-navigation {
+    gap: 4px;
+  }
+  .level-arrow {
+    width: 44px;
+    height: 44px;
+  }
+  .levels-page-counter {
+    gap: 4px;
+    font-size: 18px;
+  }
+  .levels-page-counter .counter-divider {
+    font-size: 18px;
+  }
+  .levels-page-counter .counter-total {
+    font-size: 16px;
+  }
+}
+.level-arrow img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  filter: sepia(0.4);
+  pointer-events: none;
+}
+.level-arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+@media (max-width: 700px) {
+  .game-dialog[data-view='levels'] {
+    padding: 24px 24px 22px;
+  }
+
+  .game-dialog[data-view='levels'] h2:not(.levels-dialog-heading) {
+    margin: 0 30px 18px;
+    font-size: 28px;
+    text-align: center;
+  }
+
+  .game-dialog[data-view='levels'] .levels-dialog-heading {
+    gap: 5px;
+    margin: 0 8px 16px;
+  }
+
+  .levels-dialog-kicker {
+    grid-template-columns: 27px auto 27px;
+    gap: 8px;
+    font-size: 16px;
+  }
+
+  .levels-dialog-title {
+    font-size: clamp(24px, 8vw, 32px);
+  }
+
+  .level-grid {
+    --level-max-size: 104;
+    --level-gap: 8px;
+    --level-grid-padding: 6px;
+  }
+}
+
+:is(html[data-game-height='short'], html[data-game-height='tiny']) .levels-navigation {
+  margin-top: 6px;
+  gap: clamp(4px, calc(5vw - 8px), 10px);
+}
+
+:is(html[data-game-height='short'], html[data-game-height='tiny']) .level-arrow {
+  width: 44px;
+  height: 44px;
+}
+
+:is(html[data-game-height='short'], html[data-game-height='tiny']) .levels-page-counter {
+  font-size: 18px;
+}
+
+:is(html[data-game-height='short'], html[data-game-height='tiny'])
+  .game-dialog[data-view='levels'] {
+  padding: 20px 24px 18px;
+}
+
+:is(html[data-game-height='short'], html[data-game-height='tiny'])
+  .game-dialog[data-view='levels']
+  .levels-dialog-heading {
+  gap: 4px;
+  margin: 0 8px 8px;
+}
+
+:is(html[data-game-height='short'], html[data-game-height='tiny']) .levels-dialog-kicker {
+  font-size: 14px;
+}
+
+:is(html[data-game-height='short'], html[data-game-height='tiny']) .levels-dialog-title {
+  font-size: clamp(24px, 7vw, 28px);
+}
+
+:is(html[data-game-height='short'], html[data-game-height='tiny']) .level-grid {
+  --level-max-size: 96;
+  --level-min-size: 44;
+  --level-gap: 7px;
+  --level-grid-padding: 6px;
+}
+
+html[data-game-height='tiny'] .game-dialog[data-view='levels'] {
+  --dialog-inset-y: max(12px, calc(var(--safe-top) + 10px), var(--safe-bottom));
+  height: calc(var(--game-height, 100vh) - 2 * var(--dialog-inset-y));
+  max-height: calc(var(--game-height, 100vh) - 2 * var(--dialog-inset-y));
+  padding: 20px 16px;
+}
+
+html[data-game-height='tiny'] .game-dialog[data-view='levels'] .dialog-close {
+  top: -10px;
+}
+
+html[data-game-height='tiny'] .game-dialog[data-view='levels'] .levels-dialog-heading {
+  gap: 0;
+  margin: 0 8px 6px;
+}
+
+html[data-game-height='tiny'] .levels-dialog-kicker {
+  display: none;
+}
+
+html[data-game-height='tiny'] .levels-dialog-title {
+  font-size: 22px;
+}
+
+html[data-game-height='tiny'] .level-grid {
+  --level-gap: 5px;
+  --level-grid-padding: 4px;
+}

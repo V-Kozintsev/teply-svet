@@ -1,0 +1,107 @@
+#app .game-menu {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  container-type: inline-size;
+  background: #102f3c;
+  color: #fff0c8;
+  font-family: WarmMarmelad, 'Segoe UI', sans-serif;
+  width: 100%;
+  min-height: var(--game-height, 100vh);
+  border-radius: 0;
+  box-shadow: none;
+}
+#app .menu-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: WarmMarmelad, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.2px;
+  color: #e6c895;
+  text-shadow: 0 1px 0 #122f36;
+  margin: 0 0 18px;
+}
+#app .menu-kicker::before {
+  content: '';
+  flex: none;
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: #ceaa70;
+}
+#app .game-title {
+  font-weight: 400;
+  line-height: 0.98;
+  margin: 0;
+  color: #ffebba;
+  letter-spacing: -1.5px;
+  text-shadow:
+    0 3px 0 #9b6b38,
+    0 8px 24px #102b3b;
+  font-size: clamp(48px, 6.6vw, 84px);
+}
+#app .game-title span {
+  display: block;
+}
+#app .menu-tagline {
+  font-family: WarmMarmelad, 'Segoe UI', sans-serif;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #d5e2d5;
+  text-shadow: 0 1px 0 #12323a;
+  margin: 24px 0 26px;
+  max-width: 300px;
+}
+#app .menu-tagline-accent {
+  color: #ffe2a7;
+}
+#app .menu-actions {
+  display: grid;
+  gap: 10px;
+  position: static;
+  width: 100%;
+  margin-top: 26px;
+  max-width: 230px;
+}
+#app .menu-layout {
+  box-sizing: border-box;
+  padding: var(--safe-top) var(--safe-inline) var(--safe-bottom);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 32fr) minmax(0, 68fr);
+  grid-template-rows: minmax(0, 1fr) 32px;
+  grid-template-areas: 'controls scene' 'credit scene';
+  height: var(--game-height, 100vh);
+  min-height: 500px;
+  background:
+    radial-gradient(ellipse at 75% 76%, #2b544a 0, transparent 48%),
+    linear-gradient(180deg, #0e3040 0%, #16414b 72%, #12363e 100%);
+}
+#app .menu-controls {
+  grid-area: controls;
+  align-self: center;
+  min-width: 0;
+  padding: 30px 16px 24px clamp(24px, 4.7vw, 100px);
+  z-index: 5;
+}
+#app .menu-copy {
+  margin: 0;
+  padding: 0;
+}
+#app .credit {
+  grid-area: credit;
+  position: relative;
+  z-index: 6;
+  align-self: center;
+  margin: 0 0 0 clamp(24px, 4.7vw, 100px);
+  font:
+    11px/1.4 'Segoe UI',
+    sans-serif;
+  letter-spacing: 0.6px;
+  color: #99b7ac;
+}

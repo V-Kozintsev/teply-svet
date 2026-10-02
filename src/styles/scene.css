@@ -1,0 +1,394 @@
+#app .scene {
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+  grid-area: scene;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  mask-image: none;
+}
+#app .scene img {
+  position: absolute;
+  display: block;
+  object-fit: contain;
+  max-width: none;
+}
+#app .moon {
+  width: 8%;
+  top: 12%;
+  right: 16%;
+  opacity: 0.92;
+  filter: drop-shadow(0 0 14px #e6d9b533);
+}
+#app .cloud {
+  opacity: 0.075;
+  filter: brightness(0.9) sepia(0.3);
+  width: 42%;
+  top: 19%;
+  left: 5%;
+}
+#app .cloud.far {
+  width: 32%;
+  left: auto;
+  right: -6%;
+  top: 30%;
+  opacity: 0.06;
+}
+#app .stars {
+  position: absolute;
+  top: 10%;
+  left: 13%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #b8d6cf;
+  opacity: 0.7;
+  box-shadow:
+    54px 42px 0 -1px #b8d6cf,
+    125px -16px 0 -1px #d6ebdd,
+    214px 16px 0 -1px #b8d6cf,
+    286px 58px 0 -1px #dfd9b5,
+    188px 100px 0 -1px #d5e4d9,
+    14px 120px 0 -1px #e5d59d,
+    68px 200px 0 -1px #d8e8df;
+}
+#app .hill {
+  position: absolute;
+  border-radius: 50%;
+  background: #245653;
+  width: 130%;
+  height: 40%;
+  left: -5%;
+  bottom: -7%;
+  box-shadow: 0 -1px 0 #42706455;
+}
+#app .hill.rear {
+  bottom: 3%;
+  left: 18%;
+  width: 120%;
+  height: 25%;
+  background: #2a5e58;
+  box-shadow: none;
+}
+#app .tree-back {
+  width: 14%;
+  right: 10%;
+  bottom: 22%;
+  filter: brightness(0.63) saturate(0.6);
+}
+#app .tree-left {
+  width: 17%;
+  left: 11%;
+  bottom: 26%;
+  filter: brightness(0.75) saturate(0.65);
+}
+#app .tree-right {
+  width: 16%;
+  right: 0;
+  bottom: 25%;
+  filter: brightness(0.65) saturate(0.6);
+}
+#app .house-aura {
+  position: absolute;
+  width: 75%;
+  height: 70%;
+  left: 13%;
+  bottom: 2%;
+  background: radial-gradient(ellipse, #f3be6520, transparent 66%);
+  opacity: 1;
+  transition: opacity 0.7s ease;
+}
+#app .house-wrap {
+  position: absolute;
+  z-index: 3;
+  width: 54%;
+  left: 37%;
+  bottom: 20%;
+  aspect-ratio: 482/434;
+  filter: drop-shadow(0 8px 2px #0e252c55);
+  isolation: isolate;
+}
+#app .chimney-smoke {
+  position: absolute;
+  z-index: 0;
+  left: 74%;
+  top: -16%;
+  width: 18%;
+  height: 41%;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 0.24s ease;
+}
+#app .chimney-smoke-puff {
+  --smoke-drift: 8%;
+  width: 84%;
+  left: 8%;
+  bottom: 0;
+  opacity: 0;
+  transform-origin: 50% 70%;
+  filter: grayscale(0.86) brightness(1.08) sepia(0.08) saturate(0.58) opacity(0.96)
+    drop-shadow(0 0 5px #d8e4db66);
+  animation: chimney-smoke-rise 4.2s ease-out infinite;
+}
+#app .smoke-puff-two {
+  --smoke-drift: -14%;
+  animation-delay: -1.4s;
+}
+#app .smoke-puff-three {
+  --smoke-drift: 13%;
+  animation-delay: -2.8s;
+}
+#app .scene[data-flowing='false'] .chimney-smoke-puff {
+  opacity: 0;
+  animation-play-state: paused;
+}
+#app .scene[data-flowing='false'] .chimney-smoke {
+  opacity: 0;
+}
+#app .house-wrap .house {
+  z-index: 1;
+  width: 100%;
+  inset: 0;
+  filter: brightness(0.93) saturate(0.69) sepia(0.12);
+  transition: filter 0.7s ease;
+}
+#app .fence {
+  z-index: 2;
+  width: 16%;
+  right: 0;
+  bottom: 20%;
+  filter: brightness(0.82) saturate(0.65);
+}
+#app .bush-front {
+  z-index: 5;
+  width: 18%;
+  right: 1%;
+  bottom: 12%;
+  filter: brightness(0.68) saturate(0.6);
+}
+#app .bush-left {
+  z-index: 3;
+  width: 7%;
+  left: 0;
+  bottom: 18%;
+  filter: brightness(0.67) saturate(0.65);
+}
+#app .menu-conduit {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 2px #09262b88);
+}
+#app .menu-conduit path {
+  fill: none;
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+}
+#app .conduit-shadow {
+  stroke: #0a292d;
+  stroke-width: var(--conduit-shadow-width, 19px);
+}
+#app .conduit-rim {
+  stroke: url('#menu-pipe-rim');
+  stroke-width: var(--conduit-rim-width, 17px);
+}
+#app .conduit-wall {
+  stroke: #31585c;
+  stroke-width: var(--conduit-wall-width, 14px);
+}
+#app .conduit-cavity {
+  stroke: #12383e;
+  stroke-width: var(--conduit-cavity-width, 10px);
+  opacity: 0.72;
+}
+#app .conduit-reflection {
+  stroke: #9cc2c0;
+  stroke-width: 1.5px;
+  opacity: 0.22;
+}
+#app .conduit-energy {
+  opacity: 1;
+  transition: opacity 0.42s ease;
+}
+#app .conduit-channel {
+  stroke: white;
+  stroke-width: var(--conduit-cavity-width, 10px);
+}
+#app .conduit-energy-halo {
+  stroke: #ffbb48;
+  stroke-width: var(--conduit-halo-width, 8px);
+  opacity: 0.72;
+  filter: url('#menu-energy-blur');
+}
+#app .conduit-energy-core {
+  stroke: #f7be59;
+  stroke-width: var(--conduit-core-width, 4px);
+}
+#app .conduit-energy-center {
+  stroke: #ffe8ac;
+  stroke-width: var(--conduit-center-width, 2px);
+}
+#app .conduit-particles {
+  stroke: #fff2c4;
+  stroke-width: 3px;
+  stroke-linecap: round;
+  stroke-dasharray: 1 11;
+  animation: menu-conduit-flow 1.35s linear infinite;
+}
+#app .conduit-collars rect {
+  fill: url('#menu-brass');
+  stroke: #5b452a;
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+#app .conduit-collars path {
+  stroke: #ffe0a0;
+  stroke-width: 1.5px;
+  opacity: 0.62;
+}
+@keyframes menu-conduit-flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+@keyframes chimney-smoke-rise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 16%, 0) scale(0.34) rotate(-7deg);
+  }
+  14% {
+    opacity: 0.68;
+  }
+  58% {
+    opacity: 0.43;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--smoke-drift), -178%, 0) scale(1.14) rotate(8deg);
+  }
+}
+#app .path-stone {
+  position: absolute;
+  z-index: 2;
+  background: #74816a;
+  border-radius: 42% 48% 35% 44%;
+  box-shadow:
+    inset 0 2px #94a08455,
+    0 2px #173b3660;
+  opacity: 0.76;
+}
+#app .power-plinth {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  border-radius: 2px 2px 3px 3px;
+  background: linear-gradient(#919682 0 24%, #697565 25% 100%);
+  box-shadow:
+    inset 0 -2px #3c514b,
+    0 3px 3px #0b2b3050;
+}
+#app .power-box {
+  position: absolute;
+  z-index: 4;
+  left: 17%;
+  bottom: 19.5%;
+  width: 11%;
+  min-width: 44px;
+  aspect-ratio: 1/1.35;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+}
+#app .power-box .box-body {
+  width: 100%;
+  bottom: 0;
+  filter: brightness(0.98);
+}
+#app .power-box .box-light {
+  width: 40%;
+  bottom: 71.5%;
+  left: 30%;
+  filter: drop-shadow(0 0 9px #ffd870aa);
+}
+#app .power-box svg {
+  position: absolute;
+  left: 33%;
+  width: 34%;
+  height: 25.2%;
+  bottom: 28.2%;
+  color: #ffe2a0;
+  fill: #ffe2a0;
+  stroke-width: 1;
+  transform-origin: center;
+}
+#app .power-box .power-spark {
+  left: 50%;
+  top: 62%;
+  width: 8%;
+  min-width: 3px;
+  max-width: 8px;
+  opacity: 0;
+  pointer-events: none;
+  filter: saturate(0.55) brightness(1.2) drop-shadow(0 0 2px #ffe2a080);
+}
+#app .scene-art {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: min(100%, 150dvh);
+  aspect-ratio: auto;
+  max-width: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent 0, #000 14%, #000 100%);
+}
+#app .power-box:focus-visible {
+  outline: 2px dashed #d7d4a3;
+  border-radius: 8px;
+  outline-offset: 4px;
+}
+#app .window-overlay {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+#app .window-panes {
+  fill: #ffe3a3;
+  transition: fill 0.7s ease;
+}
+#app .window-bloom {
+  fill: #ffc559;
+  opacity: 0.48;
+  transition: opacity 0.7s ease;
+}
+#app .scene[data-lit='false'] .window-panes {
+  fill: #35545b;
+}
+#app .scene[data-lit='false'] .window-bloom,
+#app .scene[data-lit='false'] .house-aura {
+  opacity: 0;
+}
+#app .scene[data-lit='false'] .house {
+  filter: brightness(0.77) saturate(0.6);
+}
+#app .scene[data-lit='false'] .box-light {
+  filter: brightness(0.6) saturate(0.4);
+}
+#app .scene[data-lit='false'] .conduit-energy {
+  opacity: 0;
+}
+#app .scene[data-flowing='false'] .conduit-particles {
+  animation-play-state: paused;
+}

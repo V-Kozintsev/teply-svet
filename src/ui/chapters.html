@@ -1,0 +1,44 @@
+<section class="chapter-screen" aria-labelledby="chapters-title" hidden>
+  <header class="chapter-header">
+    <button type="button" class="chapter-home" aria-label="Главное меню" data-chapter-action="home">
+      <i data-lucide="house" aria-hidden="true"></i>
+      <span class="chapter-home-tip" aria-hidden="true">В меню</span>
+    </button>
+    <h1 id="chapters-title">Карта света</h1>
+    <button
+      type="button"
+      class="chapter-total"
+      data-chapter-action="stars"
+      aria-label="Пополнить звёзды. Баланс недоступен"
+    >
+      <span class="chapter-total-badge">
+        <img src="./assets/menu/star-filled.png" alt="" draggable="false" />
+        <span data-chapter-total>—</span>
+        <span class="chapter-total-add" aria-hidden="true"></span>
+      </span>
+    </button>
+  </header>
+  <div class="chapter-browser">
+    <button
+      type="button"
+      class="chapter-arrow chapter-arrow-previous"
+      data-chapter-page="previous"
+      aria-label="Предыдущие главы"
+      disabled
+    >
+      <img src="./assets/menu/arrow-left.png" alt="" draggable="false" />
+    </button>
+    <div class="chapter-scroll">
+      <ol class="chapter-list" aria-label="Выбор главы"></ol>
+    </div>
+    <button
+      type="button"
+      class="chapter-arrow chapter-arrow-next"
+      data-chapter-page="next"
+      aria-label="Следующие главы"
+      disabled
+    >
+      <img src="./assets/menu/arrow-right.png" alt="" draggable="false" />
+    </button>
+  </div>
+</section>

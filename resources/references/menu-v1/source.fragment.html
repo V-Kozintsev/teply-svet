@@ -1,0 +1,150 @@
+<div id="warm-menu-review">
+  <style>
+    @font-face{font-family:WarmMarmelad;src:url('__FONT_CYR__') format('woff2');font-style:normal;font-weight:400;unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+    @font-face{font-family:WarmMarmelad;src:url('__FONT_LAT__') format('woff2');font-style:normal;font-weight:400;unicode-range:U+0000-00FF}
+    #warm-menu-review{width:100%}
+    #warm-menu-review .review-tabs{margin-bottom:12px}
+    #warm-menu-review [hidden]{display:none!important}
+    #warm-menu-review .game-menu{--night:#102f3c;--cream:#fff0c8;--gold:#f4c36f;position:relative;isolation:isolate;overflow:hidden;container-type:inline-size;min-height:480px;background:#102f3c;color:#fff0c8;border-radius:16px;font-family:WarmMarmelad,'Segoe UI',sans-serif}
+    #warm-menu-review .menu-layout{position:relative;min-height:480px;display:grid;grid-template-columns:46% 54%;align-items:center;background:radial-gradient(ellipse at 80% 63%,#37605b 0,transparent 48%),linear-gradient(180deg,#102b3b 0%,#214e52 72%,#163e42 100%)}
+    #warm-menu-review .menu-copy{position:relative;z-index:5;margin:42px 0 48px 14%;padding-right:10px;align-self:center}
+    #warm-menu-review .menu-kicker{font-family:'Segoe UI',sans-serif;font-size:11px;font-weight:500;line-height:1.4;letter-spacing:2px;color:#b9d8cc;margin:0 0 18px}
+    #warm-menu-review .game-title{font-size:clamp(48px,8.6cqw,74px);font-weight:400;line-height:.98;margin:0;color:#ffebba;letter-spacing:-1.5px;text-shadow:0 3px 0 #9b6b38,0 8px 24px #102b3b}
+    #warm-menu-review .game-title span{display:block}
+    #warm-menu-review .menu-tagline{font-family:'Segoe UI',sans-serif;font-size:15px;font-weight:400;line-height:1.6;color:#d1e0d7;max-width:230px;margin:24px 0 26px}
+    #warm-menu-review .menu-actions{display:grid;gap:10px;max-width:242px}
+    #warm-menu-review .game-button{position:relative;isolation:isolate;display:flex;gap:12px;align-items:center;justify-content:center;width:100%;height:48px;border:0;padding:8px 18px;background:transparent;font-family:WarmMarmelad,'Segoe UI',sans-serif;font-size:19px;font-weight:400;color:#fff0d1;cursor:pointer;transition:transform .12s ease,filter .12s ease;filter:drop-shadow(0 4px 0 #142a2d);line-height:1.2}
+    #warm-menu-review .game-button:before{content:'';position:absolute;inset:0;z-index:-1;border:10px solid transparent;border-image:url('__PANEL_GREY__') 18 fill stretch;filter:brightness(.52) saturate(.9)}
+    #warm-menu-review .game-button.primary{height:64px;font-size:28px;color:#5b361d;filter:drop-shadow(0 5px 0 #634d31)}
+    #warm-menu-review .game-button.primary:before{border-image-source:url('__PANEL_BROWN__');filter:sepia(.18) saturate(1.35)}
+    #warm-menu-review .game-button svg{width:20px;height:20px;flex:none}
+    #warm-menu-review .game-button.primary svg{width:23px;height:23px;fill:currentColor;stroke-width:1px}
+    #warm-menu-review .game-button:hover{filter:brightness(1.1) drop-shadow(0 4px 0 #142a2d);transform:translateY(-1px)}
+    #warm-menu-review .game-button:active{transform:translateY(3px);filter:brightness(.97)}
+    #warm-menu-review .scene{position:absolute;inset:0 0 0 39%;pointer-events:none;z-index:1;overflow:hidden;mask-image:linear-gradient(to right,transparent 0,#000 14%,#000 100%)}
+    #warm-menu-review .scene img{position:absolute;display:block;object-fit:contain;max-width:none}
+    #warm-menu-review .moon{width:8%;top:12%;right:16%;opacity:.92;filter:drop-shadow(0 0 14px #e6d9b533)}
+    #warm-menu-review .cloud{opacity:.075;filter:brightness(.9) sepia(.3);width:42%;top:19%;left:5%}
+    #warm-menu-review .cloud.far{width:32%;left:auto;right:-6%;top:30%;opacity:.06}
+    #warm-menu-review .stars{position:absolute;top:10%;left:13%;width:3px;height:3px;border-radius:50%;background:#b8d6cf;opacity:.7;box-shadow:54px 42px 0 -1px #b8d6cf,125px -16px 0 -1px #d6ebdd,214px 16px 0 -1px #b8d6cf,286px 58px 0 -1px #dfd9b5,188px 100px 0 -1px #d5e4d9,14px 120px 0 -1px #e5d59d,68px 200px 0 -1px #d8e8df}
+    #warm-menu-review .hill{position:absolute;border-radius:50%;background:#245653;width:130%;height:40%;left:-5%;bottom:-7%;box-shadow:0 -1px 0 #42706455}
+    #warm-menu-review .hill.rear{bottom:3%;left:18%;width:120%;height:25%;background:#2a5e58;box-shadow:none}
+    #warm-menu-review .tree-back{width:17%;right:10%;bottom:18%;filter:brightness(.63) saturate(.6)}
+    #warm-menu-review .tree-left{width:17%;left:4%;bottom:22%;filter:brightness(.75) saturate(.65)}
+    #warm-menu-review .tree-right{width:19%;right:-6%;bottom:12%;filter:brightness(.65) saturate(.6)}
+    #warm-menu-review .house-aura{position:absolute;width:75%;height:70%;left:13%;bottom:2%;background:radial-gradient(ellipse,#f3be6520,transparent 66%)}
+    #warm-menu-review .house-wrap{position:absolute;width:69%;left:17%;bottom:19%;aspect-ratio:482/434;filter:drop-shadow(0 8px 2px #0e252c55)}
+    #warm-menu-review .house-wrap .house{width:100%;inset:0;filter:brightness(.93) saturate(.69) sepia(.12)}
+    #warm-menu-review .window-light{position:absolute;background:#ffe0a0;box-shadow:0 0 10px #ffcc6370,0 0 26px #ffc76144;opacity:.87}
+    #warm-menu-review .window-one{left:21%;top:71.65%;width:4.65%;height:10.7%;transform:skewX(2deg)}
+    #warm-menu-review .window-two{left:37.98%;top:71.65%;width:4.65%;height:10.7%;transform:skewX(2deg)}
+    #warm-menu-review .window-attic{left:31.8%;top:40.55%;width:12.15%;height:5.3%;border-radius:100% 100% 0 0}
+    #warm-menu-review .fence{width:16%;right:5%;bottom:15.5%;filter:brightness(.82) saturate(.65)}
+    #warm-menu-review .bush-front{width:36%;right:-8%;bottom:1.5%;filter:brightness(.68) saturate(.6)}
+    #warm-menu-review .bush-left{width:23%;left:8%;bottom:14%;filter:brightness(.67) saturate(.65)}
+    #warm-menu-review .path-stone{position:absolute;background:#74846a;border-radius:48%;height:2%;opacity:.7;transform:rotate(-13deg)}
+    #warm-menu-review .stone-one{width:10%;left:51%;bottom:16%}
+    #warm-menu-review .stone-two{width:12%;left:45%;bottom:11%}
+    #warm-menu-review .stone-three{width:15%;left:36%;bottom:6%;transform:rotate(-20deg)}
+    #warm-menu-review .power-box{position:absolute;left:14%;bottom:16%;width:11%;aspect-ratio:1/1.35}
+    #warm-menu-review .power-box .box-body{width:100%;bottom:0;filter:brightness(.8) saturate(.65)}
+    #warm-menu-review .power-box .box-light{width:40%;bottom:74%;left:30%;filter:drop-shadow(0 0 9px #ffd870aa)}
+    #warm-menu-review .power-box svg{position:absolute;left:35%;width:30%;height:30%;bottom:23%;color:#ffe2a0;fill:#ffe2a0;stroke-width:1}
+    #warm-menu-review .lamp{position:absolute;right:18%;bottom:9%;width:5.5%;aspect-ratio:40/78}
+    #warm-menu-review .lamp img{width:100%;inset:0;filter:drop-shadow(0 0 7px #ffcf6988)}
+    #warm-menu-review .lamp:before{content:'';position:absolute;width:340%;height:150%;left:-120%;top:-55%;background:radial-gradient(ellipse,#ffd77b25,transparent 66%)}
+    #warm-menu-review .credit{position:absolute;z-index:6;bottom:15px;left:6.5%;font-family:'Segoe UI',sans-serif;font-size:11px;line-height:1.4;letter-spacing:.6px;color:#99b7ac}
+    #warm-menu-review .review-assets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    #warm-menu-review .asset-sample{height:150px;display:flex;align-items:center;justify-content:center;gap:16px;padding:16px;background:#e6edf0;border-radius:10px}
+    #warm-menu-review .asset-sample img{display:block;max-width:75%;max-height:120px;object-fit:contain}
+    #warm-menu-review .asset-sample .small-image{width:64px;height:64px;object-fit:contain}
+    #warm-menu-review .asset-item{min-width:0}
+    #warm-menu-review .asset-item p{margin:8px 0 2px}
+    #warm-menu-review .asset-item .text-small{margin-bottom:4px}
+    #warm-menu-review .palette{display:flex;gap:8px;margin:14px 0 0}
+    #warm-menu-review .palette span{display:flex;align-items:center;justify-content:center;flex:1;height:42px;font-family:'Segoe UI',sans-serif;font-size:11px;border-radius:6px}
+    @container(max-width:570px){
+      #warm-menu-review .menu-layout{min-height:740px;display:block}
+      #warm-menu-review .menu-copy{margin:0;padding:35px 24px 24px;text-align:center;display:flex;align-items:center;flex-direction:column}
+      #warm-menu-review .menu-kicker{font-size:11px;letter-spacing:1.8px;margin-bottom:13px}
+      #warm-menu-review .game-title{font-size:57px;line-height:.98}
+      #warm-menu-review .game-title span{display:inline}
+      #warm-menu-review .game-title span+span:before{content:' '}
+      #warm-menu-review .menu-tagline{font-size:14px;max-width:245px;margin:16px 0 0}
+      #warm-menu-review .menu-actions{position:absolute;top:510px;width:calc(100% - 80px);max-width:280px;gap:9px}
+      #warm-menu-review .game-button{height:46px;font-size:18px}
+      #warm-menu-review .game-button.primary{height:59px;font-size:26px}
+      #warm-menu-review .scene{left:0;top:166px;height:338px;bottom:auto;mask-image:none}
+      #warm-menu-review .moon{top:5%;right:12%;width:6%}
+      #warm-menu-review .house-wrap{width:53%;left:25%;bottom:20%}
+      #warm-menu-review .tree-left{width:14%;left:11%;bottom:21%}
+      #warm-menu-review .tree-back{width:15%;right:8%;bottom:20%}
+      #warm-menu-review .tree-right{width:17%;bottom:13%}
+      #warm-menu-review .bush-left{width:21%;left:7%;bottom:16%}
+      #warm-menu-review .bush-front{width:31%;right:-4%;bottom:6%}
+      #warm-menu-review .power-box{width:9%;left:17%;bottom:16%}
+      #warm-menu-review .lamp{width:4.5%;right:17%;bottom:11%}
+      #warm-menu-review .cloud{width:33%;top:11%}
+      #warm-menu-review .credit{left:0;right:0;bottom:19px;text-align:center;font-size:11px}
+    }
+    @container(max-width:360px){#warm-menu-review .game-title{font-size:49px}#warm-menu-review .menu-copy{padding-left:15px;padding-right:15px}}
+    @media(max-width:440px){#warm-menu-review .review-assets{grid-template-columns:1fr}}
+    @media(prefers-reduced-motion:reduce){#warm-menu-review .game-button{transition:none}}
+  </style>
+  <div class="nav nav-pills review-tabs" role="tablist" aria-label="Просмотр оформления">
+    <button type="button" class="nav-link active" role="tab" id="warm-menu-tab" aria-controls="warm-menu-panel" aria-selected="true">Главное меню</button>
+    <button type="button" class="nav-link" role="tab" id="warm-assets-tab" aria-controls="warm-assets-panel" aria-selected="false">Из чего собрано</button>
+  </div>
+  <div id="warm-menu-panel" role="tabpanel" aria-labelledby="warm-menu-tab">
+    <section class="game-menu" aria-label="Макет первого экрана игры Тёплый свет">
+      <div class="menu-layout">
+        <div class="menu-copy">
+          <p class="menu-kicker">УЮТНАЯ ГОЛОВОЛОМКА</p>
+          <h1 class="game-title"><span>Тёплый</span><span>свет</span></h1>
+          <p class="menu-tagline">Соединяй дорожки.<br>Зажигай свет в каждом доме.</p>
+          <div class="menu-actions" aria-label="Кнопки главного меню, визуальный макет">
+            <button type="button" class="game-button primary"><i data-lucide="play" aria-hidden="true"></i>Играть</button>
+            <button type="button" class="game-button"><i data-lucide="list" aria-hidden="true"></i>Уровни</button>
+            <button type="button" class="game-button"><i data-lucide="settings" aria-hidden="true"></i>Настройки</button>
+          </div>
+        </div>
+        <div class="scene" aria-hidden="true">
+          <div class="stars"></div>
+          <img class="moon" src="__MOON__" alt="">
+          <img class="cloud" src="__CLOUD__" alt="">
+          <img class="cloud far" src="__CLOUD__" alt="">
+          <div class="hill rear"></div>
+          <img class="tree-back" src="__TREE_LONG__" alt="">
+          <img class="tree-left" src="__TREE_PINE__" alt="">
+          <div class="hill"></div>
+          <div class="house-aura"></div>
+          <img class="fence" src="__FENCE__" alt="">
+          <div class="house-wrap">
+            <img class="house" src="__HOUSE__" alt="">
+            <span class="window-light window-one"></span>
+            <span class="window-light window-two"></span>
+            <span class="window-light window-attic"></span>
+          </div>
+          <span class="path-stone stone-one"></span>
+          <span class="path-stone stone-two"></span>
+          <span class="path-stone stone-three"></span>
+          <img class="bush-left" src="__BUSH__" alt="">
+          <div class="power-box"><img class="box-body" src="__POWER__" alt=""><img class="box-light" src="__BEACON__" alt=""><i data-lucide="zap"></i></div>
+          <img class="tree-right" src="__TREE_LONG__" alt="">
+          <div class="lamp"><img src="__LAMP__" alt=""></div>
+          <img class="bush-front" src="__BUSH__" alt="">
+        </div>
+        <div class="credit">STORYSHELF GAMES</div>
+      </div>
+    </section>
+  </div>
+  <div id="warm-assets-panel" role="tabpanel" aria-labelledby="warm-assets-tab" hidden>
+    <div class="review-assets">
+      <div class="asset-item"><div class="asset-sample"><img src="__HOUSE__" alt="Исходное изображение дома с красной крышей"></div><p>Дом и окружение</p><div class="text-small text-muted">Kenney · Background Elements Remastered</div></div>
+      <div class="asset-item"><div class="asset-sample"><img src="__TREE_PINE__" alt="Готовая ель"><img src="__TREE_LONG__" alt="Готовое дерево"><img src="__BUSH__" alt="Готовый куст"></div><p>Растения отдельными деталями</p><div class="text-small text-muted">Kenney · Background Elements Remastered</div></div>
+      <div class="asset-item"><div class="asset-sample"><img class="small-image" src="__PANEL_BROWN__" alt="Бежевая панель для большой кнопки"><img class="small-image" src="__PANEL_GREY__" alt="Серая панель для остальных кнопок"></div><p>Основа кнопок</p><div class="text-small text-muted">Kenney · UI Pack — Adventure</div></div>
+      <div class="asset-item"><div class="asset-sample"><img class="small-image" src="__POWER__" alt="Корпус электрического блока"><img class="small-image" src="__BEACON__" alt="Жёлтый индикатор"><img class="small-image" src="__LAMP__" alt="Лампа на стойке"></div><p>Корпус, индикатор и лампа</p><div class="text-small text-muted">Kenney · Platformer Pack Industrial</div></div>
+    </div>
+    <div class="palette" aria-label="Палитра меню"><span style="background:#102f3c;color:#fff0c8">Ночь</span><span style="background:#285751;color:#eff7ea">Зелень</span><span style="background:#bd3548;color:#fff0c8">Крыша</span><span style="background:#f4c36f;color:#53371e">Свет</span></div>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+work/
+.git/
+.gigacode/
+resources/packs/
+resources/references/
+outputs/
+public/
+package-lock.json
+
+resources/archive/

@@ -1,0 +1,65 @@
+/* First-chapter composition. Keep the artwork and energy layer ordering. */
+/* Paint the victory halo once, then vary only its opacity. */
+#warm-glass-level[data-scene-trial='centered-first'].celebrate .board-wrap { animation:none; }
+#warm-glass-level[data-scene-trial='centered-first'] .board-wrap::after { content:''; position:absolute; inset:0; z-index:5; border-radius:inherit; pointer-events:none; opacity:0; box-shadow:0 0 0 2px #e8c175,0 0 28px #ffe19b4a; }
+#warm-glass-level[data-scene-trial='centered-first'].celebrate .board-wrap::after { animation:first-success-glow .9s ease-out; }
+@keyframes first-success-glow { 0%,100% { opacity:0; } 30% { opacity:1; } }
+#warm-glass-level[data-scene-trial='centered-first']:is([data-paused='true'],[data-hidden='true']) .source-unit::before,
+#warm-glass-level[data-scene-trial='centered-first']:is([data-paused='true'],[data-hidden='true']) .board-wrap::after { animation-play-state:paused; }
+@media(prefers-reduced-motion:reduce) {
+  #warm-glass-level[data-scene-trial='centered-first'] .source-unit::before,
+  #warm-glass-level[data-scene-trial='centered-first'].celebrate .board-wrap::after { animation:none; }
+}
+/* The board handles taps itself; browser zoom/pan gestures belong outside it. */
+#warm-glass-level[data-scene-trial='centered-first'] .board-wrap,
+#warm-glass-level[data-scene-trial='centered-first'] .board-wrap .turn-tile { touch-action:none; }
+#warm-glass-level[data-scene-trial='centered-first'][data-scene-layout='portrait'] :is(.pine,.tree,.moon) { visibility:hidden; }
+#warm-glass-level[data-scene-trial='centered-first'][data-scene-layout='landscape'] .source-unit { left:clamp(-20px,-1.8vw,-15px); }
+#warm-glass-level[data-board-size='6'][data-scene-layout='landscape'] .source-unit { top:var(--scene-inlet-y); }
+#warm-glass-level[data-board-size='6'][data-scene-layout='landscape'] .house { top:var(--scene-outlet-y); }
+html:has(#warm-glass-level[data-scene-scroll='true']) { overflow-y:auto; }
+body:has(>#warm-glass-level[data-scene-scroll='true']) { display:block; overflow:visible; }
+#warm-glass-level[data-scene-scroll='true'] .gear { position:fixed; top:8px; right:8px; }
+/* Resolve the grid width explicitly; WebKit otherwise uses the floor SVG's 300px intrinsic width. */
+#warm-glass-level[data-scene-trial='centered-first'][data-scene-layout='landscape'] .board-wrap { width:100%; }
+#warm-glass-level[data-scene-trial='centered-first'] .first-board-floor { display:block; width:100%; height:100%; border-radius:8px; overflow:hidden; }
+#warm-glass-level[data-scene-trial='centered-first'] .board-art { position:absolute; inset:0; z-index:2; pointer-events:none; }
+#warm-glass-level[data-scene-trial='centered-first'] .first-cell-rotor { position:absolute; left:calc(var(--column) * var(--cell-share)); top:calc(var(--row) * var(--cell-share)); width:var(--cell-share); height:var(--cell-share); pointer-events:none; transform-origin:50% 50%; will-change:auto; }
+#warm-glass-level[data-scene-trial='centered-first'] .first-cell-rotor[data-composited='true'] { will-change:transform; }
+#warm-glass-level[data-scene-trial='centered-first'] :is(.first-pipe-plane,.first-collar-plane) { position:absolute; inset:0; overflow:hidden; border-radius:8px; pointer-events:none; }
+#warm-glass-level[data-scene-trial='centered-first'] .first-pipe-plane { z-index:1; }
+#warm-glass-level[data-scene-trial='centered-first'] .first-collar-plane { z-index:3; }
+#warm-glass-level[data-scene-trial='centered-first'] .first-cell-rotor>svg { display:block; width:100%; height:100%; overflow:visible; }
+#warm-glass-level[data-scene-trial='centered-first'] .first-cell-rotor path { fill:none; stroke-linejoin:round; stroke-linecap:butt; }
+#warm-glass-level[data-scene-trial='centered-first'] .first-cell-rotor .hatch-symbol { fill:#ffe5a2; transform-box:fill-box; transform-origin:center; transform:rotate(var(--hatch-view-turn,0deg)); }
+#warm-glass-level[data-scene-trial='centered-first'] :is(.pipe-piece,.collar-piece,.mask-piece,.star-sockets) { will-change:auto; }
+/* The shared frame owns these angles, including interrupted turns. */
+#warm-glass-level[data-scene-trial='centered-first'][data-turn-ready='true'] :is(.first-cell-rotor,.mask-piece) { transition:none; }
+#warm-glass-level[data-scene-trial='centered-first'] .source-tooltip { padding:12px; font-size:15px; line-height:1.25; }
+#warm-glass-level[data-scene-trial='centered-first'] .source-tooltip::before { background:#fff1cc; border:2px solid #c3a36d; border-radius:7px; transform:none; }
+#warm-glass-level[data-scene-trial='centered-first'] .source-tooltip::after { content:''; position:absolute; z-index:-1; box-sizing:border-box; width:14px; height:14px; background:#fff1cc; border:solid #c3a36d; border-width:0 0 2px 2px; }
+#warm-glass-level[data-scene-trial='centered-first'] .source-tooltip[data-pointer='left']::after { left:-7px; top:var(--source-pointer-y); transform:rotate(45deg); }
+#warm-glass-level[data-scene-trial='centered-first'] .source-tooltip[data-pointer='bottom']::after { left:var(--source-pointer-x); bottom:-7px; transform:rotate(-45deg); }
+@media(max-width:280px) { #warm-glass-level[data-scene-trial='centered-first'] .source-tooltip { padding:10px 8px; font-size:14px; } }
+@media(prefers-reduced-motion:reduce) {
+  #warm-glass-level[data-scene-trial='centered-first'] .first-cell-rotor { transition:none !important; }
+}
+@media(max-height:360px),(max-width:300px) {
+  #warm-glass-level[data-scene-trial='centered-first'] .result-overlay { padding:12px; }
+  #warm-glass-level[data-scene-trial='centered-first'] .result-panel { min-width:0; width:min(330px,100%); max-width:100%; padding:5px 6px; }
+  #warm-glass-level[data-scene-trial='centered-first'] :is(.result-signal,.result-kicker) { display:none; }
+  #warm-glass-level[data-scene-trial='centered-first'] .result-title { font-size:23px; margin:0; }
+  #warm-glass-level[data-scene-trial='centered-first'] .result-star-stage { min-height:40px; margin:0 0 3px; }
+  #warm-glass-level[data-scene-trial='centered-first'] .result-star { width:36px; height:36px; }
+  #warm-glass-level[data-scene-trial='centered-first'] .result-actions { gap:4px; }
+  #warm-glass-level[data-scene-trial='centered-first'] .result-secondary-actions { display:grid; width:100%; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px; }
+  #warm-glass-level[data-scene-trial='centered-first'] .result-secondary-button { width:100%; height:44px; padding-inline:4px; gap:4px; font-size:12px; }
+  #warm-glass-level[data-scene-trial='centered-first'] .result-button[data-action='next'] { width:100%; height:44px; padding:8px 8px 12px; font-size:16px; }
+}
+@media(max-width:280px) {
+  #warm-glass-level[data-scene-trial='centered-first'] .result-button[data-action='next'] { font-size:14px; }
+  #warm-glass-level[data-scene-trial='centered-first'] .result-button[data-action='next']>svg { display:none; }
+}
+
+/* The board turns for portrait play; keep the switch plate upright and leave both pipe ends visible. */
+#warm-glass-level[data-scene-trial='centered-first'][data-scene-layout='portrait'] .switch-device { width:52%; transform:translate(-50%,-50%) rotate(-90deg); }

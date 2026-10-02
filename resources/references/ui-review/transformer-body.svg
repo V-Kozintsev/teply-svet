@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240" fill="none">
+  <defs>
+    <linearGradient id="shell" x1="34" y1="8" x2="209" y2="230" gradientUnits="userSpaceOnUse"><stop stop-color="#a3ad8d"/><stop offset=".46" stop-color="#7e8e78"/><stop offset="1" stop-color="#566b60"/></linearGradient>
+    <linearGradient id="door" x1="48" y1="44" x2="187" y2="208" gradientUnits="userSpaceOnUse"><stop stop-color="#315e60"/><stop offset=".48" stop-color="#20494f"/><stop offset="1" stop-color="#14363e"/></linearGradient>
+    <linearGradient id="brass" x1="34" y1="36" x2="203" y2="211" gradientUnits="userSpaceOnUse"><stop stop-color="#fff0b0"/><stop offset=".3" stop-color="#d5ac60"/><stop offset=".7" stop-color="#9a743d"/><stop offset="1" stop-color="#e1bd72"/></linearGradient>
+    <linearGradient id="hinge" x1="22" y1="0" x2="36" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#795a35"/><stop offset=".4" stop-color="#e2bd75"/><stop offset=".65" stop-color="#bd924f"/><stop offset="1" stop-color="#6e5637"/></linearGradient>
+    <linearGradient id="screw" x1="0" y1="-8" x2="0" y2="8" gradientUnits="userSpaceOnUse"><stop stop-color="#f5d78e"/><stop offset="1" stop-color="#a17b40"/></linearGradient>
+  </defs>
+  <!-- Independent artwork: beacon, bolt, sparks and conduit belong to the host. -->
+  <path d="m33 220-6 17q0 3 4 3h27l9-20m106 0 8 20h28q4 0 3-4l-7-16" fill="#2c4445"/>
+  <path d="M34 8h172l28 31v167l-26 26H32L7 206V40Z" fill="#263f3f" stroke="#203c3e" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M34 6h172l28 31v167l-26 26H32L7 204V38Z" fill="url(#shell)"/>
+  <path d="M34 6h172l-5 11H39L13 44 7 38Z" fill="#c6ce9f" fill-opacity=".7"/>
+  <path d="m206 6 28 31-8 9-25-29Z" fill="#b7c39c" fill-opacity=".65"/>
+  <path d="M7 38v166l25 26 6-11-22-21V47Z" fill="#a2b392" fill-opacity=".6"/>
+  <path d="M234 37v167l-26 26-7-11 24-22V46Z" fill="#4e665c" fill-opacity=".7"/>
+  <path d="M32 230h176l-7-11H38Z" fill="#697d6a"/>
+  <path d="M39 17h162M16 48v143" stroke="#dae0b3" stroke-opacity=".45" stroke-width="2" stroke-linecap="round"/>
+  <rect x="30" y="33" width="181" height="182" rx="17" fill="#344b45"/>
+  <rect x="34" y="35" width="172" height="176" rx="13" fill="url(#brass)" stroke="#48594c" stroke-width="2"/>
+  <rect x="38" y="39" width="164" height="168" rx="10" fill="#10363d"/>
+  <rect x="42" y="43" width="156" height="160" rx="8" fill="url(#door)" stroke="#487273" stroke-width="1.5"/>
+  <path d="M49 46h142M45 51v140" stroke="#729290" stroke-opacity=".35" stroke-width="2" stroke-linecap="round"/>
+  <g fill="url(#hinge)" stroke="#695b3b" stroke-width="1.4"><rect x="25" y="69" width="10" height="33" rx="3"/><rect x="25" y="153" width="10" height="33" rx="3"/></g>
+  <path d="M26 79h8m-8 14h8m-8 70h8m-8 14h8" stroke="#f1d49a" stroke-opacity=".45"/>
+  <g stroke-linecap="round" stroke-width="5"><path d="M94 172h52m-52 11h52m-52 11h52" stroke="#4a7371"/><path d="M94 170h52m-52 11h52m-52 11h52" stroke="#0b2b32"/></g>
+  <g transform="translate(61 189)"><circle cy="1" r="9" fill="#0b2b30"/><circle r="7.5" fill="url(#screw)" stroke="#805f35"/><path d="m-3.4-3.4 6.8 6.8m0-6.8-6.8 6.8" stroke="#715735" stroke-width="1.8" stroke-linecap="round"/></g>
+  <g transform="translate(179 189)"><circle cy="1" r="9" fill="#0b2b30"/><circle r="7.5" fill="url(#screw)" stroke="#805f35"/><path d="m-3.4-3.4 6.8 6.8m0-6.8-6.8 6.8" stroke="#715735" stroke-width="1.8" stroke-linecap="round"/></g>
+</svg>

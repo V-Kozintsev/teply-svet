@@ -1,0 +1,1 @@
+First chapter courtyard illustration for Teply Svet: a view through a partly open wooden garden gate. Project-specific artwork, distributed under the root MIT license. The shipped WebP is an optimized 1024 x 1024 image. The chapter title, progress and frame are live interface elements.

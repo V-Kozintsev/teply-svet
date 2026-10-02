@@ -1,0 +1,10 @@
+One Step at a time — Alex McCulloch (Pro Sensory)
+Source: https://opengameart.org/content/one-step-at-a-time
+License: CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+
+The artist's page explicitly states that attribution is appreciated but not required.
+Retrieved 2026-09-03.
+
+Menu version: full recording encoded as 128 kbps MP3, gain reduced by 4 dB,
+with a 1.2-second fade-in. Original WAV retained in resources/packs/music.

@@ -1,0 +1,159 @@
+/* Straight glass conduit: the same wall, cavity, brass and energy colors as the board. */
+.loading-pipe {
+  --pipe-height: 30px;
+  --pipe-collar: 11px;
+  position: relative;
+  display: block;
+  width: 100%;
+  height: var(--pipe-height);
+}
+.loading-pipe-glass {
+  position: absolute;
+  inset: 0 2px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 3px;
+  background: linear-gradient(
+    to bottom,
+    #0a292d 0 2px,
+    #719795 2px 4px,
+    #31585c 4px 7px,
+    #12383e 7px 23px,
+    #31585c 23px 26px,
+    #719795 26px 28px,
+    #0a292d 28px 30px
+  );
+  box-shadow:
+    inset 0 9px #92bbbc12,
+    0 2px 2px #09262b66;
+}
+.loading-pipe-current {
+  position: absolute;
+  inset: 7px var(--pipe-collar);
+  overflow: hidden;
+  border-radius: 2px;
+}
+.loading-pipe-wave {
+  position: absolute;
+  top: calc(50% - 6px);
+  height: 12px;
+  left: 0;
+  width: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffb83b66, #ffb83bbb 74%, #ffe0a0);
+  box-shadow:
+    0 0 4px #ffb83b,
+    0 0 9px #ffad29aa;
+  transform: translateX(-100%);
+  animation: loading-pipe-flow 2.4s ease-in-out infinite;
+  animation-play-state: var(--loading-motion, running);
+}
+.loading-pipe-wave::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0 6px;
+  top: 3px;
+  height: 6px;
+  border-radius: inherit;
+  background: linear-gradient(to bottom, #f5bb55 0 2px, #ffe5a1 2px 4px, #f5bb55 4px 6px);
+}
+.loading-pipe-wave::after {
+  content: '';
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  border-radius: inherit;
+  background: #fff6bd;
+  box-shadow:
+    0 0 5px #fff0a2,
+    0 0 12px #ffb937;
+  transform: translateY(-50%);
+}
+.loading-pipe::before,
+.loading-pipe::after {
+  box-sizing: border-box;
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  width: var(--pipe-collar);
+  border: 1px solid #584a30;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    #6f512f,
+    #c88c3c 18%,
+    #f4d799 34%,
+    #d3a057 62%,
+    #8d622f 84%,
+    #6f512f
+  );
+  box-shadow:
+    inset 2px 0 #f8dea399,
+    inset -2px 0 #76582eaa,
+    0 2px 2px #09262b66;
+  pointer-events: none;
+}
+.loading-pipe::before {
+  left: 0;
+}
+.loading-pipe::after {
+  right: 0;
+}
+@keyframes loading-pipe-flow {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0.8;
+  }
+  82% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+}
+@media (max-height: 400px) {
+  .loading-pipe {
+    --pipe-height: 20px;
+    --pipe-collar: 8px;
+  }
+  .loading-pipe-glass {
+    background: linear-gradient(
+      to bottom,
+      #0a292d 0 2px,
+      #719795 2px 3px,
+      #31585c 3px 5px,
+      #12383e 5px 15px,
+      #31585c 15px 17px,
+      #719795 17px 18px,
+      #0a292d 18px 20px
+    );
+  }
+  .loading-pipe-current {
+    inset-block: 5px;
+  }
+  .loading-pipe-wave {
+    top: calc(50% - 4px);
+    height: 8px;
+  }
+  .loading-pipe-wave::before {
+    top: 2px;
+    height: 4px;
+  }
+  .loading-pipe-wave::after {
+    width: 10px;
+    height: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loading-pipe-wave {
+    animation: none;
+    transform: translateX(-28%);
+    opacity: 0.85;
+  }
+}

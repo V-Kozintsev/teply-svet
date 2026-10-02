@@ -1,0 +1,75 @@
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  body * {
+    cursor:
+      url('/assets/ui/cursor-hand.svg') 11 4,
+      pointer !important;
+  }
+
+  button:not(:disabled):not([aria-disabled='true']):active,
+  a[href]:active,
+  [role='button']:not([aria-disabled='true']):active {
+    cursor:
+      url('/assets/ui/cursor-hand-active.svg') 11 4,
+      pointer !important;
+  }
+}
+
+.warm-click-feedback {
+  position: fixed;
+  z-index: 2147483647;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #ffe19a;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2px #8b6534,
+    0 0 13px #ffcb55;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.35);
+  animation: warm-click-ring 340ms cubic-bezier(0.15, 0.7, 0.25, 1) forwards;
+}
+
+.warm-click-feedback::before,
+.warm-click-feedback::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff0b5;
+  box-shadow:
+    0 -18px #ffd064,
+    18px 0 #ffd064,
+    0 18px #ffd064,
+    -18px 0 #ffd064;
+  transform: translate(-50%, -50%);
+}
+
+.warm-click-feedback::after {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+@keyframes warm-click-ring {
+  0% {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(0.35);
+  }
+  70% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .warm-click-feedback {
+    display: none;
+    animation: none;
+  }
+}

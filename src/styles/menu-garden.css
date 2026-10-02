@@ -1,0 +1,79 @@
+#app .menu-garden-back,
+#app .menu-garden-front {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+#app .menu-garden-back {
+  z-index: 1;
+}
+#app .menu-garden-front {
+  z-index: 5;
+}
+#app .game-menu .hill,
+#app .game-menu .path-stone,
+#app .game-menu .bush-front {
+  display: none;
+}
+#app .game-menu .tree-left,
+#app .game-menu .tree-back,
+#app .game-menu .tree-right {
+  z-index: 1;
+}
+#app .menu-garden-light {
+  transition: opacity 0.7s ease;
+}
+#app .scene[data-lit='false'] .menu-garden-light,
+#app .scene[data-lit='false'] .menu-fireflies {
+  opacity: 0;
+}
+#app .menu-firefly {
+  animation: menu-firefly-rise var(--flight-duration) cubic-bezier(0.37, 0, 0.63, 1)
+    var(--flight-rise-phase) infinite;
+}
+#app .menu-firefly circle {
+  filter: drop-shadow(0 0 3px #ffce4b) drop-shadow(0 0 7px #ffcc5299);
+  animation:
+    menu-firefly-drift var(--flight-duration) cubic-bezier(0.37, 0, 0.63, 1) var(--flight-phase)
+      infinite,
+    menu-firefly-glow 4.8s ease-in-out var(--flight-phase) infinite;
+}
+#app .scene[data-flowing='false'] .menu-firefly,
+#app .scene[data-flowing='false'] .menu-firefly circle {
+  animation-play-state: paused;
+}
+@keyframes menu-firefly-drift {
+  0%,
+  100% {
+    transform: translateX(calc(-1 * var(--flight-x)));
+  }
+  50% {
+    transform: translateX(var(--flight-x));
+  }
+}
+@keyframes menu-firefly-rise {
+  0%,
+  100% {
+    transform: translateY(calc(-1 * var(--flight-y)));
+  }
+  50% {
+    transform: translateY(var(--flight-y));
+  }
+}
+@keyframes menu-firefly-glow {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@media (max-height: 350px) {
+  #app .menu-firefly:nth-child(even) {
+    display: none;
+  }
+}

@@ -1,0 +1,10 @@
+Method: built-in image_gen.imagegen, one generation call, no reference image, no edits.
+Resolution: 1536 x 1024 PNG.
+
+Use case: stylized-concept
+Asset type: finished in-game environment background for a cozy light-path connection puzzle game, landscape 1536x1024 or wide 16:9.
+Primary request: a premium hand-painted storybook game environment of an enchanting small old countryside cottage in a deep midnight teal-blue garden. Warm amber light glows from exactly a few windows. A winding stone path runs through the garden, with tiny fireflies, hydrangeas, fern, an old lantern near the foreground, and a distant greenhouse silhouette on the right.
+Composition/framing: cottage occupies the left-middle of the frame, approximately x 0.35 y 0.45. Roof and sky fully visible with no clipping. Keep the lower central foreground calm, dark teal, and visually quiet for a game interface to be overlaid later. Natural perspective with appealing visual depth.
+Style/medium: cozy tactile painterly 2.5D detail, refined brush texture, polished mobile puzzle game environment art, warm/cool lighting contrast.
+Lighting/mood: serene magical midnight, deep teal-blue shadows with restrained warm golden amber from the windows and old lantern.
+Constraints: no typography, no logos, no interface, no watermark, no character. Not childish flat vector, not photoreal. This is an in-game background, not marketing artwork.

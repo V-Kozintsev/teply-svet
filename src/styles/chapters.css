@@ -1,0 +1,1324 @@
+#app .chapter-screen {
+  box-sizing: border-box;
+  padding-inline: var(--safe-inline);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: 100%;
+  height: var(--game-height, 100vh);
+  overflow: hidden;
+  color: #ffedc5;
+  background:
+    radial-gradient(circle at 50% 17%, #2b5655 0, transparent 33%),
+    radial-gradient(ellipse at 50% 105%, #2e6256 0, transparent 58%),
+    linear-gradient(#0c2938, #123944 64%, #12353b);
+  font-family: WarmMarmelad, 'Segoe UI', sans-serif;
+  user-select: none;
+}
+
+#app .chapter-screen[hidden] {
+  display: none;
+}
+
+#app .chapter-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.55;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 13% 18%, #d5e6dc 0 1px, transparent 1.5px),
+    radial-gradient(circle at 31% 10%, #d5e6dc 0 1px, transparent 1.5px),
+    radial-gradient(circle at 67% 14%, #d5e6dc 0 1px, transparent 1.5px),
+    radial-gradient(circle at 84% 8%, #f4dfad 0 1px, transparent 1.5px),
+    radial-gradient(circle at 91% 27%, #d5e6dc 0 1px, transparent 1.5px);
+}
+
+#app .chapter-header {
+  --chapter-key: 52px;
+  --chapter-icon: 30px;
+  --chapter-plus: 40px;
+  --chapter-count: 25px;
+  --chapter-balance-padding: 4px;
+  --chapter-balance-gap: 8px;
+  --chapter-brass: #d9b77b;
+  --chapter-key-face: linear-gradient(145deg, #52796c, #365f58);
+  --chapter-key-shadow:
+    inset 0 0 0 2px #1a3b37, inset 0 3px 0 #e7dfa52b, inset 0 -3px 0 #102c3340, 0 3px 0 #483d26,
+    0 5px 8px #061c2859;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: var(--chapter-key) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  width: min(1180px, calc(100% - 40px));
+  min-height: 88px;
+  margin: 0 auto;
+  padding-top: var(--safe-top);
+}
+
+#app .chapter-header h1 {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: #ffe8b3;
+  font-size: clamp(30px, 3.4vw, 42px);
+  font-weight: 400;
+  line-height: 1.2;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow:
+    0 2px 0 #8c6338,
+    0 4px 10px #051e2b80;
+}
+
+#app .chapter-home,
+#app .chapter-total-add {
+  box-sizing: border-box;
+  position: relative;
+  border: 2px solid var(--chapter-brass);
+  border-radius: 10px;
+  color: #fff0c6;
+  background: var(--chapter-key-face);
+  box-shadow: var(--chapter-key-shadow);
+}
+
+#app .chapter-home {
+  display: grid;
+  place-items: center;
+  width: var(--chapter-key);
+  height: var(--chapter-key);
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app .chapter-home svg {
+  width: var(--chapter-icon);
+  height: var(--chapter-icon);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.8px;
+  filter: drop-shadow(0 1px 0 #8a632e);
+}
+
+#app .chapter-home:focus-visible,
+#app .chapter-total:focus-visible {
+  outline: 2px solid #fff0bd;
+  outline-offset: 4px;
+}
+
+#app .chapter-home-tip {
+  position: absolute;
+  z-index: 4;
+  top: calc(100% + 12px);
+  left: -2px;
+  padding: 7px 12px;
+  border: 2px solid #bc9c60;
+  border-radius: 9px;
+  color: #644322;
+  background: #fff2cc;
+  box-shadow: 0 3px 6px #061d2840;
+  font:
+    17px/1.2 WarmMarmelad,
+    'Segoe UI',
+    sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+#app .chapter-home-tip::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 18px;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid #bc9c60;
+  border-left: 2px solid #bc9c60;
+  background: #fff2cc;
+  transform: rotate(45deg);
+}
+
+#app .chapter-home:focus-visible .chapter-home-tip {
+  visibility: visible;
+  opacity: 1;
+}
+
+#app .chapter-total {
+  display: grid;
+  justify-self: end;
+  width: max-content;
+  height: var(--chapter-key);
+  padding: 0;
+  border: 0;
+  border-radius: 11px;
+  color: #fff0c6;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  font:
+    600 var(--chapter-count)/1 WarmMarmelad,
+    'Segoe UI',
+    sans-serif;
+}
+
+#app .chapter-total-badge {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: var(--chapter-icon) minmax(1.4ch, auto) var(--chapter-plus);
+  align-items: center;
+  gap: var(--chapter-balance-gap);
+  height: 100%;
+  padding: var(--chapter-balance-padding);
+  border: 2px solid var(--chapter-brass);
+  border-radius: inherit;
+  background: linear-gradient(145deg, #315a53, #163e43);
+  box-shadow: var(--chapter-key-shadow);
+  white-space: nowrap;
+  text-shadow: 0 2px 0 #112d32;
+}
+
+#app .chapter-total-badge [data-chapter-total] {
+  display: block;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+#app .chapter-total img {
+  display: block;
+  width: var(--chapter-icon);
+  height: var(--chapter-icon);
+  object-fit: contain;
+  filter: drop-shadow(0 2px 0 #694a2566);
+}
+
+#app .chapter-total-add {
+  width: var(--chapter-plus);
+  height: var(--chapter-plus);
+  border-radius: 8px;
+}
+
+#app .chapter-total-add::before,
+#app .chapter-total-add::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: #fff0c6;
+  border-radius: 2px;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 1px 0 #8a632e;
+}
+
+#app .chapter-total-add::before {
+  width: 54%;
+  height: 14%;
+}
+
+#app .chapter-total-add::after {
+  width: 14%;
+  height: 54%;
+}
+
+#app .chapter-home:active,
+#app .chapter-total:active .chapter-total-add {
+  transform: translateY(1px);
+}
+
+@media (hover: hover) {
+  #app .chapter-home:hover,
+  #app .chapter-total:hover .chapter-total-add {
+    background: linear-gradient(145deg, #5c8375, #416b61);
+  }
+  #app .chapter-home:hover .chapter-home-tip {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1099px), (orientation: portrait) {
+  #app .chapter-header {
+    --chapter-key: 48px;
+    --chapter-icon: 28px;
+    --chapter-plus: 36px;
+    --chapter-count: 23px;
+    gap: 10px;
+    width: calc(100% - 24px);
+    min-height: 72px;
+    padding-top: max(4px, var(--safe-top));
+  }
+  #app .chapter-header h1 {
+    font-size: clamp(22px, 3.3vw, 36px);
+  }
+}
+
+@media (max-width: 599px) {
+  #app .chapter-header {
+    --chapter-key: 44px;
+    --chapter-icon: 26px;
+    --chapter-plus: 32px;
+    --chapter-count: 20px;
+    --chapter-balance-gap: 6px;
+    gap: 8px;
+    min-height: 68px;
+  }
+  #app .chapter-header h1 {
+    font-size: clamp(18px, 5.1vw, 26px);
+  }
+}
+
+@media (max-width: 350px) {
+  #app .chapter-header {
+    --chapter-balance-gap: 4px;
+    gap: 6px;
+  }
+}
+
+@media (min-width: 480px) and (max-height: 560px) {
+  #app .chapter-header {
+    --chapter-key: 44px;
+    --chapter-icon: 26px;
+    --chapter-plus: 32px;
+    --chapter-count: 20px;
+    --chapter-balance-gap: 6px;
+    min-height: 56px;
+    padding-block: max(2px, var(--safe-top)) 2px;
+  }
+  #app .chapter-header h1 {
+    font-size: clamp(22px, 3.3vw, 30px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #app .chapter-home-tip {
+    transition: none;
+  }
+}
+
+#app .chapter-browser {
+  --chapter-track-width: calc(100vw - 24px - 2 * var(--safe-inline));
+  --chapter-card-width: min(640px, calc(100vw - 520px), 100cqh);
+  --chapter-card-gap: 150px;
+  --chapter-side-space: calc((var(--chapter-track-width) - var(--chapter-card-width)) / 2);
+
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--chapter-track-width);
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding: 8px 8px 40px;
+  container-type: size;
+}
+
+#app .chapter-scroll {
+  grid-column: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  touch-action: pan-x;
+}
+
+#app .chapter-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+#app .chapter-list {
+  display: flex;
+  width: max-content;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#app .chapter-list::before,
+#app .chapter-list::after {
+  content: '';
+  flex: 0 0 var(--chapter-side-space);
+}
+
+#app .chapter-list > li {
+  flex: 0 0 var(--chapter-card-width);
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+#app .chapter-list > li:not(:last-child) {
+  margin-right: var(--chapter-card-gap);
+}
+
+#app .chapter-arrow {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 52px;
+  padding: 0 0 4px;
+  border: 0;
+  background: transparent;
+  filter: drop-shadow(0 3px 1px #071f2880);
+  transform: translateY(-50%);
+}
+
+#app .chapter-arrow-previous {
+  left: calc(50% - var(--chapter-card-width) / 2 - 73px);
+}
+
+#app .chapter-arrow-next {
+  right: calc(50% - var(--chapter-card-width) / 2 - 73px);
+}
+
+#app .chapter-arrow::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: url('/assets/menu/setting-teal.svg') center / contain no-repeat;
+}
+
+#app .chapter-arrow img {
+  width: 21px;
+  height: 21px;
+  object-fit: contain;
+  filter: sepia(0.28) drop-shadow(0 1px 0 #6e502f);
+  pointer-events: none;
+}
+
+#app .chapter-arrow:disabled {
+  opacity: 0.28;
+}
+
+@media (hover: hover) {
+  #app .chapter-arrow:not(:disabled):hover::before {
+    filter: brightness(1.08);
+  }
+}
+
+#app .chapter-card {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 1 / 1;
+  container-type: inline-size;
+  padding: 0;
+  overflow: hidden;
+  border: 14px solid transparent;
+  border-image: url('/assets/menu/panel_brown.png') 16 stretch;
+  border-radius: 12px;
+  color: #f8e9c7;
+  background: #173b42;
+  box-shadow:
+    inset 0 0 0 2px #0c2932,
+    0 9px 18px #03192373;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 100ms ease,
+    filter 0.18s ease,
+    box-shadow 0.16s ease;
+}
+
+#app .chapter-card[data-state='locked'] {
+  cursor: default;
+}
+
+#app .chapter-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border: 3px solid #f1cf83;
+  border-radius: 3px;
+  background: linear-gradient(135deg, #ffda8526, transparent 55%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 80ms ease;
+}
+
+#app .chapter-card:not(:disabled):active::after,
+#app .chapter-card[data-selecting='true']::after {
+  opacity: 1;
+}
+
+#app .chapter-visual {
+  --chapter-house-base: 29%;
+  position: relative;
+  grid-area: 1 / 1;
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 55% 68%, #3b6b5f 0, transparent 48%),
+    linear-gradient(#102e3d, #1c4b4c 74%, #1f4f46);
+  box-shadow: inset 0 -2px 0 #092832;
+}
+
+#app .chapter-visual::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  left: -8%;
+  right: -8%;
+  bottom: -10%;
+  height: 42%;
+  border-radius: 50%;
+  background: #295d50;
+}
+
+#app .chapter-visual img {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+#app .chapter-sky-stars {
+  position: absolute;
+  z-index: 0;
+  top: 13%;
+  left: 12%;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #e5e5c6;
+  box-shadow:
+    38px 21px #c5dfd5,
+    110px -7px #e5e5c6,
+    190px 27px #b8d5cd,
+    244px -5px #eadba9,
+    292px 46px #c5dfd5;
+}
+
+#app .chapter-hill {
+  position: absolute;
+  z-index: 1;
+  left: 17%;
+  right: -17%;
+  bottom: 20%;
+  height: 28%;
+  border-radius: 50% 0 0;
+  background: #34675a;
+}
+
+#app .chapter-tree-left {
+  left: 1%;
+  bottom: 24%;
+  width: 28%;
+  filter: brightness(0.68) saturate(0.65);
+}
+
+#app .chapter-tree-back {
+  right: 2%;
+  bottom: 26%;
+  width: 24%;
+  filter: brightness(0.62) saturate(0.58);
+}
+
+#app .chapter-house {
+  filter: brightness(0.93) saturate(0.7) sepia(0.1) drop-shadow(0 5px 2px #061e2780);
+}
+
+#app .chapter-house-main {
+  left: 17%;
+  bottom: var(--chapter-house-base);
+  width: 70%;
+  height: auto;
+  object-position: center bottom;
+}
+
+#app .chapter-power-unit {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  left: 9%;
+  bottom: 28%;
+  width: 17%;
+  aspect-ratio: 1/1.35;
+}
+
+#app .chapter-power {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  filter: brightness(0.98) drop-shadow(0 3px 1px #061e2780);
+}
+
+#app .chapter-beacon {
+  left: 30%;
+  bottom: 71.5%;
+  width: 40%;
+  filter: drop-shadow(0 0 8px #ffd56c);
+}
+
+#app .chapter-power-bolt {
+  position: absolute;
+  z-index: 3;
+  left: 33%;
+  bottom: 28.2%;
+  width: 34%;
+  height: 25.2%;
+  color: #ffe2a0;
+  fill: #ffe2a0;
+  stroke-width: 1;
+  filter: drop-shadow(0 2px 0 #725533);
+  pointer-events: none;
+}
+
+#app .chapter-fence {
+  right: 0;
+  bottom: 27%;
+  width: 25%;
+  filter: brightness(0.77) saturate(0.62);
+}
+
+#app .chapter-fence-left {
+  right: auto;
+  left: -5%;
+}
+
+#app .chapter-bush {
+  bottom: 19%;
+  width: 31%;
+  filter: brightness(0.7) saturate(0.62);
+}
+
+#app .chapter-bush-left {
+  left: -5%;
+}
+
+#app .chapter-bush-right {
+  right: -4%;
+}
+
+#app .chapter-stone {
+  position: absolute;
+  z-index: 2;
+  border-radius: 48%;
+  background: linear-gradient(160deg, #a2a281, #697d68);
+  box-shadow: inset 0 1px 0 #d4cda566;
+  opacity: 0.78;
+  transform: rotate(-10deg);
+}
+
+#app .chapter-stone-one {
+  left: 51%;
+  bottom: calc(var(--chapter-house-base) - 4.2%);
+  width: 11%;
+  height: 2.8%;
+}
+
+#app .chapter-stone-two {
+  left: 44%;
+  bottom: calc(var(--chapter-house-base) - 11%);
+  width: 18%;
+  height: 3.8%;
+}
+
+#app .chapter-stone-three {
+  left: 34%;
+  bottom: calc(var(--chapter-house-base) - 20.5%);
+  width: 26%;
+  height: 5%;
+}
+
+#app .chapter-house-one {
+  left: 7%;
+  bottom: 29%;
+  width: 43%;
+}
+
+#app .chapter-house-two {
+  right: 5%;
+  bottom: 29%;
+  width: 43%;
+  filter: brightness(0.78) saturate(0.54) drop-shadow(0 5px 2px #061e2780);
+}
+
+#app .chapter-power-unit-center {
+  left: 44%;
+  bottom: 27%;
+  width: 13%;
+}
+
+#app .chapter-pipes {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 5px 2px #061b2480);
+}
+
+#app .chapter-pipe-lines path {
+  fill: none;
+  stroke: url('#chapter-pipe');
+  stroke-width: 26px;
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+}
+
+#app .chapter-pipe-glints path {
+  fill: none;
+  stroke: #a7cfca;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  opacity: 0.24;
+}
+
+#app .chapter-pipe-collars rect {
+  fill: url('#chapter-brass');
+  stroke: #614a2c;
+  stroke-width: 2px;
+}
+
+#app .chapter-card-copy {
+  position: absolute;
+  z-index: 7;
+  right: 0;
+  top: 0;
+  bottom: auto;
+  left: 0;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  min-width: 0;
+  box-sizing: border-box;
+  height: 25%;
+  min-height: 0;
+  padding: clamp(10px, 3vw, 18px) 15px clamp(9px, 2.5vw, 16px);
+  background: linear-gradient(to bottom, #071f27db, #08252d80 70%, transparent);
+  text-align: center;
+  pointer-events: none;
+}
+
+#app .chapter-number {
+  color: #dfb568;
+  font-size: clamp(15px, 2.4vw, 18px);
+  line-height: 1.05;
+  letter-spacing: 0.35px;
+  text-shadow:
+    -1px 0 #17343a,
+    0 1px #17343a,
+    1px 0 #17343a,
+    0 -1px #17343a,
+    0 3px 2px #061b22;
+}
+
+#app .chapter-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 72%;
+  margin: clamp(5px, 1.4vw, 10px) 0;
+}
+
+#app .chapter-divider i {
+  width: 42%;
+  height: 1px;
+  background: #a98049;
+}
+
+#app .chapter-divider b {
+  width: 8px;
+  height: 8px;
+  border: 2px solid #a98049;
+  transform: rotate(45deg);
+}
+
+#app .chapter-name {
+  min-height: 0;
+  color: #ffe6ad;
+  font-size: clamp(24px, 4vw, 32px);
+  line-height: 1.08;
+  text-shadow:
+    -1px 0 #17343a,
+    0 1px #17343a,
+    1px 0 #17343a,
+    0 -1px #17343a,
+    0 3px 2px #061b22;
+}
+
+#app .chapter-status {
+  position: absolute;
+  z-index: 8;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+
+#app .chapter-progress {
+  position: absolute;
+  left: 50%;
+  bottom: 7%;
+  display: grid;
+  justify-items: center;
+  gap: 2.5cqw;
+  box-sizing: border-box;
+  width: 70%;
+  min-width: 0;
+  padding: 2cqw 0;
+  color: #fff0b0;
+  background: radial-gradient(ellipse at center, #092f36c9 0 35%, #092f3680 55%, transparent 76%);
+  font-family: WarmMarmelad, 'Segoe UI', sans-serif;
+  font-size: clamp(12px, 4.5cqw, 28px);
+  line-height: 1.2;
+  white-space: nowrap;
+  text-shadow:
+    -1px 0 #082f35,
+    0 1px #082f35,
+    1px 0 #082f35,
+    0 -1px #082f35,
+    0 3px 5px #061c24;
+  transform: translateX(-50%);
+}
+
+#app .chapter-progress strong {
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+#app .chapter-progress-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2cqw;
+}
+
+#app .chapter-completed-mark {
+  flex: none;
+  width: 5cqw;
+  height: 5cqw;
+  filter: drop-shadow(0 2px 1px #061c2480);
+}
+
+#app .chapter-completed-mark circle {
+  fill: #ffe4a0;
+}
+
+#app .chapter-completed-mark path {
+  fill: none;
+  stroke: #1d4647;
+  stroke-width: 2.5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#app .chapter-progress-track {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  height: clamp(10px, 2cqw, 13px);
+  padding: 2px;
+  overflow: hidden;
+  border: 1px solid #b58b4f;
+  border-radius: 999px;
+  background: #092c33;
+  box-shadow:
+    inset 0 1px 3px #03192399,
+    0 1px 0 #041c2580;
+}
+
+#app .chapter-progress-fill {
+  display: block;
+  width: var(--chapter-completion);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(#ffe19a, #d49b43);
+  box-shadow: inset 0 1px 0 #fff3c580;
+}
+
+#app .chapter-threshold {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: clamp(34px, 8vw, 52px);
+  color: #fff0b0;
+  font-family: WarmDigits, WarmMarmelad, sans-serif;
+  font-size: clamp(19px, 4vw, 26px);
+  line-height: 1;
+  text-shadow:
+    -1px 0 #082f35,
+    0 1px #082f35,
+    1px 0 #082f35,
+    0 -1px #082f35,
+    0 3px 5px #061c24;
+  white-space: nowrap;
+}
+
+#app .chapter-threshold strong {
+  font-weight: 400;
+}
+
+#app .chapter-visual .chapter-star {
+  position: relative;
+  width: clamp(25px, 5vw, 34px);
+  height: clamp(24px, 4.8vw, 32px);
+  filter: saturate(0.78) drop-shadow(1px 0 #083138) drop-shadow(-1px 0 #083138)
+    drop-shadow(0 1px #083138) drop-shadow(0 -1px #083138) drop-shadow(0 3px 3px #061c24a8);
+}
+
+#app .chapter-lock {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(52px, 14vw, 88px);
+  height: clamp(52px, 14vw, 88px);
+  color: #fff1cc;
+}
+
+#app .chapter-lock::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  top: 41.67%;
+  left: 12.5%;
+  width: 75%;
+  height: 50%;
+  border-radius: 9%;
+  background: linear-gradient(#ffe8aa, #e7bd65);
+  box-shadow: inset 0 3px 0 #fff5cf80;
+}
+
+#app .chapter-lock::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: 52%;
+  left: 50%;
+  width: 16px;
+  height: 22px;
+  background:
+    radial-gradient(circle at 50% 35%, #173d42 0 38%, transparent 43%),
+    linear-gradient(#173d42, #173d42) 50% 88% / 6px 12px no-repeat;
+  filter: drop-shadow(0 1px 0 #fff3c94d);
+  transform: translateX(-50%);
+}
+
+#app .chapter-lock-group {
+  position: absolute;
+  left: 50%;
+  bottom: 34%;
+  display: grid;
+  justify-items: center;
+  gap: clamp(4px, 1vw, 8px);
+  transform: translateX(-50%);
+}
+
+#app .chapter-lock svg {
+  position: relative;
+  z-index: 1;
+  width: clamp(52px, 14vw, 88px);
+  height: clamp(52px, 14vw, 88px);
+  overflow: visible;
+  stroke-width: 2.4px;
+  stroke-linejoin: round;
+  filter: drop-shadow(2px 0 #082f35) drop-shadow(-2px 0 #082f35) drop-shadow(0 2px #082f35)
+    drop-shadow(0 -2px #082f35) drop-shadow(0 5px 4px #061c24cc);
+}
+
+#app .chapter-lock svg rect {
+  fill: none;
+  stroke: #fff1c9;
+}
+
+#app .chapter-lock svg path {
+  fill: none;
+  stroke: #fff1c9;
+}
+
+#app .chapter-lock svg circle {
+  fill: transparent;
+  stroke: transparent;
+}
+
+#app .chapter-card[data-state='locked'] .chapter-visual::before {
+  content: '';
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  background: #071b22a3;
+  box-shadow: inset 0 0 34px #03151d7a;
+  pointer-events: none;
+}
+
+#app .chapter-card[data-state='locked'] .chapter-card-copy {
+  background: linear-gradient(to bottom, transparent, #0c252ca6 24%, #0a2027ed 100%);
+}
+
+#app .chapter-card[data-state='locked'] .chapter-number {
+  color: #bdb79e;
+}
+
+#app .chapter-card[data-state='locked'] .chapter-name {
+  color: #ddd8bd;
+}
+
+#app .chapter-card[data-state='completed'] {
+  filter: drop-shadow(0 0 9px #e5b65966);
+}
+
+@media (hover: hover) {
+  #app .chapter-card:not(:disabled):hover {
+    filter: brightness(1.1) saturate(1.04);
+  }
+
+  #app .chapter-card[data-state='completed']:not(:disabled):hover {
+    filter: brightness(1.1) saturate(1.04) drop-shadow(0 0 9px #e5b65966);
+  }
+}
+
+#app .chapter-card:not(:disabled):active,
+#app .chapter-card[data-selecting='true'] {
+  transform: scale(0.985);
+  filter: brightness(1.14) saturate(1.06);
+  box-shadow:
+    inset 0 0 0 3px #f1cf83,
+    inset 0 0 30px #efbb504d,
+    0 5px 12px #03192373;
+}
+
+/* Reserve touch controls first, then give the square card the remaining space. */
+@media (max-width: 1099px), (orientation: portrait) {
+  #app .chapter-screen {
+    min-height: 360px;
+  }
+  #app .chapter-browser {
+    --chapter-track-width: calc(100vw - 24px - 2 * var(--safe-inline));
+    --chapter-nav-height: 52px;
+    --chapter-nav-gap: 10px;
+    --chapter-card-width: min(
+      900px,
+      calc(var(--chapter-track-width) - clamp(24px, 6vw, 48px)),
+      calc(100cqh - var(--chapter-nav-height) - var(--chapter-nav-gap))
+    );
+    --chapter-card-gap: clamp(10px, 2vw, 20px);
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto var(--chapter-nav-height);
+    align-content: center;
+    align-items: start;
+    gap: var(--chapter-nav-gap) 0;
+    width: calc(100% - 24px);
+    margin: 0 auto;
+    padding: 4px 0 max(16px, var(--safe-bottom));
+  }
+  #app .chapter-scroll {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+  #app .chapter-arrow {
+    position: relative;
+    top: auto;
+    right: auto;
+    left: auto;
+    transform: none;
+    width: 48px;
+    height: 52px;
+  }
+  #app .chapter-arrow-previous {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: end;
+    margin-right: 12px;
+  }
+  #app .chapter-arrow-next {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+    margin-left: 12px;
+  }
+  #app .chapter-card {
+    border-width: clamp(8px, 2vw, 14px);
+  }
+}
+@media (min-width: 480px) and (orientation: landscape) {
+  #app .chapter-screen {
+    min-height: 240px;
+  }
+  #app .chapter-browser {
+    --chapter-track-width: calc(100vw - 24px - 2 * var(--safe-inline));
+    --chapter-card-width: min(800px, calc(100vw - 160px - 2 * var(--safe-inline)), 100cqh);
+    --chapter-card-gap: 90px;
+    grid-template-columns: var(--chapter-track-width);
+    grid-template-rows: auto;
+    align-items: center;
+    align-content: center;
+    gap: 0;
+    padding: 8px 0 max(20px, var(--safe-bottom));
+  }
+  #app .chapter-scroll {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  #app .chapter-arrow {
+    position: absolute;
+    grid-area: auto;
+    justify-self: auto;
+    top: 50%;
+    width: 48px;
+    height: 52px;
+    margin: 0;
+    transform: translateY(-50%);
+  }
+  #app .chapter-arrow-previous {
+    left: calc(50% - var(--chapter-card-width) / 2 - 62px);
+    right: auto;
+  }
+  #app .chapter-arrow-next {
+    right: calc(50% - var(--chapter-card-width) / 2 - 62px);
+    left: auto;
+  }
+}
+@media (min-width: 480px) and (max-height: 560px) {
+  #app .chapter-browser {
+    padding-block: 4px max(4px, var(--safe-bottom));
+  }
+  #app .chapter-arrow {
+    width: 44px;
+    height: 48px;
+  }
+}
+
+@container (max-width: 360px) {
+  #app .chapter-card-copy {
+    height: 30%;
+    padding: 3cqw 3cqw 2cqw;
+  }
+
+  #app .chapter-number {
+    font-size: clamp(10px, 5cqw, 17px);
+  }
+
+  #app .chapter-name {
+    font-size: clamp(14px, 8cqw, 27px);
+  }
+
+  #app .chapter-divider {
+    gap: 1.8cqw;
+    margin: 1.5cqw 0;
+  }
+
+  #app .chapter-divider b {
+    width: 2cqw;
+    height: 2cqw;
+    border-width: 1px;
+  }
+
+  #app .chapter-progress {
+    bottom: 7%;
+    min-width: 0;
+    min-height: 0;
+    gap: 2.5cqw;
+    padding: 2cqw 0;
+    font-size: clamp(12px, 4.5cqw, 25px);
+  }
+
+  #app .chapter-progress .chapter-star,
+  #app .chapter-threshold .chapter-star {
+    width: 9cqw;
+    height: 9cqw;
+  }
+
+  #app .chapter-lock,
+  #app .chapter-lock svg {
+    width: 24cqw;
+    height: 24cqw;
+  }
+
+  #app .chapter-lock-group {
+    bottom: 39%;
+    gap: 2cqw;
+  }
+
+  #app .chapter-threshold {
+    min-height: 9cqw;
+    gap: 1.2cqw;
+    font-size: clamp(14px, 7.5cqw, 23px);
+  }
+}
+
+/* Keep the chapter controls proportional as the screen grows. The full desktop
+   composition above 1240px intentionally keeps its original dimensions. */
+
+@media (prefers-reduced-motion: reduce) {
+  #app .chapter-scroll {
+    scroll-behavior: auto;
+  }
+
+  #app .chapter-card,
+  #app .chapter-card * {
+    transition: none;
+  }
+  #app .chapter-card:not(:disabled):active,
+  #app .chapter-card[data-selecting='true'] {
+    transform: none;
+  }
+}
+
+/* The unreleased chapter keeps its own quiet illustration and scalable live copy. */
+#app .chapter-card[data-state='coming-soon'] {
+  cursor: default;
+}
+
+#app .chapter-visual-forest-soon::after {
+  display: none;
+}
+
+#app .chapter-visual .chapter-forest-art {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.84) brightness(0.9);
+}
+
+#app .chapter-coming-soon {
+  position: absolute;
+  top: 51%;
+  left: 5%;
+  right: 5%;
+  color: #ffe6a6;
+  font-size: 14cqw;
+  line-height: 1.15;
+  text-align: center;
+  text-shadow:
+    0 0.6cqw 0.8cqw #041c25,
+    0 0 5cqw #ffca6126;
+}
+
+#app .chapter-card[data-state='coming-soon'] .chapter-card-copy {
+  height: 29%;
+  padding: 3cqw 5cqw;
+  background: linear-gradient(#061f28b0, transparent);
+}
+
+#app .chapter-card[data-state='coming-soon'] .chapter-number {
+  font-size: 3.6cqw;
+  color: #d5b87d;
+}
+
+#app .chapter-card[data-state='coming-soon'] .chapter-name {
+  font-size: 6cqw;
+  color: #f0dcae;
+}
+
+#app .chapter-card[data-state='coming-soon'] .chapter-divider {
+  width: 64%;
+  margin: 2cqw 0;
+  opacity: 0.65;
+}
+
+#app .chapter-card[data-state='coming-soon'] .chapter-divider b {
+  width: 1.2cqw;
+  height: 1.2cqw;
+  border-width: 1px;
+}
+
+/* The first chapter uses one quiet garden illustration with live progress and copy. */
+#app .chapter-visual-first-plot::after {
+  display: none;
+}
+
+#app .chapter-visual .chapter-courtyard-art {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#app .chapter-card[data-chapter-id='1'] .chapter-progress {
+  top: auto;
+  bottom: 7%;
+  min-width: 0;
+  min-height: 0;
+  gap: 2.5cqw;
+  padding: 2cqw 0;
+  font-size: clamp(12px, 4.5cqw, 28px);
+  white-space: nowrap;
+  background: radial-gradient(ellipse, #08272b80, transparent 75%);
+}
+
+#app .chapter-card[data-chapter-id='1'] .chapter-progress .chapter-star {
+  width: 6.5cqw;
+  height: 6.5cqw;
+}
+
+#app .chapter-card[data-chapter-id='1'] .chapter-card-copy {
+  top: 0;
+  bottom: auto;
+  height: 23%;
+  padding: 2cqw 3cqw;
+  background: linear-gradient(#06232ddd, #08272b73 70%, transparent);
+}
+
+#app .chapter-card[data-chapter-id='1'] .chapter-number {
+  font-size: clamp(12px, 3.2cqw, 20px);
+}
+
+#app .chapter-card[data-chapter-id='1'] .chapter-name {
+  font-size: clamp(16px, 5.6cqw, 34px);
+}
+
+#app .chapter-card[data-chapter-id='1'] .chapter-divider {
+  width: 60%;
+  margin: 1.3cqw 0;
+}
+
+#app .chapter-card[data-chapter-id='1'] .chapter-divider b {
+  width: 1.3cqw;
+  height: 1.3cqw;
+  border-width: 1px;
+}
+
+@container (max-width: 220px) {
+  #app .chapter-card[data-chapter-id='1'] .chapter-progress {
+    bottom: 6%;
+  }
+}
+
+@container (max-width: 160px) {
+  #app .chapter-card[data-chapter-id='1'] .chapter-progress {
+    bottom: 5%;
+    font-size: clamp(8px, 4.5cqw, 10px);
+  }
+
+  #app .chapter-card[data-chapter-id='1'] .chapter-card-copy {
+    bottom: auto;
+    height: 24%;
+    padding: 0.5cqw 2cqw;
+  }
+
+  #app .chapter-card[data-chapter-id='1'] .chapter-name {
+    font-size: clamp(11px, 7cqw, 14px);
+  }
+
+  #app .chapter-card[data-chapter-id='1'] .chapter-divider {
+    margin: 0.8cqw 0;
+  }
+}

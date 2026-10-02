@@ -1,0 +1,326 @@
+[
+  {
+    "file": "assets/menu/house.png",
+    "source": "resources/packs/background-elements/PNG/Retina/houseAlt2.png",
+    "bytes": 7185,
+    "width": 482,
+    "height": 434,
+    "license": "public/licenses/Kenney-Background-Elements.txt",
+    "sha256": "12679304253b898b389737d0ac000d21a7648fc67eeea020aedade5edb577fec"
+  },
+  {
+    "file": "assets/menu/tree_long.png",
+    "source": "resources/packs/background-elements/PNG/Retina/treeLong.png",
+    "bytes": 3907,
+    "width": 163,
+    "height": 498,
+    "license": "public/licenses/Kenney-Background-Elements.txt",
+    "sha256": "696a83d192436b8168552258e9f2bbe893ab0cb176d046208f31adc87e60815a"
+  },
+  {
+    "file": "assets/menu/tree_pine.png",
+    "source": "resources/packs/background-elements/PNG/Retina/treePine.png",
+    "bytes": 4714,
+    "width": 212,
+    "height": 508,
+    "license": "public/licenses/Kenney-Background-Elements.txt",
+    "sha256": "a7314cedbba00c3d0e5259391d7339d12a21baadc9c72fbdf3ef3b773107e294"
+  },
+  {
+    "file": "assets/menu/bush.png",
+    "source": "resources/packs/background-elements/PNG/Retina/bush1.png",
+    "bytes": 1661,
+    "width": 240,
+    "height": 120,
+    "license": "public/licenses/Kenney-Background-Elements.txt",
+    "sha256": "e14d775d55048f585c32dfb2314d093e1bffd9d1c9a599fa9b23d0f3e1badd34"
+  },
+  {
+    "file": "assets/menu/fence.png",
+    "source": "resources/packs/background-elements/PNG/Retina/fence.png",
+    "bytes": 2378,
+    "width": 207,
+    "height": 155,
+    "license": "public/licenses/Kenney-Background-Elements.txt",
+    "sha256": "74a4fd03decaf785a543298914e30790899883ea358dd4a4f09f1e162b377785"
+  },
+  {
+    "file": "assets/menu/cloud.png",
+    "source": "resources/packs/background-elements/PNG/Retina/cloud3.png",
+    "bytes": 4398,
+    "width": 432,
+    "height": 278,
+    "license": "public/licenses/Kenney-Background-Elements.txt",
+    "sha256": "7edd765beee8a24dc2aef31c10092539e04b59963ec8fbb415b2f6c88227222f"
+  },
+  {
+    "file": "assets/menu/smoke.png",
+    "source": "resources/packs/background-elements/PNG/Retina/cloud1.png",
+    "license": "public/licenses/Kenney-Background-Elements.txt",
+    "bytes": 4048,
+    "sha256": "d1b46bbad9f7b68d6a939c5a9978115066e88c26f225492c573fa9a1afea933d"
+  },
+  {
+    "file": "assets/menu/moon.png",
+    "source": "resources/packs/background-elements/PNG/Retina/moon.png",
+    "bytes": 2992,
+    "width": 156,
+    "height": 160,
+    "license": "public/licenses/Kenney-Background-Elements.txt",
+    "sha256": "bd8683076bcdc3461ec70b29a547bb462c9d210ee31724c80a4ba9606cdd25f0"
+  },
+  {
+    "file": "assets/menu/power.svg",
+    "source": "resources/references/ui-review/transformer-body.svg",
+    "bytes": 3470,
+    "width": 240,
+    "height": 240,
+    "license": "public/licenses/Teply-Svet-Transformer.txt",
+    "sha256": "37dd2f3d7f305e18c8ba405c7207bf2f588a6b3c240a9a9044c0719979cdeebc"
+  },
+  {
+    "file": "assets/menu/beacon.svg",
+    "source": "resources/references/ui-review/transformer-beacon.svg",
+    "bytes": 1534,
+    "width": 96,
+    "height": 68,
+    "license": "public/licenses/Teply-Svet-Transformer.txt",
+    "sha256": "58d5b238a7f5351ae368132c9314523532d497ad5ac77b4d74f026201ad00fc8"
+  },
+  {
+    "file": "assets/menu/panel_brown.png",
+    "source": "resources/packs/ui-adventure/PNG/Double/panel_brown.png",
+    "bytes": 447,
+    "width": 128,
+    "height": 128,
+    "license": "public/licenses/Kenney-UI-Adventure.txt",
+    "sha256": "e5bcda84c20a4d2f44082a9ab8094c959b339cfaffa21e67fcb6b4b6a7f09d36"
+  },
+  {
+    "file": "assets/menu/panel_grey.png",
+    "source": "resources/packs/ui-adventure/PNG/Double/panel_grey.png",
+    "bytes": 445,
+    "width": 128,
+    "height": 128,
+    "license": "public/licenses/Kenney-UI-Adventure.txt",
+    "sha256": "823f82a293bc1c61854d7c4f96e1de0f8aec4f767c0754124708ca3ad6bc9879"
+  },
+  {
+    "file": "assets/fonts/marmelad-cyrillic.woff2",
+    "source": "resources/packs/marmelad/marmelad-cyrillic.woff2",
+    "bytes": 15140,
+    "origin": "@fontsource/marmelad@5.3.0",
+    "license": "public/licenses/Marmelad-OFL.txt",
+    "sha256": "23c8d3717d8e1f6190dc94ffa07d908029de0759b5f63993d2342b221671f3a9"
+  },
+  {
+    "file": "assets/fonts/marmelad-latin.woff2",
+    "source": "resources/packs/marmelad/marmelad-latin.woff2",
+    "bytes": 21624,
+    "origin": "@fontsource/marmelad@5.3.0",
+    "license": "public/licenses/Marmelad-OFL.txt",
+    "sha256": "031e809edf63b07c09475f4a311c0ae0548af091321ca1157067ad6bc87869b3"
+  },
+  {
+    "file": "assets/audio/click-a.ogg",
+    "source": "resources/packs/ui-pack/Sounds/click-a.ogg",
+    "bytes": 10945,
+    "license": "public/licenses/Kenney-UI-Pack.txt",
+    "sha256": "c5faa31bbf4a921332cdc9e7d7f7d930ca73fc8cc96e35ccc70ed2de975b26e5"
+  },
+  {
+    "file": "assets/audio/tap-a.ogg",
+    "source": "resources/packs/ui-pack/Sounds/tap-a.ogg",
+    "bytes": 7043,
+    "license": "public/licenses/Kenney-UI-Pack.txt",
+    "sha256": "f74c1334c0c1ab9ec69f3dd723611a8eb89a2630df6c3760dee3b09413370c83"
+  },
+  {
+    "file": "assets/audio/switch-a.ogg",
+    "source": "resources/packs/ui-pack/Sounds/switch-a.ogg",
+    "bytes": 9433,
+    "license": "public/licenses/Kenney-UI-Pack.txt",
+    "sha256": "1a4c90fed704b4f4b36d58f481117cfac5cdc25279a9af97d4765b71ff21ed48"
+  },
+  {
+    "file": "assets/menu/setting-on.png",
+    "source": "resources/packs/ui-pack/PNG/Yellow/Double/button_square_depth_gradient.png",
+    "width": 128,
+    "height": 128,
+    "license": "public/licenses/Kenney-UI-Pack.txt",
+    "bytes": 1196,
+    "sha256": "5ddcf0fbc6c1ebf093382c9ad275cd69cf749f46cf96709e9c7679abad41f31a"
+  },
+  {
+    "file": "assets/menu/setting-off.png",
+    "source": "resources/packs/ui-pack/PNG/Grey/Double/button_square_depth_gradient.png",
+    "width": 128,
+    "height": 128,
+    "license": "public/licenses/Kenney-UI-Pack.txt",
+    "bytes": 1017,
+    "sha256": "8c8c38d3de72af465325314757fcb93376ac91a3c9f821483f7d042ce6dc9368"
+  },
+  {
+    "file": "assets/menu/level-complete.png",
+    "source": "resources/packs/ui-pack/PNG/Green/Default/icon_outline_checkmark.png",
+    "width": 20,
+    "height": 18,
+    "license": "public/licenses/Kenney-UI-Pack.txt",
+    "bytes": 377,
+    "sha256": "8c89eac42f5fadf88156d0cd1808cc69a61dfae5194710ff8ddcad3f2cbe9cd1"
+  },
+  {
+    "file": "assets/menu/setting-teal.svg",
+    "source": "resources/references/ui-review/setting-teal.svg",
+    "license": "public/licenses/Kenney-UI-Pack.txt",
+    "bytes": 1405,
+    "sha256": "b2b1147e51a3750603f1da5ad808cb495d7f53a6ef3339c4dcf449c645a676c8"
+  },
+  {
+    "file": "assets/ui/cursor-hand.svg",
+    "source": "resources/references/ui-review/cursor-hand.svg",
+    "license": "public/licenses/Lucide-ISC.txt",
+    "bytes": 898,
+    "sha256": "c5f26597b1b4356cd2f48fa7a051e1183a2ec7bec180885c228081bd3ef75552"
+  },
+  {
+    "file": "assets/ui/cursor-hand-active.svg",
+    "source": "resources/references/ui-review/cursor-hand-active.svg",
+    "license": "public/licenses/Lucide-ISC.txt",
+    "bytes": 1050,
+    "sha256": "10be131bacb9c624da800dd21042006a4a2ee6cf0497754aaf458b7bcc5db915"
+  },
+  {
+    "file": "assets/menu/close.png",
+    "source": "resources/packs/ui-pack/PNG/Grey/Double/icon_cross.png",
+    "width": 36,
+    "height": 36,
+    "license": "public/licenses/Kenney-UI-Pack.txt",
+    "bytes": 516,
+    "sha256": "74b5c4cdaddb67334049732d011b83df46bbb2b5a83345ff65dd02696ec00765"
+  },
+  {
+    "file": "assets/audio/one-step-at-a-time.mp3",
+    "source": "resources/packs/music/one-step-at-a-time.mp3",
+    "origin": "https://opengameart.org/content/one-step-at-a-time",
+    "license": "public/licenses/One-Step-at-a-Time-CC0.txt",
+    "preload": false,
+    "bytes": 2473107,
+    "sha256": "a880abee39d30574b820012c8fa6a5b0b937b45ef00740936a556a4372e6a850"
+  },
+  {
+    "file": "assets/audio/victory-jingle.ogg",
+    "source": "resources/packs/music-jingles/jingles_STEEL10.ogg",
+    "origin": "https://kenney.nl/assets/music-jingles",
+    "license": "public/licenses/Kenney-Music-Jingles.txt",
+    "preload": false,
+    "bytes": 16151,
+    "sha256": "88a6645658b15dc327a2377ca7354e364625f081cd6ff9fda0b46dc54f664b71"
+  },
+  {
+    "file": "assets/fonts/kenney-future-narrow.ttf",
+    "source": "resources/packs/ui-pack/Font/Kenney Future Narrow.ttf",
+    "license": "public/licenses/Kenney-UI-Pack.txt",
+    "bytes": 34180,
+    "sha256": "17e182587a3264dcf9e5b17c055715d5597187546ce81925c64e9184c26d597f"
+  },
+  {
+    "file": "assets/menu/star-filled.png",
+    "source": "resources/packs/ui-pack/PNG/Yellow/Double/star.png",
+    "license": "public/licenses/Kenney-UI-Pack.txt",
+    "width": 128,
+    "height": 120,
+    "bytes": 2900,
+    "sha256": "3b985be792f2f73f0d5b2827c806236723f44f8cd03c39fc73a4e273ec03e4f8"
+  },
+  {
+    "file": "assets/menu/star-empty.png",
+    "source": "resources/packs/ui-pack/PNG/Grey/Double/star.png",
+    "license": "public/licenses/Kenney-UI-Pack.txt",
+    "width": 128,
+    "height": 120,
+    "bytes": 2871,
+    "sha256": "c618f610b41f19bb0e2f6152335a6615d876e3f618d9d3b7d3b82b2b98737064"
+  },
+  {
+    "file": "assets/menu/arrow-left.png",
+    "source": "resources/packs/ui-pack/PNG/Grey/Double/arrow_basic_w.png",
+    "license": "public/licenses/Kenney-UI-Pack.txt",
+    "width": 64,
+    "height": 64,
+    "bytes": 635,
+    "sha256": "4b2294f347d5e6b7b545a94dafae20bf2ec7ce7939255685056b79603fa7e14d"
+  },
+  {
+    "file": "assets/menu/arrow-right.png",
+    "source": "resources/packs/ui-pack/PNG/Grey/Double/arrow_basic_e.png",
+    "license": "public/licenses/Kenney-UI-Pack.txt",
+    "width": 64,
+    "height": 64,
+    "bytes": 637,
+    "sha256": "d52bd0d516e3ae1aab5d3c06bc7850601fd8721912d169212975a7dd47f9907a"
+  },
+  {
+    "file": "assets/menu/spark.png",
+    "source": "resources/packs/puzzle-pack-2/PNG/Particles yellow/particleYellow_7.png",
+    "width": 224,
+    "height": 222,
+    "license": "public/licenses/Kenney-Puzzle-Pack-2.txt",
+    "bytes": 2126,
+    "sha256": "b11f40721a66eb936ca566ed299b7c15b2dc8f04408a614a13f181e3ce3f1296"
+  },
+  {
+    "file": "assets/audio/electric-soft.mp3",
+    "source": "resources/packs/sci-fi-sounds/electric-soft.mp3",
+    "license": "public/licenses/Kenney-Sci-Fi-Sounds.txt",
+    "bytes": 4222,
+    "sha256": "d4273091bd21aa05e34482044fcca5284ab4f7258f99a01d17f15f9fe565c865"
+  },
+  {
+    "file": "assets/menu/dialog-action.png",
+    "source": "resources/packs/ui-pack/PNG/Yellow/Double/button_rectangle_depth_gradient.png",
+    "width": 384,
+    "height": 128,
+    "license": "public/licenses/Kenney-UI-Pack.txt",
+    "bytes": 1300,
+    "sha256": "3576d646b99e88fe180ac325f97bacd90fa2992a3c34e9bab0df248717afc398"
+  },
+  {
+    "file": "assets/menu/forest-soon.webp",
+    "source": "resources/generated/chapter-soon/forest-soon.webp",
+    "width": 1024,
+    "height": 1024,
+    "license": "public/licenses/Generated-Chapter-Forest.txt",
+    "preload": false,
+    "bytes": 22378,
+    "sha256": "32b4a2f9982709de6b1e6aef9535f203ef748e8794d8fc5c273b65205f2cc51e"
+  },
+  {
+    "file": "assets/menu/chapter-courtyard.webp",
+    "source": "resources/generated/chapter-courtyard-gate/chapter-courtyard.webp",
+    "width": 1024,
+    "height": 1024,
+    "license": "public/licenses/Generated-Chapter-Courtyard.txt",
+    "preload": false,
+    "bytes": 59244,
+    "sha256": "748c8d48fb5bb06a5cdcd05ae9647ea0d185f93167287d6f6d2df4beec7a151e"
+  },
+  {
+    "file": "assets/ui/glass-fuse.png",
+    "source": "resources/generated/glass-fuse/glass-fuse-ui.png",
+    "width": 192,
+    "height": 77,
+    "license": "public/licenses/Generated-Glass-Fuse.txt",
+    "preload": false,
+    "bytes": 21973,
+    "sha256": "e8bb90f8166902a213ed05d054c32ecde5c54aa9b4d1bdea66b2d8e0e47fe546"
+  },
+  {
+    "file": "assets/ui/loading-house.svg",
+    "source": "resources/references/ui-review/loading-house.svg",
+    "bytes": 11539,
+    "license": "public/licenses/Kenney-Background-Elements.txt",
+    "preload": false,
+    "sha256": "ab3105a458f6b83a5678ba1e974b07ec0193df5d15a0f2c42c0e24e6375686f9"
+  }
+]

@@ -1,0 +1,15 @@
+<svg viewBox="0 0 192 64" width="192" height="64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Kenney UI Pack, CC0. Original rectangle-depth shape; teal palette for the gameplay result. -->
+  <defs>
+    <linearGradient gradientUnits="userSpaceOnUse" x1="0" y1="4" x2="0" y2="56" id="result-gradient">
+      <stop offset="0" stop-color="#4F7D72"/>
+      <stop offset="1" stop-color="#39665F"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <path fill="#52796E" d="M186.5 2.05 6 2 5.9 2 5.4 2.05Q2 2.3 2 5.95V54Q2 58 6 58H186Q190 58 190 54V5.95Q190 2.25 186.5 2.05M0 54.25V5.95Q.05 0 6 0H186Q192 0 192 5.95V54.25Q191.85 60 186 60H6Q.15 60 0 54.25"/>
+    <path fill="#8AA990" d="M186.4 4.05 6.1 4 5.6 4.05 5.55 4.05Q4 4.2 4 5.95V54Q4 56 6 56H186Q188 56 188 54V5.95Q188 4.2 186.4 4.05M186.5 2.05Q190 2.25 190 5.95V54Q190 58 186 58H6Q2 58 2 54V5.95Q2 2.3 5.4 2.05L5.9 2H6Z"/>
+    <path fill="url(#result-gradient)" d="M186.4 4.05Q188 4.2 188 5.95V54Q188 56 186 56H6Q4 56 4 54V5.95Q4 4.2 5.55 4.05L5.6 4.05 6.1 4Z"/>
+    <path fill="#25463F" d="M192 54.25V58Q192 64 186 64H6Q0 64 0 58V54.25Q.15 60 6 60H186Q191.85 60 192 54.25"/>
+  </g>
+</svg>

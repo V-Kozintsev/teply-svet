@@ -1,0 +1,6 @@
+Тёплый свет — transformer-body.svg and transformer-beacon.svg
+Original vector artwork authored for this project, 7 September 2026.
+Created from simple vector geometry following the user-supplied visual direction.
+The SVG artwork does not embed the reference image or third-party raster assets.
+Distributed under the root MIT license.
+Separate Lucide lightning icon and Kenney spark particles retain their own licenses.

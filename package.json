@@ -1,0 +1,40 @@
+{
+  "name": "teply-svet",
+  "private": true,
+  "license": "MIT",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "predev": "npm run level:build",
+    "dev": "vite --host 127.0.0.1 --port 4173 --strictPort",
+    "phone": "cmd /d /c Запустить-игру.cmd",
+    "internet": "cmd /d /c Открыть-доступ-в-интернет.cmd",
+    "build": "npm run level:build && npm run typecheck && vite build",
+    "level:build": "node resources/references/ui-review/build-glass.mjs",
+    "level:check": "node resources/references/ui-review/build-glass.mjs --check",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview --host 127.0.0.1 --port 4174 --strictPort",
+    "test": "node --experimental-strip-types --test tests/*.test.ts && node --test resources/references/ui-review/glass-energy.test.mjs resources/references/ui-review/glass-first-mobile-renderer.test.mjs resources/references/ui-review/glass-first-pipe-sound.test.mjs resources/references/ui-review/build-first-energy-work.test.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "assets:sync": "node scripts/assets.mjs --write",
+    "assets:check": "node scripts/assets.mjs",
+    "release:check": "node scripts/check-production.mjs",
+    "styles:check": "node scripts/check-styles.mjs",
+    "preview:failure": "npm run build && node scripts/preview-failure.cjs",
+    "check:quick": "npm run format:check && npm run assets:check && npm run level:check && npm run styles:check && npm run typecheck && npm test",
+    "check": "npm run check:quick && vite build"
+  },
+  "devDependencies": {
+    "postcss": "8.5.27",
+    "prettier": "3.9.6",
+    "typescript": "5.9.3",
+    "vite": "8.2.2"
+  },
+  "dependencies": {
+    "lucide": "1.40.0"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}

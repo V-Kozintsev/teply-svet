@@ -1,0 +1,22 @@
+<dialog
+  class="level-launch loading-screen"
+  data-state="loading"
+  aria-busy="true"
+  aria-labelledby="level-launch-title"
+  aria-describedby="level-launch-detail"
+>
+  <section class="loading-card">
+    <span class="loading-house" aria-hidden="true"></span>
+    <h2 id="level-launch-title" class="loading-title">Зажигаем свет…</h2>
+    <div class="loading-track loading-pipe" aria-hidden="true">
+      <span class="loading-pipe-glass">
+        <span class="loading-pipe-current"><span class="loading-pipe-wave"></span></span>
+      </span>
+    </div>
+    <p id="level-launch-detail" class="loading-detail" aria-live="polite">Готовим первый огонёк</p>
+    <div class="level-launch-actions loading-actions" hidden>
+      <button class="loading-retry" type="button" data-launch-action="retry">Повторить</button>
+      <button class="loading-retry" type="button" data-launch-action="cancel">Вернуться</button>
+    </div>
+  </section>
+</dialog>

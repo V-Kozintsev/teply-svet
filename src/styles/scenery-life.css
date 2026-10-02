@@ -1,0 +1,55 @@
+.animal-facing,
+.animal-stride {
+  display: block;
+  transform-origin: 50% 90%;
+  pointer-events: none;
+}
+.scenery-interactions {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.scenery-touch {
+  position: absolute;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 50%;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+.scenery-touch[hidden] {
+  display: none;
+}
+.scenery-touch:focus-visible {
+  outline: 2px solid #ffe4a7;
+  outline-offset: 2px;
+}
+.scenery-interactions[data-paused='true'] .scenery-touch {
+  pointer-events: none;
+}
+.scenery-response {
+  position: absolute;
+  inset: -22%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #fff5c27a, #ffe1a330 40%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+}
+[data-scenery='house'] .scenery-response {
+  inset: 20%;
+  border: 2px solid #f1d298;
+  background: transparent;
+}
+[data-scenery='tree'] .scenery-response {
+  background: transparent;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-scenery='tree'] .scenery-response {
+    background: radial-gradient(ellipse, #e3eeb72e, transparent 65%);
+  }
+}

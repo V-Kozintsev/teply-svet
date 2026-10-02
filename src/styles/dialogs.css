@@ -1,0 +1,295 @@
+.game-dialog {
+  position: fixed;
+  top: calc(var(--game-top, 0px) + var(--game-height, 100vh) / 2);
+  bottom: auto;
+  margin-block: 0;
+  transform: translateY(-50%);
+  isolation: isolate;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #fff0cf;
+  width: min(420px, calc(100% - 2 * var(--dialog-inset-x)));
+  max-height: calc(var(--game-height, 100vh) - 2 * var(--dialog-inset-y));
+  padding: 34px 28px 28px;
+  filter: drop-shadow(0 20px 35px #04182080);
+  font-family: WarmMarmelad, 'Segoe UI', sans-serif;
+  overflow: visible;
+}
+.game-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.game-dialog::before {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  border: 18px solid transparent;
+  border-image: url('/assets/menu/panel_brown.png') 16 stretch;
+  pointer-events: none;
+}
+.game-dialog::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: 8px;
+  background: linear-gradient(145deg, #2a5153, #16353f);
+  pointer-events: none;
+}
+.game-dialog > h2,
+.game-dialog > .dialog-content,
+.game-dialog > .dialog-actions {
+  position: relative;
+  z-index: 1;
+}
+.game-dialog > .dialog-content {
+  min-height: 0;
+  overflow-y: auto;
+}
+.game-dialog::backdrop {
+  background: #051923b8;
+  backdrop-filter: blur(4px);
+}
+.game-dialog h2 {
+  flex: none;
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: 400;
+  margin: 0 32px 22px 0;
+  color: #ffe9b6;
+  text-shadow: 0 2px 0 #142f34;
+}
+.game-dialog p {
+  font:
+    15px/1.65 'Segoe UI',
+    sans-serif;
+  color: #ccddd4;
+}
+
+.game-dialog[data-view='stars'] .star-store {
+  display: grid;
+  gap: 12px;
+}
+.game-dialog[data-view='stars'] .star-store-balance {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px;
+}
+.game-dialog[data-view='stars'] .star-store-balance img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.game-dialog[data-view='stars'] .star-store-balance strong {
+  color: #ffe6a1;
+  font-size: 22px;
+}
+.game-dialog[data-view='stars'] .star-store-ad {
+  width: 100%;
+}
+@media (max-width: 500px) {
+  #app .game-dialog[data-view='stars'] .star-store-ad {
+    font-size: 16px;
+  }
+  .game-dialog[data-view='stars'] .star-store-ad .button-label {
+    white-space: nowrap;
+  }
+}
+.game-dialog[data-view='stars'] .star-store-ad:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.game-dialog[data-view='stars'] .star-store-ad-note,
+.game-dialog[data-view='stars'] .star-store-status {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.game-dialog[data-view='stars'] .star-store-future {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #9d8664;
+  border-radius: 6px;
+  color: #d4cfb5;
+  background: #15333a;
+}
+.game-dialog[data-view='stars'] .star-store-future span {
+  color: #f3d993;
+}
+.game-dialog[data-view='stars'] .star-store-status:empty {
+  display: none;
+}
+.dialog-close {
+  position: absolute;
+  z-index: 3;
+  right: -14px;
+  top: -14px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  cursor: pointer;
+}
+.dialog-close img {
+  width: 34px;
+  height: 34px;
+  pointer-events: none;
+  filter: sepia(0.45) saturate(0.7) drop-shadow(0 2px 0 #0a252e66);
+  transition: filter 0.16s ease;
+}
+.dialog-actions {
+  flex: none;
+  margin-top: 25px;
+}
+#app .game-dialog .game-button {
+  font-size: 21px;
+  height: 52px;
+}
+#app .game-dialog .dialog-actions .game-button {
+  height: 56px;
+  padding-bottom: 14px;
+  border-radius: 8px;
+  filter: drop-shadow(0 2px 2px #061d2840);
+}
+#app .game-dialog .dialog-actions .game-button::before {
+  border: 8px solid transparent;
+  border-bottom-width: 12px;
+  border-image: url('/assets/menu/dialog-action.png') 12 12 20 fill stretch;
+  filter: saturate(0.55);
+}
+.game-dialog[data-view='settings'] {
+  width: min(440px, calc(100% - 2 * var(--dialog-inset-x)));
+  padding: 32px 24px 30px;
+}
+.game-dialog[data-view='settings'] h2 {
+  margin: 0 32px 26px;
+  font-size: clamp(26px, 8vw, 32px);
+  text-align: center;
+  text-shadow: 0 2px 0 #112f35;
+}
+.settings-controls {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+}
+.setting-toggle {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  width: clamp(64px, min(22vw, 14dvh), 128px);
+  flex: none;
+  aspect-ratio: 1;
+  border: 0;
+  padding: 0 0 5px;
+  border-radius: 12px;
+  background: transparent;
+  color: #fff7d8;
+  cursor: pointer;
+}
+.setting-toggle::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  inset: 0;
+  background: url('/assets/menu/setting-teal.svg') center / contain no-repeat;
+  filter: drop-shadow(0 3px 2px #071e2955);
+  transition: filter 0.16s ease;
+}
+.setting-toggle[aria-pressed='false']::before {
+  filter: drop-shadow(0 3px 2px #071e2955);
+}
+.setting-icon {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 50%;
+  filter: drop-shadow(0 2px 0 #173d36) drop-shadow(0 0 1px #173d36);
+  pointer-events: none;
+}
+.setting-icon svg,
+.setting-off-mark svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  stroke-width: 2.8px;
+}
+.speaker-icon svg path:first-child,
+.music-icon svg circle {
+  fill: currentColor;
+}
+.setting-toggle[aria-pressed='false'] .setting-icon {
+  opacity: 0.45;
+  filter: drop-shadow(0 2px 0 #344451);
+}
+.setting-off-mark {
+  position: absolute;
+  z-index: 2;
+  inset: 22% 22% 26%;
+  opacity: 0;
+  filter: drop-shadow(0 2px 0 #344451) drop-shadow(0 0 2px #344451);
+  pointer-events: none;
+}
+.setting-toggle[aria-pressed='false'] .setting-off-mark {
+  opacity: 1;
+}
+@media (hover: hover) {
+  .setting-toggle:hover::before {
+    filter: brightness(1.1) drop-shadow(0 3px 2px #071e2955);
+  }
+  .dialog-close:hover img {
+    filter: brightness(1.15) sepia(0.45) saturate(0.7) drop-shadow(0 2px 0 #0a252e66);
+  }
+}
+.game-dialog .music-status {
+  margin: 14px 8px 0;
+  font-size: 13px;
+  text-align: center;
+}
+@media (max-height: 360px) {
+  .game-dialog[data-view='settings'] {
+    padding: 20px 16px 18px;
+  }
+  .game-dialog[data-view='settings'] h2 {
+    margin-bottom: 12px;
+    font-size: 26px;
+  }
+  .settings-controls {
+    gap: 12px;
+  }
+  .setting-toggle {
+    width: clamp(56px, min(22vw, 24dvh), 80px);
+  }
+}
+.storage-warning {
+  position: fixed;
+  z-index: 20;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  width: fit-content;
+  max-width: 600px;
+  margin: auto;
+  padding: 12px 16px;
+  border: 1px solid #c5a365;
+  border-radius: 10px;
+  background: #18313b;
+  color: #ffebc5;
+  font:
+    14px/1.4 'Segoe UI',
+    sans-serif;
+}

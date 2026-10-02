@@ -1,0 +1,184 @@
+/* Shared by the critical boot screen, menu handoff and generated level entry. */
+:is(#loading, #level-entry, #app .level-launch) {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 22px;
+  border: 0;
+  overflow: auto;
+  color: #ffedc5;
+  background:
+    radial-gradient(ellipse at 48% 42%, #296457 0, #184a4b 38%, transparent 74%),
+    linear-gradient(130deg, #10313e, #123e44);
+  font-family: var(--loading-font, WarmMarmelad), 'Segoe UI', sans-serif;
+}
+.loading-screen:not(dialog),
+dialog.loading-screen[open] {
+  display: grid;
+  place-items: center;
+}
+.loading-screen::backdrop {
+  background: #071e28;
+}
+:is(#loading, #level-entry, #app .level-launch) .loading-card {
+  box-sizing: border-box;
+  position: relative;
+  display: grid;
+  justify-items: center;
+  width: min(580px, 100%);
+  padding: 24px 52px 22px;
+  border: 12px solid transparent;
+  border-radius: 22px;
+  background:
+    radial-gradient(ellipse at 50% 25%, #20544e, #103943 85%) padding-box,
+    linear-gradient(140deg, #cd8b40, #985924 45%, #c98b3e 75%, #865022) border-box;
+  box-shadow:
+    inset 0 0 0 2px #eec270,
+    inset 0 0 0 5px #7e502a,
+    inset 0 6px 16px #051c2855,
+    0 0 0 3px #844a20,
+    0 6px 0 #62391d,
+    0 18px 30px #00172066;
+  text-align: center;
+}
+.loading-card::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border: 1px solid #e5a45080;
+  border-radius: 16px;
+  pointer-events: none;
+}
+.loading-house {
+  display: block;
+  width: 230px;
+  max-width: 100%;
+  aspect-ratio: 640 / 440;
+  margin-bottom: 4px;
+  background: url('/assets/ui/loading-house.svg') center / contain no-repeat;
+}
+:is(#loading, #level-entry, #app .level-launch) .loading-title {
+  margin: 0;
+  font:
+    400 38px/1.1 var(--loading-font, WarmMarmelad),
+    'Segoe UI',
+    sans-serif;
+  color: #ffe9b6;
+  text-shadow: 0 2px 0 #142f34;
+}
+:is(#loading, #level-entry, #app .level-launch) .loading-track {
+  width: min(420px, 100%);
+  margin-top: 24px;
+}
+:is(#loading, #level-entry, #app .level-launch) .loading-detail {
+  min-height: 20px;
+  margin: 14px 0 0;
+  color: #b6cbc1;
+  font:
+    13px/1.4 var(--loading-font, WarmMarmelad),
+    'Segoe UI',
+    sans-serif;
+}
+.loading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+.loading-actions:not(:has(button:not([hidden]))) {
+  display: none;
+}
+:is(#loading, #level-entry, #app .level-launch) .loading-retry {
+  min-width: 110px;
+  min-height: 42px;
+  padding: 7px 14px 9px;
+  border: 2px solid #d7a84e;
+  border-radius: 8px;
+  color: #3f311d;
+  background: linear-gradient(#fff4b4, #e9bd51);
+  box-shadow:
+    inset 0 1px #fffbd9,
+    0 3px #9b692b;
+  font:
+    17px/1.2 var(--loading-font, WarmMarmelad),
+    'Segoe UI',
+    sans-serif;
+  cursor: pointer;
+}
+.loading-retry:focus-visible {
+  outline: 3px solid #fff0ad;
+  outline-offset: 3px;
+}
+.loading-screen [hidden] {
+  display: none !important;
+}
+.loading-screen[data-state='error'] .loading-house {
+  opacity: 0.72;
+}
+.loading-screen[data-state='error'] .loading-track {
+  display: none;
+}
+@media (max-width: 420px), (max-height: 400px) {
+  :is(#loading, #level-entry, #app .level-launch) {
+    padding: 10px;
+  }
+  :is(#loading, #level-entry, #app .level-launch) .loading-card {
+    width: min(400px, 100%);
+    padding: 14px 24px 14px;
+    border-width: 10px;
+  }
+  :is(#loading, #level-entry, #app .level-launch) .loading-title {
+    font-size: 23px;
+  }
+  .loading-house {
+    width: 130px;
+    margin-bottom: 4px;
+  }
+  :is(#loading, #level-entry, #app .level-launch) .loading-track {
+    margin-top: 16px;
+  }
+  .loading-screen:is([data-state='error'], [data-state='slow']) .loading-house {
+    display: none;
+  }
+}
+@media (max-height: 260px) {
+  :is(#loading, #level-entry, #app .level-launch) {
+    padding: 6px;
+  }
+  :is(#loading, #level-entry, #app .level-launch) .loading-card {
+    padding: 8px 16px;
+    border-width: 9px;
+  }
+  .loading-house {
+    width: 74px;
+    margin-bottom: 3px;
+  }
+  :is(#loading, #level-entry, #app .level-launch) .loading-title {
+    font-size: 19px;
+  }
+  :is(#loading, #level-entry, #app .level-launch) .loading-track {
+    margin-top: 8px;
+  }
+  :is(#loading, #level-entry, #app .level-launch) .loading-detail {
+    min-height: 17px;
+    margin-top: 5px;
+    font-size: 12px;
+  }
+  .loading-actions {
+    margin-top: 7px;
+    gap: 6px;
+  }
+  :is(#loading, #level-entry, #app .level-launch) .loading-retry {
+    min-width: 94px;
+    min-height: 32px;
+    padding: 4px 9px 6px;
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,34 @@
+/* Shared game scene: coordinates change; indexed board state never does. */
+body:has(>#warm-glass-level[data-scene-trial]) { height:100dvh; min-height:0; }
+#warm-glass-level[data-scene-trial] button { touch-action:manipulation; }
+#warm-glass-level[data-scene-trial] .feed { inset:0 auto auto 0; transform:none; }
+#warm-glass-level[data-scene-trial] .feed::after { display:none; }
+#warm-glass-level[data-scene-trial] .feed-art { overflow:visible; }
+#warm-glass-level[data-scene-trial] .scene-source-current { opacity:var(--feed-strength,0); }
+#warm-glass-level[data-scene-trial] .scene-goal-current { opacity:var(--goal-strength,0); }
+#warm-glass-level[data-scene-layout='portrait'] { width:100%; height:100%; padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left)); overflow:hidden; }
+#warm-glass-level[data-scene-layout='portrait'] .level-header { height:var(--scene-header,48px); min-height:0; align-items:center; }
+#warm-glass-level[data-scene-layout='portrait'] .level-heading { width:calc(100% - 144px); padding-top:2px; line-height:1.15; }
+#warm-glass-level[data-scene-layout='portrait'] .level-number { font-size:clamp(11px,1.7vw,14px); }
+#warm-glass-level[data-scene-layout='portrait'] .level-name { font-size:clamp(17px,3.8vw,25px); margin-top:4px; }
+#warm-glass-level[data-scene-layout='portrait'] .gear { width:44px; height:44px; }
+#warm-glass-level[data-scene-layout='portrait'] .gear svg { width:28px !important; height:28px !important; }
+#warm-glass-level[data-scene-layout='portrait'] .level-stage { display:block; height:var(--scene-height); margin:0; }
+#warm-glass-level[data-scene-layout='portrait'] :is(.source-side,.goal-side) { position:absolute; inset:0; pointer-events:none; }
+#warm-glass-level[data-scene-layout='portrait'] .source-unit { pointer-events:auto; }
+#warm-glass-level[data-scene-layout='portrait'] .house { pointer-events:auto; }
+#warm-glass-level[data-scene-layout='portrait'] .board-wrap { position:absolute; left:var(--scene-board-x); top:var(--scene-board-y); width:var(--scene-board-size); height:var(--scene-board-size); min-width:0; transform:rotate(90deg); }
+#warm-glass-level[data-scene-layout='portrait'] .source-unit { left:var(--scene-source-x); top:var(--scene-source-y); width:var(--scene-source-size); }
+#warm-glass-level[data-scene-layout='portrait'] .house { left:var(--scene-goal-x); top:var(--scene-goal-y); width:var(--scene-goal-size); transform:none; }
+#warm-glass-level[data-scene-layout='portrait'] .pine { left:var(--scene-pine-x); top:var(--scene-pine-y); bottom:auto; width:var(--scene-pine-size); opacity:.62; }
+#warm-glass-level[data-scene-layout='portrait'] .tree { left:var(--scene-tree-x); top:var(--scene-tree-y); right:auto; bottom:auto; width:var(--scene-tree-size); height:auto; opacity:.75; }
+#warm-glass-level[data-scene-layout='portrait'] .moon { left:76%; top:4%; right:auto; width:clamp(28px,8vw,50px); }
+#warm-glass-level[data-scene-layout='portrait'] .onboarding-card { padding:14px 14px 31px; }
+#warm-glass-level[data-scene-layout='portrait'] .onboarding-card[data-below='true'] { padding:31px 14px 14px; }
+#warm-glass-level[data-scene-layout='portrait'] .onboarding-card h2 { font-size:16px; }
+#warm-glass-level[data-scene-layout='portrait'] .onboarding-card .lesson-button { min-height:44px; margin-top:8px; font-size:16px !important; }
+#warm-glass-level[data-scene-layout='portrait'] .source-tooltip { font-size:15px; line-height:1.25; padding:13px 13px 23px; }
+#warm-glass-level[data-scene-layout='portrait'] .result-panel { max-width:calc(100vw - 24px); }
+@media(max-width:340px) and (orientation:landscape) {
+  #warm-glass-level[data-scene-trial] .result-panel { min-width:0; max-width:calc(100vw - 16px); }
+}

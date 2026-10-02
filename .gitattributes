@@ -1,0 +1,23 @@
+* text=auto
+*.ts text eol=lf
+*.js text eol=lf
+*.mjs text eol=lf
+*.cjs text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.svg -text
+*.png binary
+*.woff2 binary
+*.ogg binary
+*.mp3 binary
+
+# Preserve downloaded source packs exactly as supplied by their authors.
+resources/packs/** -text
+
+# Keep the registered loading illustration identical in source and shipped copies.
+public/assets/ui/loading-house.svg text eol=lf
+resources/references/ui-review/loading-house.svg text eol=lf

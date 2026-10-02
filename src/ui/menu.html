@@ -1,0 +1,172 @@
+<section class="game-menu" aria-label="Главное меню игры Тёплый свет">
+  <div class="menu-layout">
+    <div class="menu-controls">
+      <div class="menu-copy">
+        <p class="menu-kicker">Уютная головоломка</p>
+        <h1 class="game-title"><span>Тёплый</span><span>свет</span></h1>
+        <p class="menu-tagline">
+          Соединяй дорожки.<br /><span class="menu-tagline-accent">Зажигай свет в доме.</span>
+        </p>
+      </div>
+      <div class="menu-actions" aria-label="Главное меню">
+        <button type="button" class="game-button primary" data-action="play">
+          <i data-lucide="play" aria-hidden="true"></i><span class="button-label">Играть</span>
+        </button>
+        <button type="button" class="game-button" data-action="settings">
+          <i data-lucide="settings" aria-hidden="true"></i
+          ><span class="button-label">Настройки</span>
+        </button>
+      </div>
+    </div>
+    <div class="scene" data-lit="true">
+      <div class="scene-art">
+        <div class="stars"></div>
+        <img draggable="false" class="moon" src="./assets/menu/moon.png" alt="" />
+        <img draggable="false" class="cloud" src="./assets/menu/cloud.png" alt="" />
+        <img draggable="false" class="cloud far" src="./assets/menu/cloud.png" alt="" />
+        <div class="hill rear"></div>
+        <img draggable="false" class="tree-back" src="./assets/menu/tree_long.png" alt="" />
+        <img draggable="false" class="tree-left" src="./assets/menu/tree_pine.png" alt="" />
+        <div class="hill"></div>
+        <div class="house-aura"></div>
+        <img draggable="false" class="fence" src="./assets/menu/fence.png" alt="" />
+        <svg class="menu-conduit" viewBox="0 0 1000 1000" aria-hidden="true">
+          <defs>
+            <linearGradient id="menu-pipe-rim" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#719795" />
+              <stop offset="0.48" stop-color="#31585c" />
+              <stop offset="1" stop-color="#173d42" />
+            </linearGradient>
+            <linearGradient id="menu-brass" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#76582e" />
+              <stop offset="0.22" stop-color="#f0c779" />
+              <stop offset="0.5" stop-color="#ffe0a0" />
+              <stop offset="0.78" stop-color="#bd8744" />
+              <stop offset="1" stop-color="#634925" />
+            </linearGradient>
+            <filter
+              id="menu-energy-blur"
+              filterUnits="userSpaceOnUse"
+              x="0"
+              y="0"
+              width="1000"
+              height="1000"
+            >
+              <feGaussianBlur stdDeviation="5" />
+            </filter>
+            <mask
+              id="menu-conduit-channel"
+              maskUnits="userSpaceOnUse"
+              x="0"
+              y="0"
+              width="1000"
+              height="1000"
+            >
+              <path class="conduit-channel" data-conduit-path d="M185 750H235V720H370" />
+            </mask>
+          </defs>
+          <path class="conduit-shadow" data-conduit-path d="M185 750H235V720H370" />
+          <path class="conduit-rim" data-conduit-path d="M185 750H235V720H370" />
+          <path class="conduit-wall" data-conduit-path d="M185 750H235V720H370" />
+          <path class="conduit-cavity" data-conduit-path d="M185 750H235V720H370" />
+          <path
+            class="conduit-reflection"
+            data-conduit-path
+            d="M185 750H235V720H370"
+            transform="translate(-2 -2)"
+          />
+          <g class="conduit-energy" mask="url(#menu-conduit-channel)">
+            <path class="conduit-energy-halo" data-conduit-path d="M185 750H235V720H370" />
+            <path class="conduit-energy-core" data-conduit-path d="M185 750H235V720H370" />
+            <path class="conduit-energy-center" data-conduit-path d="M185 750H235V720H370" />
+            <path
+              class="conduit-particles"
+              data-conduit-path
+              d="M185 750H235V720H370"
+              pathLength="100"
+            />
+          </g>
+          <g class="conduit-collars">
+            <g data-conduit-collar="source" transform="translate(225 750) rotate(90)">
+              <rect x="-18" y="-8" width="36" height="16" rx="3" />
+              <path d="M-14-5H14M-14 5H14" />
+            </g>
+            <g data-conduit-collar="goal" transform="translate(312 720) rotate(90)">
+              <rect x="-18" y="-8" width="36" height="16" rx="3" />
+              <path d="M-14-5H14M-14 5H14" />
+            </g>
+          </g>
+        </svg>
+        <div class="house-wrap">
+          <div class="chimney-smoke" aria-hidden="true">
+            <img
+              draggable="false"
+              class="chimney-smoke-puff smoke-puff-one"
+              src="./assets/menu/smoke.png"
+              alt=""
+            />
+            <img
+              draggable="false"
+              class="chimney-smoke-puff smoke-puff-two"
+              src="./assets/menu/smoke.png"
+              alt=""
+            />
+            <img
+              draggable="false"
+              class="chimney-smoke-puff smoke-puff-three"
+              src="./assets/menu/smoke.png"
+              alt=""
+            />
+          </div>
+          <img
+            draggable="false"
+            class="house"
+            src="./assets/menu/house.png"
+            alt="Дом с красной крышей"
+          />
+          <svg class="window-overlay" viewBox="0 0 482 434" aria-hidden="true">
+            <defs>
+              <filter id="warm-glow" x="-80%" y="-60%" width="260%" height="220%">
+                <feGaussianBlur stdDeviation="8" />
+              </filter>
+            </defs>
+            <g class="window-panes">
+              <path
+                d="M100 311H123L124 360H102Z M102 366H124L125 382H103Z M182 311H204L205 382H184Z M273 310H291V389H273Z M154 198a29 23 0 0 1 58 0Z"
+              />
+            </g>
+            <g class="window-bloom" filter="url(#warm-glow)">
+              <path
+                d="M100 311H123L124 360H102Z M102 366H124L125 382H103Z M182 311H204L205 382H184Z M273 310H291V389H273Z M154 198a29 23 0 0 1 58 0Z"
+              />
+            </g>
+          </svg>
+        </div>
+        <span class="power-plinth" aria-hidden="true"></span>
+        <img draggable="false" class="bush-left" src="./assets/menu/bush.png" alt="" />
+        <button
+          type="button"
+          class="power-box"
+          data-action="light"
+          aria-label="Трансформатор: выключить свет"
+          aria-pressed="true"
+        >
+          <img draggable="false" class="box-body" src="./assets/menu/power.svg" alt="" /><img
+            draggable="false"
+            class="box-light"
+            src="./assets/menu/beacon.svg"
+            alt=""
+          /><i class="power-bolt" data-lucide="zap"></i>
+          <img class="power-spark" src="./assets/menu/spark.png" alt="" draggable="false" />
+          <img class="power-spark" src="./assets/menu/spark.png" alt="" draggable="false" />
+          <img class="power-spark" src="./assets/menu/spark.png" alt="" draggable="false" />
+          <img class="power-spark" src="./assets/menu/spark.png" alt="" draggable="false" />
+          <img class="power-spark" src="./assets/menu/spark.png" alt="" draggable="false" />
+        </button>
+        <img draggable="false" class="tree-right" src="./assets/menu/tree_long.png" alt="" />
+        <img draggable="false" class="bush-front" src="./assets/menu/bush.png" alt="" />
+      </div>
+    </div>
+    <div class="credit">STORYSHELF GAMES</div>
+  </div>
+</section>
