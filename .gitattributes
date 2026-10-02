@@ -21,3 +21,6 @@ resources/packs/** -text
 # Keep the registered loading illustration identical in source and shipped copies.
 public/assets/ui/loading-house.svg text eol=lf
 resources/references/ui-review/loading-house.svg text eol=lf
+
+public/levels/** linguist-generated=true
+resources/references/ui-review/glass-level.html linguist-generated=true
