@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#071c27" />
+    <meta
+      name="description"
+      content="Помогите сделать «Тёплый свет» лучше: оставьте короткий отзыв об игре без регистрации."
+    />
+    <title>Тёплый свет — оставить отзыв</title>
+    <link rel="icon" href="./assets/icon.png" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <div class="page-glow" aria-hidden="true"></div>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="#top" aria-label="Тёплый свет — наверх">
+          <span class="brand-mark" aria-hidden="true">✦</span>
+          <span>Тёплый свет</span>
+        </a>
+        <span class="header-note">Ночная игра-головоломка</span>
+      </header>
+
+      <main id="top">
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="intro">
+            <div class="eyebrow">
+              <span class="eyebrow-light"></span> Игра в черновике · нам нужен ваш взгляд
+            </div>
+            <h1 id="hero-title">Помогите зажечь <em>тёплый свет</em></h1>
+            <p class="lede">
+              Поворачивайте трубы, ведите заряд к дому и находите путь сквозь ночной двор. А после
+              игры расскажите, что понравилось или что стоит поправить.
+            </p>
+            <div class="scene-frame">
+              <img
+                src="./assets/cover.png"
+                alt="Ночной двор: светящийся заряд проходит по трубам от трансформатора к дому"
+                width="800"
+                height="470"
+              />
+              <span class="scene-caption">26 уровней · одна уютная история</span>
+            </div>
+          </div>
+
+          <div class="form-card" id="feedback">
+            <div class="form-topline"><span class="signal-dot"></span> Сбор отзывов</div>
+            <h2>Как вам игра?</h2>
+            <p class="form-intro">
+              Напишите пару слов — про конкретный уровень или про игру целиком. Любая честная мысль
+              поможет.
+            </p>
+
+            <form id="feedback-form" novalidate>
+              <fieldset class="topic-fieldset">
+                <legend>О чём ваш отзыв?</legend>
+                <div class="topic-options">
+                  <label
+                    ><input type="radio" name="topic" value="Впечатление" checked /><span
+                      >Впечатление</span
+                    ></label
+                  >
+                  <label><input type="radio" name="topic" value="Идея" /><span>Идея</span></label>
+                  <label
+                    ><input type="radio" name="topic" value="Проблема" /><span
+                      >Проблема</span
+                    ></label
+                  >
+                </div>
+              </fieldset>
+
+              <div class="field-row">
+                <label class="field-label" for="level"
+                  >Номер уровня <span>необязательно</span></label
+                >
+                <input
+                  id="level"
+                  name="level"
+                  type="number"
+                  inputmode="numeric"
+                  min="1"
+                  max="26"
+                  placeholder="Например, 8"
+                />
+              </div>
+
+              <div class="field-row">
+                <label class="field-label" for="message">Ваш отзыв</label>
+                <textarea
+                  id="message"
+                  name="message"
+                  minlength="5"
+                  maxlength="3000"
+                  required
+                  placeholder="На 8-м уровне я бы… / Мне понравилось…"
+                  rows="5"
+                ></textarea>
+              </div>
+
+              <div class="honey" aria-hidden="true">
+                <label for="website">Оставьте это поле пустым</label
+                ><input id="website" name="_gotcha" tabindex="-1" autocomplete="off" />
+              </div>
+              <button class="submit-button" type="submit">
+                <span>Отправить отзыв</span><span aria-hidden="true">↗</span>
+              </button>
+              <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+            </form>
+
+            <p class="privacy-note">
+              Без регистрации, имени и почты. Не пишите в отзыве личные данные. Сообщение передаётся
+              через
+              <a
+                href="https://formspree.io/legal/privacy-policy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Formspree</a
+              >
+              и доступно владельцу проекта.
+            </p>
+          </div>
+        </section>
+
+        <section class="afterword" aria-label="Об игре">
+          <div>
+            <span class="mini-spark" aria-hidden="true">✦</span> Один отзыв может сделать игру
+            приятнее для всех.
+          </div>
+          <a
+            href="https://github.com/V-Kozintsev/teply-svet"
+            target="_blank"
+            rel="noopener noreferrer"
+            >О проекте на GitHub <span aria-hidden="true">↗</span></a
+          >
+        </section>
+      </main>
+      <footer>© 2026 Тёплый свет</footer>
+    </div>
+  </body>
+</html>
