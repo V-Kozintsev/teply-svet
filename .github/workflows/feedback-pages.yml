@@ -2,7 +2,7 @@ name: Feedback page
 
 on:
   push:
-    branches: [main]
+    branches: [feedback-page]
     paths:
       - feedback-site/**
       - .github/workflows/feedback-pages.yml
