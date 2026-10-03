@@ -3,8 +3,6 @@ const endpoint = 'https://formspree.io/f/mzeznykb';
 const form = document.querySelector('#feedback-form');
 const status = document.querySelector('#form-status');
 const submit = form.querySelector('button[type="submit"]');
-const confirmation = document.querySelector('#confirmation');
-document.querySelector('#confirmation-close').addEventListener('click', () => confirmation.close());
 
 function showStatus(message, isError = false) {
   status.textContent = message;
@@ -51,7 +49,7 @@ form.addEventListener('submit', async (event) => {
     });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     form.reset();
-    confirmation.showModal();
+    showStatus('Спасибо! Отзыв отправлен и поможет нам сделать игру лучше.');
   } catch {
     showStatus('Не удалось отправить отзыв. Проверьте соединение и попробуйте ещё раз.', true);
   } finally {

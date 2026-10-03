@@ -65,6 +65,11 @@ a {
   box-shadow: 0 0 23px #f2b95044;
   color: #ffce64;
 }
+.header-note {
+  color: #b4c8c7;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+}
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(380px, 0.83fr);
@@ -102,9 +107,21 @@ a {
   line-height: 1.03;
   letter-spacing: -0.045em;
 }
+.intro h1 em {
+  font-style: normal;
+  color: #ffd488;
+  text-shadow: 0 0 30px #efb85b55;
+}
+.lede {
+  max-width: 580px;
+  margin: 0;
+  color: #c4d3d1;
+  font-size: 16px;
+  line-height: 1.7;
+}
 .scene-frame {
   position: relative;
-  margin-top: 28px;
+  margin-top: 40px;
   overflow: hidden;
   border: 1px solid #dbad6d70;
   border-radius: 20px;
@@ -327,6 +344,17 @@ textarea[aria-invalid='true'] {
 .form-status.error {
   color: #ffc0af;
 }
+.privacy-note {
+  margin: 22px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid #ffffff24;
+  color: #9eb5b5;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.privacy-note a {
+  text-underline-offset: 3px;
+}
 .afterword {
   display: flex;
   align-items: center;
@@ -337,6 +365,13 @@ textarea[aria-invalid='true'] {
   color: #c6d5d0;
   font-size: 13px;
 }
+.afterword a {
+  text-decoration: none;
+  color: #f7d08a;
+}
+.afterword a:hover {
+  text-decoration: underline;
+}
 .mini-spark {
   color: #ffce70;
   margin-right: 8px;
@@ -345,57 +380,6 @@ footer {
   padding: 0 0 28px;
   color: #79918f;
   font-size: 11px;
-}
-.confirmation {
-  width: min(360px, calc(100vw - 32px));
-  margin: auto;
-  padding: 32px 28px 26px;
-  border: 1px solid #e5bc77;
-  border-radius: 22px;
-  background: #15343c;
-  box-shadow: 0 28px 80px #000a;
-  color: #f8f3e7;
-  text-align: center;
-}
-.confirmation::backdrop {
-  background: #06161dcc;
-  backdrop-filter: blur(5px);
-}
-.confirmation-spark {
-  display: grid;
-  place-items: center;
-  width: 50px;
-  height: 50px;
-  margin: 0 auto 14px;
-  border: 1px solid #f7d590;
-  border-radius: 50%;
-  background: #f7d59023;
-  color: #ffda88;
-  font-size: 29px;
-}
-.confirmation h2 {
-  margin: 0 0 24px;
-  font:
-    400 30px/1.2 Marmelad,
-    Georgia,
-    serif;
-}
-.confirmation button {
-  width: 100%;
-  min-height: 46px;
-  border: 0;
-  border-radius: 10px;
-  background: #f7d590;
-  color: #1e3131;
-  font:
-    800 14px Manrope,
-    system-ui,
-    sans-serif;
-  cursor: pointer;
-}
-.confirmation button:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 3px;
 }
 @media (max-width: 900px) {
   .hero {
@@ -426,6 +410,9 @@ footer {
   .brand {
     font-size: 21px;
   }
+  .header-note {
+    display: none;
+  }
   .hero {
     padding: 37px 0 38px;
     gap: 26px;
@@ -437,6 +424,10 @@ footer {
   .intro h1 {
     font-size: clamp(43px, 11vw, 58px);
     margin: 17px 0 12px;
+  }
+  .lede {
+    font-size: 13px;
+    line-height: 1.55;
   }
   .form-card {
     padding: 23px 20px;
