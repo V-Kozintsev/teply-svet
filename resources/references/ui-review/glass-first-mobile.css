@@ -1,4 +1,21 @@
 /* First-chapter composition. Keep the artwork and energy layer ordering. */
+#warm-glass-level[data-scene-trial] .result-panel { max-height:calc(100dvh - 28px); overflow-y:auto; }
+#warm-glass-level[data-scene-trial] .tool-row { gap:8px; align-items:center; }
+#warm-glass-level[data-scene-trial] .hint-wrap { width:96px; height:44px; }
+#warm-glass-level[data-scene-trial] :is(.hint-button,.life-wrap) { width:96px; height:44px; padding:4px 6px; border:1.5px solid #b68b49; border-radius:14px; background:linear-gradient(150deg,#22494c,#102f38); box-shadow:inset 0 1px 1px #efd39a30,inset 0 -2px 3px #071d2855,0 2px 4px #061b2855; transition:background .15s,border-color .15s,box-shadow .15s,transform .15s; }
+#warm-glass-level[data-scene-trial] :is(.hint-button,.life-meter) { display:flex; align-items:center; justify-content:space-between; gap:4px; }
+#warm-glass-level[data-scene-trial] .life-meter { width:100%; height:100%; }
+#warm-glass-level[data-scene-trial] .hint-button img { width:40px; height:40px; flex-shrink:0; animation:none; filter:drop-shadow(0 2px 1px #061d28); }
+#warm-glass-level[data-scene-trial] .life-meter .life-fuse { width:40px; height:40px; object-fit:contain; flex-shrink:0; filter:drop-shadow(0 2px 1px #061d28); }
+#warm-glass-level[data-scene-trial] :is(.hint-count,.life-count) { position:static; display:grid; place-items:center; width:30px; min-width:30px; height:30px; flex:0 0 30px; padding:0; border:1.5px solid #dbb967; border-radius:50%; background:linear-gradient(#274e4d,#15383d); color:#ffe8ae; box-shadow:inset 0 1px 2px #061d2866; font-size:var(--hint-count-font,18px); line-height:1; }
+#warm-glass-level[data-scene-trial] :is(.hint-button,.life-wrap):focus-visible { outline:2px solid #fff0bd; outline-offset:3px; }
+@media(hover:hover) { #warm-glass-level[data-scene-trial] :is(.hint-button,.life-wrap):not([aria-disabled='true']):hover { border-color:#f0cd82; background:linear-gradient(150deg,#315c59,#173d44); box-shadow:inset 0 1px 1px #ffe7a84d,0 2px 6px #071c28; } }
+#warm-glass-level[data-scene-trial] :is(.hint-button,.life-wrap):not([aria-disabled='true']):active { transform:translateY(1px); box-shadow:inset 0 2px 4px #061d2880; }
+#warm-glass-level[data-scene-trial] .level-heading { width:calc(100% - 424px); }
+#warm-glass-level[data-scene-trial][data-scene-layout='portrait'] .level-header { padding:0; align-items:flex-start; }
+#warm-glass-level[data-scene-trial][data-scene-layout='portrait'] .level-heading { top:50px; width:100%; padding:0; }
+@media(max-width:1000px) and (orientation:landscape) { #warm-glass-level[data-scene-trial] .level-heading { left:208px; right:52px; width:auto; transform:none; } #warm-glass-level[data-scene-trial] .level-name { font-size:18px; } }
+@media(prefers-reduced-motion:reduce) { #warm-glass-level[data-scene-trial] :is(.hint-button,.life-wrap) { transition:none; } }
 /* Paint the victory halo once, then vary only its opacity. */
 #warm-glass-level[data-scene-trial='centered-first'].celebrate .board-wrap { animation:none; }
 #warm-glass-level[data-scene-trial='centered-first'] .board-wrap::after { content:''; position:absolute; inset:0; z-index:5; border-radius:inherit; pointer-events:none; opacity:0; box-shadow:0 0 0 2px #e8c175,0 0 28px #ffe19b4a; }

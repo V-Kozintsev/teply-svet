@@ -17,7 +17,7 @@ export function refineFirstMobileScene(source) {
     root.dataset.sceneScroll='false';root.style.minHeight='';
     if(!portrait)return;
     const style=getComputedStyle(root),w=W-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight),h=H-parseFloat(style.paddingTop)-parseFloat(style.paddingBottom);
-    const header=48,gutter=W<280?2:4,room=h-header;
+    const header=100,gutter=W<280?2:4,room=h-header;
     // Start with the proven compact fit, including the visible pipe gaps.
     const minSource=clamp(44,w*.06,72),minHouse=clamp(64,w*.085,104),minGap=clamp(18,w*.026,28),chargeDepth=43,sourceGap=clamp(8,w*.02,14);
     let footer=8;

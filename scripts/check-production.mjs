@@ -8,6 +8,7 @@ const inventory = JSON.parse(
 );
 const assets = JSON.parse(fs.readFileSync(new URL('../resources/manifest.json', import.meta.url)));
 const publicFiles = [
+  ...(inventory.runtime ?? []),
   ...assets.map((asset) => asset.file),
   ...inventory.licenses,
   ...inventory.levels,

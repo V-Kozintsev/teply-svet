@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
   <title>Тёплый свет — уровень 22</title>
+  <script src="../../game-language.js"></script>
   <script>
     // Normal deep links enter the persistent music shell; diagnostic pages stay isolated.
     (() => {
@@ -391,6 +392,20 @@ function installGameTouchGuard() {
         if (event.cancelable)
             event.preventDefault();
     };
+    // The standalone level has its own document, separate from menu styles.
+    // Cancel native selection/callouts without cancelling taps or pipe turns.
+    const gameArtwork = (event) => {
+        const target = event.target;
+        const element = target instanceof Element ? target : target instanceof Node ? target.parentElement : null;
+        return (!!element?.closest('#warm-glass-level') &&
+            !element.closest('input,textarea,[contenteditable]:not([contenteditable="false"])'));
+    };
+    for (const type of ['selectstart', 'contextmenu', 'dragstart']) {
+        document.addEventListener(type, (event) => {
+            if (gameArtwork(event))
+                block(event);
+        }, true);
+    }
     const touch = (event) => {
         if (event.type === 'touchstart' && event.touches.length === 1)
             multiple = false;
@@ -841,6 +856,8 @@ Kenney Music Jingles: original jingles_STEEL10.ogg, CC0.
 #warm-glass-level { position:relative; isolation:isolate; overflow:hidden; box-sizing:border-box; width:100%; padding:24px 24px 22px; color:#ffe4aa; background:radial-gradient(ellipse at 40% 80%,#29564d,transparent 70%),linear-gradient(150deg,#102e3c,#153b42); font:16px/1.4 GlassMarmelad,'Segoe UI',sans-serif; }
 #warm-glass-level,#level-entry { -webkit-tap-highlight-color:transparent; }
 #warm-glass-level * { box-sizing:border-box; }
+#warm-glass-level,#warm-glass-level * { -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+#warm-glass-level :is(input,textarea,[contenteditable='true']) { -webkit-user-select:text; user-select:text; -webkit-touch-callout:default; }
 #warm-glass-level [hidden] { display:none !important; }
 #warm-glass-level[data-hints-enabled='false'] .hint-wrap { display:none; }
 #warm-glass-level img { display:block; max-width:none; user-select:none; -webkit-user-drag:none; }
@@ -1009,9 +1026,10 @@ Kenney Music Jingles: original jingles_STEEL10.ogg, CC0.
 #warm-glass-level .switch-handle { transform-origin:32px 46px; transform:rotate(-135deg); transition:transform 280ms cubic-bezier(.22,.76,.2,1); }
 #warm-glass-level .switch-control[data-switch-on='true'] .switch-handle { transform:rotate(45deg); }
 #warm-glass-level .switch-control[data-energized='true'] .switch-indicator { fill:#ffd777; filter:drop-shadow(0 0 3px #ffcf67); }
-#warm-glass-level .switch-control::before,#warm-glass-level .switch-linked::before { content:'◆'; position:absolute; z-index:4; right:8%; bottom:6%; color:#ffe5a3; font-size:clamp(8px,1vw,14px); text-shadow:0 1px 2px #082b33; }
+#warm-glass-level .switch-control .switch-pair-rim { stroke:var(--link-color); stroke-width:1.8; }
+#warm-glass-level .switch-control .switch-grip { fill:var(--link-color); stroke:var(--link-shade); }
 #warm-glass-level .switch-linked { pointer-events:none; }
-#warm-glass-level .switch-linked::after { content:''; position:absolute; inset:9%; border:2px dashed #d9b868aa; border-radius:10px; box-shadow:inset 0 0 10px #f6ce5730; pointer-events:none; }
+#warm-glass-level .switch-linked::after { content:''; position:absolute; inset:9%; border:2px dashed var(--link-color); border-radius:10px; box-shadow:inset 0 0 10px var(--link-glow); pointer-events:none; }
 #warm-glass-level .mechanic-bridge-cut { fill:none; stroke:#102f35; stroke-width:38; stroke-linecap:round; }
 #warm-glass-level .crossover-arrow-plate { fill:#3c3030; stroke:#c78e53; stroke-width:2; filter:drop-shadow(0 1px 2px #061b22cc); }
 #warm-glass-level .crossover-arrow { fill:#ffe49a; stroke:#815a2a; stroke-width:1; filter:drop-shadow(0 0 3px #ffc95a88); }
@@ -1053,16 +1071,18 @@ Kenney Music Jingles: original jingles_STEEL10.ogg, CC0.
 #warm-glass-level .fixed-saddle-side { fill:#514c40; stroke:#8f7958; stroke-width:1; }
 #warm-glass-level .hatch-ground-shadow { fill:#071e24; opacity:.7; }
 #warm-glass-level :is(.hatch-rim-depth,.hatch-front-depth,.hatch-lid-depth) { fill:#72512d; stroke:#392e22; stroke-width:1.4; }
-#warm-glass-level :is(.hatch-rim,.hatch-lid-rim,.hatch-front-rim) { fill:url(#glass-brass); stroke:#70502c; stroke-width:1.3; }
+#warm-glass-level :is(.hatch-rim,.hatch-lid-rim,.hatch-front-rim) { fill:var(--hatch-pair-color,url(#glass-brass)); stroke:var(--hatch-pair-shade,#70502c); stroke-width:1.3; }
+#warm-glass-level .hatch-mark[data-pair-color] .hatch-front-rim { fill:var(--hatch-pair-color); }
 #warm-glass-level .hatch-well { fill:#061c23; stroke:#594627; stroke-width:1.2; }
 #warm-glass-level .hatch-well-wall { fill:#102b30; }
-#warm-glass-level .hatch-lid-face { fill:#8c713e; stroke:#4d3c26; stroke-width:1.3; }
+#warm-glass-level .hatch-lid-face { fill:var(--hatch-pair-face,#8c713e); stroke:var(--hatch-pair-shade,#4d3c26); stroke-width:1.3; }
 #warm-glass-level :is(.hatch-lid-highlight,.hatch-front-highlight) { fill:none; stroke:#edcf8a; stroke-width:1.2; opacity:.7; }
 #warm-glass-level .hatch-hinge { fill:#937240; stroke:#523e27; stroke-width:1; }
 #warm-glass-level .hatch-lid-bolt { fill:#e6c381; stroke:#70522d; stroke-width:.7; }
 #warm-glass-level .hatch-pair-mark { fill:#ffe6a0; stroke:#704b2c; stroke-width:.8; }
 #warm-glass-level .hatch-scene-body { transform:rotate(var(--hatch-view-turn,0deg)); }
 #warm-glass-level[data-scene-layout='portrait'] { --hatch-view-turn:-90deg; }
+#warm-glass-level[data-scene-layout='portrait'] .hatch-raised-lid[data-mirrored='true'] { transform:translate(9px,0) scale(-.82,.82); }
 #warm-glass-level .slider-rail { fill:#233d3d; stroke:#8c8267; stroke-width:2; }
 #warm-glass-level .slider-track-bed { fill:#102e32; stroke:#50615a; stroke-width:1; }
 #warm-glass-level .slider-stop { fill:#6e6651; stroke:#a68d5c; stroke-width:1.5; }
@@ -1540,6 +1560,23 @@ body:has(>#warm-glass-level[data-scene-trial]) { height:100dvh; min-height:0; }
 }
 </style>
   <style>/* First-chapter composition. Keep the artwork and energy layer ordering. */
+#warm-glass-level[data-scene-trial] .result-panel { max-height:calc(100dvh - 28px); overflow-y:auto; }
+#warm-glass-level[data-scene-trial] .tool-row { gap:8px; align-items:center; }
+#warm-glass-level[data-scene-trial] .hint-wrap { width:96px; height:44px; }
+#warm-glass-level[data-scene-trial] :is(.hint-button,.life-wrap) { width:96px; height:44px; padding:4px 6px; border:1.5px solid #b68b49; border-radius:14px; background:linear-gradient(150deg,#22494c,#102f38); box-shadow:inset 0 1px 1px #efd39a30,inset 0 -2px 3px #071d2855,0 2px 4px #061b2855; transition:background .15s,border-color .15s,box-shadow .15s,transform .15s; }
+#warm-glass-level[data-scene-trial] :is(.hint-button,.life-meter) { display:flex; align-items:center; justify-content:space-between; gap:4px; }
+#warm-glass-level[data-scene-trial] .life-meter { width:100%; height:100%; }
+#warm-glass-level[data-scene-trial] .hint-button img { width:40px; height:40px; flex-shrink:0; animation:none; filter:drop-shadow(0 2px 1px #061d28); }
+#warm-glass-level[data-scene-trial] .life-meter .life-fuse { width:40px; height:40px; object-fit:contain; flex-shrink:0; filter:drop-shadow(0 2px 1px #061d28); }
+#warm-glass-level[data-scene-trial] :is(.hint-count,.life-count) { position:static; display:grid; place-items:center; width:30px; min-width:30px; height:30px; flex:0 0 30px; padding:0; border:1.5px solid #dbb967; border-radius:50%; background:linear-gradient(#274e4d,#15383d); color:#ffe8ae; box-shadow:inset 0 1px 2px #061d2866; font-size:var(--hint-count-font,18px); line-height:1; }
+#warm-glass-level[data-scene-trial] :is(.hint-button,.life-wrap):focus-visible { outline:2px solid #fff0bd; outline-offset:3px; }
+@media(hover:hover) { #warm-glass-level[data-scene-trial] :is(.hint-button,.life-wrap):not([aria-disabled='true']):hover { border-color:#f0cd82; background:linear-gradient(150deg,#315c59,#173d44); box-shadow:inset 0 1px 1px #ffe7a84d,0 2px 6px #071c28; } }
+#warm-glass-level[data-scene-trial] :is(.hint-button,.life-wrap):not([aria-disabled='true']):active { transform:translateY(1px); box-shadow:inset 0 2px 4px #061d2880; }
+#warm-glass-level[data-scene-trial] .level-heading { width:calc(100% - 424px); }
+#warm-glass-level[data-scene-trial][data-scene-layout='portrait'] .level-header { padding:0; align-items:flex-start; }
+#warm-glass-level[data-scene-trial][data-scene-layout='portrait'] .level-heading { top:50px; width:100%; padding:0; }
+@media(max-width:1000px) and (orientation:landscape) { #warm-glass-level[data-scene-trial] .level-heading { left:208px; right:52px; width:auto; transform:none; } #warm-glass-level[data-scene-trial] .level-name { font-size:18px; } }
+@media(prefers-reduced-motion:reduce) { #warm-glass-level[data-scene-trial] :is(.hint-button,.life-wrap) { transition:none; } }
 /* Paint the victory halo once, then vary only its opacity. */
 #warm-glass-level[data-scene-trial='centered-first'].celebrate .board-wrap { animation:none; }
 #warm-glass-level[data-scene-trial='centered-first'] .board-wrap::after { content:''; position:absolute; inset:0; z-index:5; border-radius:inherit; pointer-events:none; opacity:0; box-shadow:0 0 0 2px #e8c175,0 0 28px #ffe19b4a; }
@@ -1662,7 +1699,7 @@ background: radial-gradient(ellipse, #e3eeb72e, transparent 65%);
 }
 </style>
   <header class="level-header">
-    <div class="tool-row"><div class="hint-wrap"><button class="hint-button" type="button" data-action="hint" aria-label="Подсказки загружаются" aria-disabled="false" aria-describedby="glass-hint-tooltip"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI1LjIuMywgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzMiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAxMjggMTI4IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAxMjggMTI4OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPGc+CgkJPGVsbGlwc2Ugc3R5bGU9ImZpbGw6IzQyNDI0MjsiIGN4PSI2NCIgY3k9IjExNi44NyIgcng9IjEyLjA5IiByeT0iNy4xMyIvPgoJCTxwYXRoIHN0eWxlPSJmaWxsOiNGRkQ2MDA7IiBkPSJNNjQsNEM0Mi45Miw0LDI1LjgyLDE5LjY3LDI1LjgyLDM4Ljk5YzAsNS4wNCwxLjUyLDEwLjQzLDMuNzUsMTUuMTgKCQkJYzMuMTMsNi42OCw2LjU0LDExLjYyLDcuNTQsMTMuNDRjMi43OCw1LjA2LDIuMzgsMTAuMzksMy4xNSwxMy43M2MxLjQ1LDYuMjQsNS43OSw4LjUsMjMuNzMsOC41czIxLjgtMi4xNSwyMy40MS03LjkKCQkJYzEuMS0zLjkxLDAuMDMtOC4xOCwyLjgtMTMuMjNjMS0xLjgyLDUuMDctNy44NSw4LjIxLTE0LjU0YzIuMjMtNC43NSwzLjc1LTEwLjE0LDMuNzUtMTUuMThDMTAyLjE4LDE5LjY3LDg1LjA4LDQsNjQsNHoiLz4KCQk8ZWxsaXBzZSBzdHlsZT0iZmlsbDojQjI2NTAwOyIgY3g9IjY0IiBjeT0iODYuMTMiIHJ4PSIyMS45NCIgcnk9IjQuNDYiLz4KCQk8ZWxsaXBzZSBzdHlsZT0iZmlsbDojQjI2NTAwOyIgY3g9IjY0IiBjeT0iODYuMTMiIHJ4PSIyMS45NCIgcnk9IjQuNDYiLz4KCQk8ZWxsaXBzZSBzdHlsZT0iZmlsbDojRkZBMDAwOyIgY3g9IjY0IiBjeT0iODYuMTMiIHJ4PSIxNS45OSIgcnk9IjIuMDYiLz4KCQk8Zz4KCQkJPHBhdGggc3R5bGU9ImZpbGw6bm9uZTtzdHJva2U6I0IyNjUwMDtzdHJva2Utd2lkdGg6MjtzdHJva2UtbWl0ZXJsaW1pdDoxMDsiIGQ9Ik01My4zLDU2Ljc3Yy0wLjYyLDEuNTYtMi4yMyw0Ljc3LTEuMzksNi4yMQoJCQkJYzEuOTUsMy4zNSw2LjYsNC41NSw2LjYsNy42M2MwLDQuNy0zLjQyLDE5LjkzLTMuNDIsMTkuOTMiLz4KCQkJPHBhdGggc3R5bGU9ImZpbGw6bm9uZTtzdHJva2U6I0IyNjUwMDtzdHJva2Utd2lkdGg6MjtzdHJva2UtbWl0ZXJsaW1pdDoxMDsiIGQ9Ik03NC4wMyw1Ni4yMWMwLDAsMi4yNCw0LjgsMS4yOSw2Ljk1CgkJCQljLTAuNzEsMS42LTQuOTgsNC4xOC01LjUzLDQuNjFjLTIuNTUsMiwwLjg0LDIyLjc4LDAuODQsMjIuNzgiLz4KCQkJPHBhdGggc3R5bGU9ImZpbGw6bm9uZTtzdHJva2U6I0ZGRkZGRjtzdHJva2Utd2lkdGg6MjtzdHJva2UtbWl0ZXJsaW1pdDoxMDsiIGQ9Ik01My4zLDU2Ljc3YzMuNDQtNi44LDUuMjEtMjIuMzIsMC44NC0yMS41MwoJCQkJYy03LjM3LDEuMzMsMS43MSwyNi44Myw2LjE4LDIzLjlzMTAuMDEtMjMuODUsMy4yMS0yMy45M2MtNi44LTAuMDgsMC40NiwyNi42Niw1LjA4LDIzLjY5YzMuNjUtMi4zNSwxMi41Ni0yMy42Niw1LjI0LTIzLjY2CgkJCQljLTYuMjMsMCwwLjE5LDIwLjk3LDAuMTksMjAuOTciLz4KCQk8L2c+CgkJPHBhdGggc3R5bGU9ImZpbGw6IzgyQUVDMDsiIGQ9Ik04NS44OSw4Ny4wNmMwLDAtNS43NiwyLjc4LTIxLjg5LDIuNzhzLTIxLjg5LTIuNzgtMjEuODktMi43OHMtMC4zNiw1LjE0LDAuODMsNy40NwoJCQljMS40MywyLjgsMi41MywzLjc3LDIuNTMsMy43N2wwLjYsMi44NWwtMC4yNCwwLjc1Yy0wLjMxLDAuOTgtMC4wOSwyLjA2LDAuNiwyLjgzbDAuNTIsMC41OGwwLjU4LDIuNzRsLTAuMiwwLjU1CgkJCWMtMC4zOCwxLjA1LTAuMTIsMi4yMiwwLjY2LDMuMDJsMC4zOCwwLjM5bDAuNDcsMi4yNGMwLDAsMi4zOCw1LjA4LDE1LjE2LDUuMDhzMTUuMTYtNS4wOCwxNS4xNi01LjA4bDAuMDQtMC4xOWwwLjI2LTAuMjYKCQkJYzAuNTItMC41MSwwLjY5LTEuMjcsMC40NC0xLjk1bC0wLjE1LTAuMzlsMC42Mi0yLjk2bDEuMDktMS4xNWMwLjU0LTAuNTcsMC42Ni0xLjQxLDAuMzEtMi4xMWwtMC41LTAuOTlsMC42My0yLjk3bDAuNC0wLjMxCgkJCWMwLjU5LTAuNjUsMC42LTEuNjMsMC4zNC0yLjNjLTAuMi0wLjUzLTAuMDQtMS4xMywwLjM3LTEuNTJjMC42My0wLjYsMS40NC0xLjUxLDIuMDQtMi42NEM4Ni4yOCw5Mi4yMiw4NS44OSw4Ny4wNiw4NS44OSw4Ny4wNnoiCgkJCS8+CgkJPGc+CgkJCTxnPgoJCQkJPHBhdGggc3R5bGU9ImZpbGw6IzJGNzg4OTsiIGQ9Ik00NS40Nyw5OC4zbDAuNTQsMi44N2M1LjgyLTAuMDMsMTMuNTksMC4yNiwyOC41LTIuMTFjMi42OS0wLjYxLDUuOTItMS44MiwyLjM1LTEuMzIKCQkJCQlDNzYuODYsOTcuNzMsNjMuMTcsOTkuMDQsNDUuNDcsOTguM3oiLz4KCQkJPC9nPgoJCQk8Zz4KCQkJCTxwYXRoIHN0eWxlPSJmaWxsOiMyRjc4ODk7IiBkPSJNNDcuNDcsMTA4LjA3YzYuNDQtMC4xMSwxOS42LTAuNzUsMzMuNzQtMy44MmwwLjYzLTIuOTdjLTE0Ljc5LDMuMzYtMjguNywzLjk2LTM0Ljk1LDQuMDQKCQkJCQlMNDcuNDcsMTA4LjA3eiIvPgoJCQk8L2c+CgkJPC9nPgoJCTxwYXRoIHN0eWxlPSJmaWxsOiMyRjc4ODk7IiBkPSJNODAuMzEsMTA4LjQ5Yy0xMy4wOSwyLjg0LTI1LjM0LDMuNTctMzEuOTcsMy43M2wwLjQzLDIuMDRjMCwwLDAuMjEsNi4zMywxNS4xNiw2LjMzCgkJCXMxNS4xNi02LjMzLDE1LjE2LTYuMzNzLTYuMzgsMS44Mi0xNC4yMywwLjkzYy0wLjgtMC4wOS0wLjgxLTEuMTYtMC4wMS0xLjI2YzQuNjktMC42MiwxMC4yOS0xLjU0LDE0Ljg0LTIuNDhMODAuMzEsMTA4LjQ5eiIvPgoJCTxwYXRoIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlOiM4MkFFQzA7c3Ryb2tlLXdpZHRoOjMuOTk3MTtzdHJva2UtbGluZWNhcDpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoxMDsiIGQ9Ik00Mi4xOCw4Ny4wNgoJCQljMCwwLDYuNDYsMi43OCwyMS43NiwyLjc4czIxLjg4LTIuNzgsMjEuODgtMi43OCIvPgoJCTxwYXRoIHN0eWxlPSJmaWxsOiNGRkZGOEQ7IiBkPSJNNDkuODgsMTAuMzJjMy45MS0wLjk2LDgtMC40OCwxMC44LDIuOTJjMC43OSwwLjk2LDEuNCwyLjEsMS41NCwzLjM0CgkJCWMwLjI4LDIuMzktMS4yLDQuNjUtMi45Niw2LjMxYy01LjAyLDQuNzQtMTIuMTUsNy4wNC0xNS4zOSwxMy41OGMtMC43NiwxLjUzLTEuMzYsMy4xOC0yLjUyLDQuNDNjLTEuMTYsMS4yNS0zLjA5LDIuMDEtNC42LDEuMjEKCQkJYy0wLjgtMC40Mi0xLjM1LTEuMjEtMS44LTJjLTIuODQtNS4wNi0yLjYzLTExLjUxLTAuMTMtMTYuNzVDMzcuNTcsMTcuNjIsNDMuNiwxMS44Niw0OS44OCwxMC4zMnoiLz4KCQk8cGF0aCBzdHlsZT0iZmlsbDojRkZENjAwOyIgZD0iTTQ2LjQ1LDkxLjkzYy0wLjg4LTAuNC0wLjUzLTEuNzIsMC40My0xLjY1YzMuMjIsMC4yNSw4LjcsMC41NiwxNS45NSwwLjU2CgkJCWM3LjY0LDAsMTQuMzYtMC41NywxOC4yOC0wLjk5YzAuOTctMC4xLDEuMzQsMS4yMywwLjQ1LDEuNjRjLTMuMDIsMS40Mi04LjU1LDMuMDQtMTguMDMsMy4wNAoJCQlDNTQuMjgsOTQuNTMsNDkuMTgsOTMuMTYsNDYuNDUsOTEuOTN6Ii8+CgkJPHBhdGggc3R5bGU9ImZpbGw6Izk0RDFFMDsiIGQ9Ik01MS45NCwxMDIuMDNjLTAuNjcsMC4yNC0xLjM2LDAuNTctMS43LDEuMTljLTAuMTIsMC4yMy0wLjE5LDAuNDktMC4xNCwwLjc1CgkJCWMwLjA4LDAuMzgsMC40MywwLjY1LDAuNzgsMC44MmMwLjcsMC4zNCwxLjQ5LDAuNDMsMi4yNiwwLjQ0YzEuNTksMC4wMiwzLjE3LTAuMjgsNC43NC0wLjU4YzAuNDctMC4wOSwwLjk1LTAuMTgsMS4zNy0wLjQxCgkJCWMwLjQyLTAuMjMsMC43OC0wLjYyLDAuODUtMS4wOWMwLjEtMC42My0wLjM1LTEuMjQtMC45LTEuNTRDNTcuMywxMDAuNTYsNTMuODYsMTAxLjM0LDUxLjk0LDEwMi4wM3oiLz4KCQk8cGF0aCBzdHlsZT0iZmlsbDojOTREMUUwOyIgZD0iTTUzLjQzLDEwOC42MmMtMC42NywwLjI0LTEuMzYsMC41Ny0xLjcsMS4xOWMtMC4xMiwwLjIzLTAuMTksMC40OS0wLjE0LDAuNzUKCQkJYzAuMDgsMC4zOCwwLjQzLDAuNjUsMC43OCwwLjgyYzAuNywwLjM0LDEuNDksMC40MywyLjI2LDAuNDRjMS41OSwwLjAyLDMuMTctMC4yOCw0Ljc0LTAuNThjMC40Ny0wLjA5LDAuOTUtMC4xOCwxLjM3LTAuNDEKCQkJYzAuNDItMC4yMywwLjc4LTAuNjIsMC44NS0xLjA5YzAuMS0wLjYzLTAuMzUtMS4yNC0wLjktMS41NEM1OC43OSwxMDcuMTYsNTUuMzQsMTA3Ljk0LDUzLjQzLDEwOC42MnoiLz4KCQk8cGF0aCBzdHlsZT0iZmlsbDojRkZGRjhEOyIgZD0iTTUwLjAxLDg0LjJjMC45MSwwLjA5LDEuODcsMC4wMSwyLjY0LTAuNDhjMC43Ny0wLjQ5LDEuMjYtMS40OSwwLjk1LTIuMzUKCQkJYy0wLjE2LTAuNDUtMC41MS0wLjgxLTAuODUtMS4xNUM1Miw3OS40OCw1MS4yNSw3OC43NCw1MC41MSw3OGMtMC44My0wLjgzLTEuNjYtMS42NS0yLjU2LTIuNGMtMS4zOS0xLjE2LTMuMjYtMi4yNS01LjA5LTEuNAoJCQljLTEuNTYsMC43Mi0xLjkzLDIuMTQtMS4yNCwzLjYzQzQzLjA5LDgwLjk2LDQ2LjUxLDgzLjg0LDUwLjAxLDg0LjJ6Ii8+Cgk8L2c+CjwvZz4KPC9zdmc+Cg==" alt="" draggable="false"><span class="hint-count" aria-hidden="true">…</span></button><span class="hint-tooltip" id="glass-hint-tooltip" role="tooltip"><span class="hint-tooltip-title">Повернуть нужную трубу</span><span class="hint-tooltip-detail">Будет использована 1 подсказка</span></span></div><button class="life-wrap" type="button" data-action="life-store" aria-label="Предохранители. Пополнить запас" aria-describedby="glass-life-tooltip"><span class="life-meter" aria-hidden="true"><img class="life-fuse" src="../../assets/ui/glass-fuse.png" alt="" draggable="false"><span class="life-count" aria-hidden="true">5</span></span><span class="life-tooltip" id="glass-life-tooltip" role="tooltip">Запас попыток. Нажми, чтобы пополнить.</span></button></div>
+    <div class="tool-row"><div class="hint-wrap"><button class="hint-button" type="button" data-action="hint" aria-label="Подсказки загружаются" aria-disabled="false" aria-describedby="glass-hint-tooltip"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+CjxkZWZzPgo8cmFkaWFsR3JhZGllbnQgaWQ9Imdsb3ciPjxzdG9wIHN0b3AtY29sb3I9IiNmZmU2OTAiIHN0b3Atb3BhY2l0eT0iLjU1Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZmZkNDVjIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50Pgo8cmFkaWFsR3JhZGllbnQgaWQ9ImdsYXNzIiBjeD0iLjM1IiBjeT0iLjI1IiByPSIuOCI+PHN0b3Agc3RvcC1jb2xvcj0iI2ZmZmJkNCIvPjxzdG9wIG9mZnNldD0iLjUiIHN0b3AtY29sb3I9IiNmZmUyN2MiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNkYzllMzEiLz48L3JhZGlhbEdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9ImJyYXNzIj48c3RvcCBzdG9wLWNvbG9yPSIjOTk3MDM5Ii8+PHN0b3Agb2Zmc2V0PSIuMyIgc3RvcC1jb2xvcj0iI2ZmZTNhMSIvPjxzdG9wIG9mZnNldD0iLjY1IiBzdG9wLWNvbG9yPSIjYzM5YTUxIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNzg1MTJiIi8+PC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8Y2lyY2xlIGN4PSIyNCIgY3k9IjIwIiByPSIyMiIgZmlsbD0idXJsKCNnbG93KSIvPgo8ZyBzdHJva2U9IiNmOWQ3N2QiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiPjxwYXRoIGQ9Ik0yNCAydjNNMTAgN2wyIDNNNCAxOWg0TTM4IDdsLTIgM000MCAxOWg0TTcgMzFsMy0yTTM4IDI5bDMgMiIvPjwvZz4KPHBhdGggZD0iTTE5IDM1YzAtNy03LTktNy0xN2ExMiAxMiAwIDAgMSAyNCAwYzAgOC03IDEwLTcgMTciIGZpbGw9InVybCgjZ2xhc3MpIiBzdHJva2U9IiNjOTk5NDIiIHN0cm9rZS13aWR0aD0iMS4zIi8+CjxwYXRoIGQ9Ik0xNyAxN2MwLTQgMy03IDctNyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZGU3IiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iLjg1Ii8+CjxwYXRoIGQ9Ik0yMiAzNGwtMi0xMyA0IDQgNC00LTIgMTMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZjhjNCIgc3Ryb2tlLXdpZHRoPSIxLjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE5IDM0aDEwdjdsLTMgM2gtNGwtMy0zeiIgZmlsbD0idXJsKCNicmFzcykiIHN0cm9rZT0iIzgwNWQzMyIvPgo8cGF0aCBkPSJNMTkgMzZoMTBNMTkgMzloMTAiIHN0cm9rZT0iIzgzNjIzNSIgc3Ryb2tlLXdpZHRoPSIxLjMiLz48cGF0aCBkPSJNMjIgNDRoNCIgc3Ryb2tlPSIjZDNhZTY1IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K" alt="" draggable="false"><span class="hint-count" aria-hidden="true">…</span></button><span class="hint-tooltip" id="glass-hint-tooltip" role="tooltip"><span class="hint-tooltip-title">Повернуть нужную трубу</span><span class="hint-tooltip-detail">Будет использована 1 подсказка</span></span></div><button class="life-wrap" type="button" data-action="life-store" aria-label="Предохранители. Пополнить запас" aria-describedby="glass-life-tooltip"><span class="life-meter" aria-hidden="true"><img class="life-fuse" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZ2xhc3MiIHgyPSIwIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2I5ZWNlZCIvPjxzdG9wIG9mZnNldD0iLjI1IiBzdG9wLWNvbG9yPSIjNWZhYmI0Ii8+PHN0b3Agb2Zmc2V0PSIuNTUiIHN0b3AtY29sb3I9IiMyMzU4NjYiLz48c3RvcCBvZmZzZXQ9Ii44IiBzdG9wLWNvbG9yPSIjNjRhZmJkIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMTkzZTRkIi8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9ImJyYXNzIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNmZmYwYjgiLz48c3RvcCBvZmZzZXQ9Ii4yNSIgc3RvcC1jb2xvcj0iI2Q5YWQ2MCIvPjxzdG9wIG9mZnNldD0iLjUiIHN0b3AtY29sb3I9IiNhYjc3MzYiLz48c3RvcCBvZmZzZXQ9Ii43IiBzdG9wLWNvbG9yPSIjZWJjODdlIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNzg1MTJiIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHg9IjgiIHk9IjE3IiB3aWR0aD0iMzIiIGhlaWdodD0iMTQiIHJ4PSIzIiBmaWxsPSJ1cmwoI2dsYXNzKSIgc3Ryb2tlPSIjN2ViYmMxIi8+CjxwYXRoIGQ9Ik0xMCAyNGg5bDMtMiA0IDQgMy0yaDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZDg4NyIgc3Ryb2tlLXdpZHRoPSIxLjMiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTEyIDE5aDI0IiBzdHJva2U9IiNlNWZmZmYiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9Ii44Ii8+CjxnIGZpbGw9InVybCgjYnJhc3MpIiBzdHJva2U9IiM5NDZjMzUiIHN0cm9rZS13aWR0aD0iLjgiPjxyZWN0IHg9IjMiIHk9IjE2IiB3aWR0aD0iOCIgaGVpZ2h0PSIxNiIgcng9IjIiLz48cmVjdCB4PSIzNyIgeT0iMTYiIHdpZHRoPSI4IiBoZWlnaHQ9IjE2IiByeD0iMiIvPjwvZz4KPHBhdGggZD0iTTYgMTh2MTJNNDAgMTh2MTIiIHN0cm9rZT0iI2ZmZGU4ZiIgc3Ryb2tlLXdpZHRoPSIxIiBvcGFjaXR5PSIuNiIvPgo8L3N2Zz4K" alt="" draggable="false"><span class="life-count" aria-hidden="true">…</span></span><span class="life-tooltip" id="glass-life-tooltip" role="tooltip">Запас попыток. Нажми, чтобы пополнить.</span></button></div>
     <div class="level-heading"><div class="level-number">Уровень 22</div><div class="level-name">Труба на салазках</div></div>
     <button class="gear" type="button" aria-label="Настройки уровня" data-action="settings"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="glass-gear-face" x2="0" y2="1"><stop stop-color="#ffe4a1"/><stop offset="1" stop-color="#dab46a"/></linearGradient></defs><path fill-rule="evenodd" d="M21 3h6l1 6 3 1 5-3 4 4-3 5 1 3 6 1v6l-6 1-1 3 3 5-4 4-5-3-3 1-1 6h-6l-1-6-3-1-5 3-4-4 3-5-1-3-6-1v-6l6-1 1-3-3-5 4-4 5 3 3-1zM31 23a7 7 0 1 0-14 0 7 7 0 0 0 14 0"/></svg></button>
   </header>
@@ -1718,6 +1755,7 @@ background: radial-gradient(ellipse, #e3eeb72e, transparent 65%);
   <div class="settings-overlay" hidden><section class="settings-panel" role="dialog" aria-modal="true" aria-label="Настройки уровня">
     <button class="settings-close" type="button" aria-label="Закрыть настройки" data-action="close"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAMAAADW3miqAAAABGdBTUEAALGPC/xhBQAAAFpQTFRFZmmBZmeAZGeBY2uEZmiAZmeAZWiAZWiAZmaIZWeAZWeAZ2eCAAAAsrO/vLzHlZeneXqPjI2fz8/XqKq36+zv2NnfxcbPb3GH4uLnn6CvgoSX9fX3ZmiA////9nuYIQAAAA10Uk5TX49PH9+vn78Pz+8vABTnRx0AAAE8SURBVDjLddTZsoMgDAbg1F2hp6vWBd7/NU8gAiFqLugQv8605BfQWKppsRqlWfEeaN3VZq82sryHKO6Nqbrd9KnXO3QzrPpOGmNuGpT7XKdxfL+CIpN6Chpcf1/raiVFhvUaqHB9+73dSJGZqTe6XwquYy1X3FjrdhmK6hkNoQGXWah1i40vbgdwp/SymWLGfvBxDYX76sIVN5N7WoDupZKmxxMvB6GEGUo3O3Wl/ryhAV+pJRiPzlUyhM4UMzva575ZcaqUHEJHkyu4MJmCYJ6b/HdJIWrzbEjVxoyfmaBCxrlZFqn2jM/Z+UiVZTyeIVPHjFt7p/gydcz4FF6E5TrjlJ9sjoeMk1HZtFnGH/i6bp8wd1KpFzIeirJBKl0rmPFKGlS85zPeNWFfl/ESy3o+T4WfcQv8OuS9fwOmdvqQdiwMAAAAAElFTkSuQmCC" alt="" draggable="false"></button>
     <h2 class="settings-title">Настройки</h2>
+    <label class="language-choice"><span>Язык / Language</span><select data-language-select aria-label="Язык / Language"><option value="ru">Русский</option><option value="en">English</option></select></label>
     <div class="settings-controls">
       <button class="depth-key" type="button" aria-label="Звук" aria-pressed="true" data-action="sound"><span class="setting-icon speaker-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-icon="volume-2"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path><path d="M16 9a5 5 0 0 1 0 6"></path><path d="M19.364 18.364a9 9 0 0 0 0-12.728"></path></svg></span><span class="setting-off-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-icon="slash"><path d="M22 2 2 22"></path></svg></span></button>
       <button class="depth-key" type="button" aria-label="Музыка" aria-pressed="true" data-action="music"><span class="setting-icon music-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-icon="music"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></span><span class="setting-off-mark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-icon="slash"><path d="M22 2 2 22"></path></svg></span></button>
@@ -1732,7 +1770,7 @@ background: radial-gradient(ellipse, #e3eeb72e, transparent 65%);
     <button class="result-button" type="button" data-action="hint-gift" aria-label="Получить 1 подсказку бесплатно"><span class="hint-shop-action"><span>Получить 1</span><span class="hint-shop-value">Бесплатно</span></span></button>
     <p class="hint-refill-copy"></p>
     <p class="hint-shop-balance"><span>Твои звёзды</span><span class="hint-shop-balance-value">★ <strong class="hint-shop-stars">—</strong></span></p>
-    <button class="result-button" type="button" data-action="hint-buy" aria-label="Купить 1 подсказку за 2 звезды"><span class="hint-shop-action"><span>Купить 1</span><span class="hint-shop-value hint-shop-price">★ 2</span></span></button>
+<button class="result-button" type="button" data-action="hint-buy" aria-label="Купить 1 подсказку за 5 звёзд"><span class="hint-shop-action"><span>Купить 1</span><span class="hint-shop-value hint-shop-price">★ 5</span></span></button>
     <button class="result-button" type="button" data-action="hint-ad" aria-label="Посмотреть видео и получить 1 подсказку"><span class="hint-shop-action"><span>Смотреть видео</span><span class="hint-shop-value">+1</span></span></button>
     <p class="hint-ad-note" hidden>Реклама доступна в Яндекс Играх.</p>
   </section></div>
@@ -1771,7 +1809,7 @@ background: radial-gradient(ellipse, #e3eeb72e, transparent 65%);
     <div class="life-store-topup" hidden>
       <p class="life-store-balance"><span>Твои звёзды</span><span class="life-store-balance-value">★ <strong class="life-store-stars">—</strong></span></p>
       <p class="hint-refill-copy">Для предохранителя нужно 3 звезды.</p>
-      <button class="result-button" type="button" data-action="life-star-ad"><span>Смотреть рекламу · +1 ★</span></button>
+      <button class="result-button" type="button" data-action="life-star-ad"><span>Смотреть рекламу · +3 ★</span></button>
       <p class="hint-ad-note life-store-ad-note"></p>
       <div class="life-store-future" aria-label="Покупки за Яны пока недоступны">Покупка за Яны <span>позже</span></div>
       <button class="result-button result-secondary-button" type="button" data-action="life-stars-back"><span>К предохранителям</span></button>
@@ -2244,7 +2282,7 @@ function createGlassFuseBurn({overlay,meter,document,reduced}){
   return {play,reset};
 }
 
-    const hatchTurns = { W: 0, N: 1, E: 2, S: 3 };function glassHatchPipePath(index, side, size, inset = 0, reverse = false, style = '') {const cx=index%size*100+50,cy=Math.floor(index/size)*100+50,q=hatchTurns[side];const point=([x,y])=>{for(let i=0;i<q;i++)[x,y]=[-y,x];return [cx+x,cy+y].join(',');};if(style==='mockup'){const p=[[-50+inset,0],[-20,0],[8,0],[8,18],[8,22]].map(([x,y])=>side==='E'?[cx-x,cy+y].join(','):point([x,y]));return reverse?`M${p[4]}L${p[3]}Q${p[2]} ${p[1]}L${p[0]}`:`M${p[0]}L${p[1]}Q${p[2]} ${p[3]}L${p[4]}`;}const p=[[-50+inset,0],[0,0]].map(point);return reverse?`M${p[1]}L${p[0]}`:`M${p[0]}L${p[1]}`;}function createGlassHatchArt({node,index,cx,cy,side,number,symbol,style}) {const mockup=style==='mockup',mirrored=mockup&&side==='E',offsetX=mockup?(mirrored?-8:8):0,offsetY=mockup?18:0,pose=`translate(${cx+offsetX} ${cy+offsetY})`;const shadow=node('path',{class:'hatch-ground-shadow',d:`M${cx+offsetX-31},${cy+offsetY+11}a31,8 0 1,0 62,0a31,8 0 1,0 -62,0`});const back=node('g',{class:'hatch-back',transform:pose});const backGlyph=node('g',{class:'hatch-glyph'}),well=node('g',{class:'hatch-scene-body'});well.append(node('ellipse',{class:'hatch-rim-depth',cx:0,cy:5,rx:29,ry:19}),node('ellipse',{class:'hatch-rim',cx:0,cy:0,rx:29,ry:19}),node('ellipse',{class:'hatch-well',cx:0,cy:0,rx:22,ry:13}),node('path',{class:'hatch-well-wall',d:'M-20,0Q0,17 20,0V6Q0,23 -20,6Z'}));backGlyph.append(well);back.append(backGlyph);const front=node('g',{class:'hatch-mark','data-cell':index,'data-pair':number,transform:pose});const frontGlyph=node('g',{class:'hatch-glyph'}),body=node('g',{class:'hatch-scene-body'});body.append(node('path',{class:'hatch-front-depth',d:'M-29,0A29,19 0 0,0 29,0V5A29,19 0 0,1 -29,5Z'}),node('path',{class:'hatch-front-rim',d:'M-29,0A29,19 0 0,0 29,0L22,0A22,13 0 0,1 -22,0Z'}),node('path',{class:'hatch-front-highlight',d:'M-25,7Q0,25 25,7'}));const lid=node('g',{class:'hatch-raised-lid',...(mockup?{transform:mirrored?'translate(-7 0) scale(-.82 .82)':'translate(7 0) scale(.82)'}:{})});lid.append(node('rect',{class:'hatch-hinge',x:21,y:-9,width:15,height:8,rx:2}),node('ellipse',{class:'hatch-lid-depth',cx:36,cy:-17,rx:10,ry:27}),node('ellipse',{class:'hatch-lid-rim',cx:32,cy:-18,rx:10,ry:27}),node('ellipse',{class:'hatch-lid-face',cx:32,cy:-18,rx:6.7,ry:21}),node('path',{class:'hatch-lid-highlight',d:'M31,-39Q23,-23 27,-3'}));for(const y of [-32,-3])lid.append(node('circle',{class:'hatch-lid-bolt',cx:34,cy:y,r:1.6}));if(symbol)lid.append(node('path',{class:'hatch-pair-mark',d:symbol==='triangle'?'M32,-23L36,-15H28Z':'M32,-24L36,-18L32,-12L28,-18Z'}));body.append(lid);frontGlyph.append(body);front.append(frontGlyph);return {shadow,back,front};}
+    function hatchLayout(side, inset = 0) {const mirrored=side==='E'||side==='S',vertical=side==='N'||side==='S';const points=vertical?[[0,-50+inset],[0,-20],[0,0],[8,0],[8,18],[8,22]]:[[-50+inset,0],[-20,0],[8,0],[8,18],[8,22]];const orient=([x,y])=>[mirrored?-x:x,side==='S'?-y:y];return {mirrored,offset:orient([8,18]),points:points.map(orient)};}function glassHatchPipePath(index, side, size, inset = 0, reverse = false) {const cx=index%size*100+50,cy=Math.floor(index/size)*100+50;const p=hatchLayout(side,inset).points.map(([x,y])=>[cx+x,cy+y].join(','));if(p.length===6)return reverse?`M${p[5]}L${p[4]}C${p[3]} ${p[2]} ${p[1]}L${p[0]}`:`M${p[0]}L${p[1]}C${p[2]} ${p[3]} ${p[4]}L${p[5]}`;return reverse?`M${p[4]}L${p[3]}Q${p[2]} ${p[1]}L${p[0]}`:`M${p[0]}L${p[1]}Q${p[2]} ${p[3]}L${p[4]}`;}function glassHatchPairTone(number) {return number%2===1?{color:'#bd9aeb',face:'#614d7c',shade:'#44344f',name:'сиреневый'}:{color:'#a3d88b',face:'#4e7042',shade:'#344d30',name:'зелёный'};}function createGlassHatchArt({node,index,cx,cy,side,number,symbol,colored=false}) {const {mirrored,offset:[offsetX,offsetY]}=hatchLayout(side),pose=`translate(${cx+offsetX} ${cy+offsetY})`;const tone=glassHatchPairTone(number),tint=colored?{'data-pair-color':tone.name,style:`--hatch-pair-color:${tone.color};--hatch-pair-face:${tone.face};--hatch-pair-shade:${tone.shade}`}:{ };const shadow=node('path',{class:'hatch-ground-shadow',d:`M${cx+offsetX-31},${cy+offsetY+11}a31,8 0 1,0 62,0a31,8 0 1,0 -62,0`});const back=node('g',{class:'hatch-back',transform:pose,...tint});const backGlyph=node('g',{class:'hatch-glyph'}),well=node('g',{class:'hatch-scene-body'});well.append(node('ellipse',{class:'hatch-rim-depth',cx:0,cy:5,rx:29,ry:19}),node('ellipse',{class:'hatch-rim',cx:0,cy:0,rx:29,ry:19}),node('ellipse',{class:'hatch-well',cx:0,cy:0,rx:22,ry:13}),node('path',{class:'hatch-well-wall',d:'M-20,0Q0,17 20,0V6Q0,23 -20,6Z'}));backGlyph.append(well);back.append(backGlyph);const front=node('g',{class:'hatch-mark','data-cell':index,'data-pair':number,transform:pose,...tint});const frontGlyph=node('g',{class:'hatch-glyph'}),body=node('g',{class:'hatch-scene-body'});body.append(node('path',{class:'hatch-front-depth',d:'M-29,0A29,19 0 0,0 29,0V5A29,19 0 0,1 -29,5Z'}),node('path',{class:'hatch-front-rim',d:'M-29,0A29,19 0 0,0 29,0L22,0A22,13 0 0,1 -22,0Z'}),node('path',{class:'hatch-front-highlight',d:'M-25,7Q0,25 25,7'}));const lid=node('g',{class:'hatch-raised-lid','data-mirrored':String(mirrored),transform:mirrored?'translate(-3 0) scale(-.82 .82)':'translate(3 0) scale(.82)'});lid.append(node('rect',{class:'hatch-hinge',x:21,y:-9,width:15,height:8,rx:2}),node('ellipse',{class:'hatch-lid-depth',cx:36,cy:-17,rx:10,ry:27}),node('ellipse',{class:'hatch-lid-rim',cx:32,cy:-18,rx:10,ry:27}),node('ellipse',{class:'hatch-lid-face',cx:32,cy:-18,rx:6.7,ry:21}),node('path',{class:'hatch-lid-highlight',d:'M31,-39Q23,-23 27,-3'}));for(const y of [-32,-3])lid.append(node('circle',{class:'hatch-lid-bolt',cx:34,cy:y,r:1.6}));if(symbol)lid.append(node('path',{class:'hatch-pair-mark',d:symbol==='triangle'?'M32,-23L36,-15H28Z':'M32,-24L36,-18L32,-12L28,-18Z'}));body.append(lid);frontGlyph.append(body);front.append(frontGlyph);return {shadow,back,front};}
     // Authored continuations of chapter one. Each path includes both hatch mouths;
 // non-adjacent consecutive mouths are one isolated underground connection.
 const undergroundBoards = [
@@ -2508,7 +2546,7 @@ const undergroundBoards = [
       1,
       25
     ],
-    "timeLimitSeconds": 130,
+    "timeLimitSeconds": 115,
     "outage": null,
     "houseEntryGap": false
   },
@@ -2825,7 +2863,7 @@ const undergroundBoards = [
     "intro": null,
     "hatchArtStyle": "mockup",
     "lessonCells": [],
-    "timeLimitSeconds": 160,
+    "timeLimitSeconds": 145,
     "outage": null,
     "houseEntryGap": false
   },
@@ -2864,12 +2902,12 @@ const undergroundBoards = [
       ],
       [
         4,
-        "W"
+        "W",
+        "E"
       ],
       [
         5,
-        "N",
-        "S"
+        "W"
       ],
       [
         6,
@@ -2974,11 +3012,11 @@ const undergroundBoards = [
       [
         25,
         "N",
-        "S"
+        "E"
       ],
       [
         26,
-        "N",
+        "W",
         "S"
       ],
       [
@@ -2997,16 +3035,16 @@ const undergroundBoards = [
       ],
       [
         30,
+        "E",
         "N"
       ],
       [
         31,
-        "N",
-        "E"
+        "W"
       ],
       [
         32,
-        "W",
+        "N",
         "E"
       ],
       [
@@ -3046,47 +3084,13 @@ const undergroundBoards = [
         16,
         10,
         11,
+        31,
         30,
         24,
         18,
         19,
         25,
-        31,
-        32,
-        33,
-        34,
-        35,
-        29,
-        23,
-        17
-      ],
-      [
-        12,
-        13,
-        14,
-        15,
-        9,
-        8,
-        7,
-        6,
-        0,
-        1,
-        2,
-        8,
-        14,
-        20,
-        21,
-        22,
-        28,
-        4,
-        10,
-        11,
-        30,
-        24,
-        18,
-        19,
-        25,
-        31,
+        26,
         32,
         33,
         34,
@@ -3112,54 +3116,7 @@ const undergroundBoards = [
         20,
         19,
         25,
-        31,
-        32,
-        33,
-        34,
-        35,
-        29,
-        23,
-        17
-      ],
-      [
-        12,
-        13,
-        14,
-        15,
-        9,
-        8,
-        7,
-        6,
-        0,
-        1,
-        2,
-        8,
-        14,
-        20,
-        19,
-        25,
-        31,
-        30,
-        11,
-        17
-      ],
-      [
-        12,
-        13,
-        14,
-        15,
-        21,
-        27,
-        28,
-        4,
-        10,
-        11,
-        30,
-        24,
-        18,
-        19,
-        25,
-        31,
+        26,
         32,
         33,
         34,
@@ -3176,56 +3133,7 @@ const undergroundBoards = [
         21,
         27,
         28,
-        4,
-        10,
-        9,
-        3,
-        2,
-        8,
-        14,
-        20,
-        19,
-        25,
-        31,
-        32,
-        33,
-        34,
-        35,
-        29,
-        23,
-        17
-      ],
-      [
-        12,
-        13,
-        14,
-        15,
-        21,
-        27,
-        28,
-        4,
-        10,
-        9,
-        3,
-        2,
-        8,
-        14,
-        20,
-        19,
-        25,
-        31,
-        30,
-        11,
-        17
-      ],
-      [
-        12,
-        13,
-        14,
-        15,
-        21,
-        27,
-        28,
+        5,
         4,
         3,
         9,
@@ -3243,12 +3151,13 @@ const undergroundBoards = [
         16,
         10,
         11,
+        31,
         30,
         24,
         18,
         19,
         25,
-        31,
+        26,
         32,
         33,
         34,
@@ -3265,6 +3174,7 @@ const undergroundBoards = [
         21,
         27,
         28,
+        5,
         4,
         3,
         9,
@@ -3279,46 +3189,23 @@ const undergroundBoards = [
         20,
         19,
         25,
-        31,
+        26,
         32,
         33,
         34,
         35,
         29,
         23,
-        17
-      ],
-      [
-        12,
-        13,
-        14,
-        15,
-        21,
-        27,
-        28,
-        4,
-        3,
-        9,
-        8,
-        7,
-        6,
-        0,
-        1,
-        2,
-        8,
-        14,
-        20,
-        19,
-        25,
-        31,
-        30,
-        11,
         17
       ]
     ],
     "fixed": [
       1,
-      7
+      5,
+      28,
+      11,
+      31,
+      26
     ],
     "stars": [
       3,
@@ -3369,13 +3256,13 @@ const undergroundBoards = [
     ],
     "hatches": [
       {
-        "a": 4,
+        "a": 5,
         "b": 28,
         "symbol": "diamond"
       },
       {
         "a": 11,
-        "b": 30,
+        "b": 31,
         "symbol": "triangle"
       }
     ],
@@ -3715,7 +3602,7 @@ const undergroundBoards = [
       20,
       26
     ],
-    "timeLimitSeconds": 170,
+    "timeLimitSeconds": 160,
     "outage": null,
     "houseEntryGap": false
   }
@@ -3768,6 +3655,39 @@ function applyUndergroundBoards(levels){
   level.variants=board.paths.filter(path=>fixedHatchesFitPath(board,path)).map(path=>lineVariant(board,path,board.initialRotations)).sort((a,b)=>a.stars-b.stars||a.actions.length-b.actions.length);
   level.paths=level.variants.map(v=>v.path);level.hintRoute=level.variants.at(-1).path;
  }
+}
+
+// Dense late-chapter routes combine already learned controls.
+const lateBoards=[
+{"id":10,"size":6,"source":{"index":12,"side":"W"},"goal":{"index":17,"side":"E"},"solution":[[0,"E"],[1,"W","E"],[2,"W","S"],[3,"S","E"],[4,"W","E"],[5,"W","S"],[6,"S","E"],[7,"W","S"],[8,"N","E"],[9,"W","N"],[10,"E","S"],[11,"N","W"],[12,"N","W"],[13,"N","S"],[14,"S","E"],[15,"W","S"],[16,"N","S"],[17,"S","E"],[18,"N","E"],[19,"N","S"],[20,"E","N"],[21,"E","W","N","S"],[22,"N","W"],[23,"S","N"],[24,"E","S"],[25,"N","W"],[26,"E","S"],[27,"N","W"],[28,"S","E"],[29,"W","N"],[30,"N","E"],[31,"W"],[32,"N","E"],[33,"W","E"],[34,"W","N"],[35,"N","E"]],"hatches":[{"a":31,"b":0,"symbol":"diamond"}],"crossovers":[21],"sequentialCrossovers":[{"index":21,"first":["E","W"],"then":["N","S"],"rotation":0}],"fixed":[31,0,1],"switches":[{"index":12,"linked":26}],"sliders":[],"outage":null,"requireClosedCircuit":true,"stars":[6,27],"initialRotations":[0,0,1,2,1,1,2,2,2,3,0,3,3,3,1,1,0,3,0,3,2,2,1,1,1,2,3,1,1,1,1,0,1,3,2,1],"name":"Дальний рычаг","timeLimitSeconds":165,"intro":"switch","lessonCells":[12,26],"houseEntryGap":false,"crossoverArrows":[],"oneWays":[],"baseStars":1,"completionStars":null,"paths":[[12,6,7,13,19,25,24,30,31,0,1,2,8,9,15,14,20,21,22,16,10,11,17],[12,6,7,13,19,25,24,30,31,0,1,2,8,9,15,14,20,21,22,28,29,23,17],[12,6,7,13,19,25,24,30,31,0,1,2,8,9,3,4,5,11,10,16,22,21,20,14,15,21,27,26,32,33,34,28,29,23,17]]},
+{"id":11,"size":6,"source":{"index":12,"side":"W"},"goal":{"index":17,"side":"E"},"solution":[[0,"S","E"],[1,"W","E"],[2,"W","S"],[3,"N","E"],[4,"S","E"],[5,"W","S"],[6,"S","N"],[7,"E","S"],[8,"N","W"],[9,"E"],[10,"W","N"],[11,"N","S"],[12,"N","W"],[13,"N","S"],[14,"S","E"],[15,"W","S"],[16,"E","W"],[17,"N","E"],[18,"E","S"],[19,"N","W"],[20,"E","N"],[21,"E","W","N","S"],[22],[23,"S","W"],[24,"N","S"],[25,"S","E"],[26,"W","E"],[27,"W","E","N","S"],[28,"W","S"],[29,"S","N"],[30,"N","E"],[31,"W","N"],[32,"E"],[33,"N","W"],[34,"N","E"],[35,"W","N"]],"hatches":[{"a":32,"b":9,"symbol":"diamond"}],"crossovers":[21,27],"sequentialCrossovers":[{"index":21,"first":["E","W"],"then":["N","S"],"rotation":0},{"index":27,"first":["W","E"],"then":["N","S"],"rotation":0}],"fixed":[32,9,13],"switches":[{"index":18,"linked":15}],"sliders":[{"index":16,"slot":22}],"outage":{"breakCell":21,"turns":[[18,3],[16,1],[21,1]]},"requireClosedCircuit":true,"stars":[6,35],"initialRotations":[1,1,1,3,1,1,2,1,1,0,1,2,0,0,1,1,0,1,1,3,1,2,0,1,1,1,3,1,1,1,1,1,0,1,1,0],"name":"Подвижный обход","timeLimitSeconds":195,"intro":null,"lessonCells":[],"houseEntryGap":false,"crossoverArrows":[],"oneWays":[],"baseStars":1,"completionStars":null,"paths":[[12,6,0,1,2,8,7,13,19,20,14,15,21,27,33,32,9,10,4,5,11,17],[12,6,0,1,2,8,7,13,19,18,24,30,31,25,26,27,28,34,33,27,21,15,14,20,21,22,23,17],[12,6,0,1,2,8,7,13,19,18,24,30,31,25,26,27,28,34,35,29,23,22,21,20,14,15,21,27,33,32,9,10,4,5,11,17]]},
+{"id":12,"size":6,"source":{"index":12,"side":"W"},"goal":{"index":17,"side":"E"},"solution":[[0,"S","E"],[1,"W","E"],[2,"W","S"],[3,"E","S"],[4,"E","W"],[5,"S","W"],[6,"S","N"],[7,"E"],[8,"N","S","E","W"],[9,"N","W"],[10,"E"],[11,"W","N"],[12,"N","W"],[13,"E","S"],[14,"N","W"],[15,"S","E"],[16,"W","S"],[17,"S","E"],[18,"E","S"],[19,"N","W"],[20,"S","E"],[21,"W","N"],[22,"N","E"],[23,"W","N"],[24,"N","E"],[25,"W","E"],[26,"W","E","S","N"],[27,"W","S"],[28,"S","E"],[29,"W"],[30,"W","E"],[31,"E"],[32,"W","N"],[33,"N","E"],[34,"W","N"],[35,"W","E"]],"hatches":[{"a":7,"b":31,"symbol":"diamond"},{"a":29,"b":10,"symbol":"triangle"}],"crossovers":[26,8],"sequentialCrossovers":[{"index":26,"first":["W","E"],"then":["N","S"],"rotation":0},{"index":8,"first":["N","S"],"then":["E","W"],"rotation":0}],"fixed":[7,31,29,10,6],"switches":[{"index":19,"linked":33},{"index":22,"linked":12}],"sliders":[],"outage":null,"requireClosedCircuit":true,"stars":[0,5],"initialRotations":[1,1,1,1,3,1,0,0,1,1,0,3,3,1,1,1,1,3,2,1,1,1,3,1,1,3,1,1,3,0,3,0,1,1,1,0],"name":"Двойное управление","timeLimitSeconds":205,"intro":"switch","lessonCells":[19,33,22,12],"houseEntryGap":false,"crossoverArrows":[],"oneWays":[],"baseStars":1,"completionStars":null,"lessonTitle":"Два рычага","lessonCopy":"Каждый рычаг поворачивает свою пару труб.","paths":[[12,6,0,1,2,8,14,13,19,20,26,32,31,7,8,9,15,16,22,23,17],[12,6,0,1,2,8,14,13,19,18,24,25,26,27,33,34,28,29,10,11,17],[12,6,0,1,2,8,14,13,19,18,24,25,26,27,21,20,26,32,31,7,8,9,15,16,22,23,17],[12,6,0,1,2,8,14,13,19,18,24,25,26,27,33,34,28,29,10,11,5,4,3,9,8,7,31,32,26,20,21,15,16,22,23,17]]},
+{"id":45,"size":6,"source":{"index":12,"side":"W"},"goal":{"index":17,"side":"E"},"solution":[[0,"E"],[1,"S","W"],[2,"S","E"],[3,"W","S"],[4,"E","S"],[5,"W"],[6,"S","E"],[7,"W","N"],[8,"S","N"],[9,"N","S"],[10,"N","E"],[11,"W","S"],[12,"W","N"],[13,"W","E"],[14,"E","N"],[15,"E","W","N","S"],[16,"S","W"],[17,"N","E"],[18,"S","E"],[19],[20,"W","S"],[21,"N","E"],[22,"S","N","W","E"],[23,"W","S"],[24,"S","N"],[25,"W","E"],[26,"N","S"],[27,"S","E"],[28,"W","N"],[29,"N","S"],[30,"E","N"],[31,"W"],[32,"N","E"],[33,"W","N"],[34,"E"],[35,"N","W"]],"hatches":[{"a":0,"b":31,"symbol":"diamond"},{"a":34,"b":5,"symbol":"triangle"}],"crossovers":[22,15],"sequentialCrossovers":[{"index":22,"first":["S","N"],"then":["E","W"],"rotation":0},{"index":15,"first":["E","W"],"then":["N","S"],"rotation":0}],"fixed":[0,31,34,5,24],"switches":[{"index":16,"linked":12},{"index":27,"linked":6}],"sliders":[{"index":13,"slot":19}],"outage":{"breakCell":22,"turns":[[16,1],[27,1],[13,1],[22,1],[15,1],[17,1]]},"requireClosedCircuit":true,"stars":[7,29],"initialRotations":[0,1,1,1,1,0,2,1,3,3,1,1,3,2,1,3,3,1,2,0,1,1,1,1,0,0,1,2,1,1,3,0,1,1,0,2],"name":"Последний рубеж","timeLimitSeconds":215,"intro":null,"lessonCells":[],"houseEntryGap":false,"crossoverArrows":[],"oneWays":[],"baseStars":1,"completionStars":null,"paths":[[12,6,7,1,2,8,14,15,16,22,28,27,33,32,26,20,21,15,9,3,4,10,11,17],[12,6,7,1,0,31,30,24,18,19,20,26,32,33,27,28,22,16,15,14,8,2,3,9,15,21,22,23,17],[12,6,7,1,0,31,30,24,18,19,20,26,32,33,27,28,22,16,15,14,8,2,3,9,15,21,22,23,29,35,34,5,4,10,11,17]]}
+];
+const lateSides=['N','E','S','W'];
+const lateOpposite={N:'S',E:'W',S:'N',W:'E'};
+function lateDirection(a,b){return b-a===-6?'N':b-a===6?'S':b-a===-1?'W':b-a===1?'E':null;}
+function lateVariant(level,path){
+ const rotations=[...level.initialRotations],actions=[],peers=new Map(level.hatches.flatMap(p=>[[p.a,p.b],[p.b,p.a]])),required=new Map(),handled=new Set();
+ for(const[k,index]of path.entries()){if(required.has(index))continue;const incoming=k?lateDirection(index,path[k-1]):level.source.side,outgoing=k===path.length-1?level.goal.side:lateDirection(index,path[k+1]);required.set(index,peers.has(index)?[path[k-1]===peers.get(index)?outgoing:incoming]:[incoming,outgoing]);}
+ for(const[index,needed]of required){const slide=level.sliders.find(s=>s.index===index||s.slot===index),pair=level.switches.find(s=>s.index===index||s.linked===index),control=slide?.index??pair?.index??index;if(handled.has(control))continue;handled.add(control);
+  if(slide){const position=path.includes(slide.slot)?1:0;if(rotations[control]%2!==position){rotations[control]++;actions.push(control);}continue;}
+  const cells=pair?[pair.index,pair.linked]:[index];const count=[0,1,2,3].find(q=>cells.every(i=>{const need=required.get(i);if(!need)return true;if(level.fixed.includes(i)&&q)return false;const turns=rotations[i]+q,relay=level.sequentialCrossovers.find(r=>r.index===i),ports=relay?relay.first:level.solution[i].slice(1);return need.every(p=>ports.some(side=>lateSides[(lateSides.indexOf(side)+turns)%4]===p));}));
+  if(count===undefined)throw new Error('Unreachable late route '+level.id+' at '+index);for(const i of cells)rotations[i]+=count;for(let n=0;n<count;n++)actions.push(control);
+ }return {path,paths:[path],rotations,actions,stars:1+level.stars.filter(i=>path.includes(i)).length};
+}
+function applyLateBoards(levels){for(const board of lateBoards){const level=levels.find(l=>l.id===board.id);if(!level)continue;Object.assign(level,board,{requireClosedCircuit:true});level.variants=board.paths.map(path=>lateVariant(level,path)).sort((a,b)=>a.stars-b.stars||a.actions.length-b.actions.length);level.hintRoute=level.variants.at(-1).path;}}
+
+// Six-by-six middle-chapter routes. Stable IDs retain player results.
+const middleBoards=[
+{"id":1,"houseEntryGap":true,"name":"Перекрёстный двор","tutorial":false,"nextLevelId":41,"size":6,"requireClosedCircuit":true,"source":{"index":12,"side":"W"},"goal":{"index":17,"side":"E"},"stars":[],"hintRoute":[12,6,7,1,2,3,4,10,16,22,21,15,9,8,14,20,26,32,31,30,24,25,26,27,33,34,28,29,23,17],"paths":[[12,6,7,1,2,3,4,10,16,22,21,15,9,8,14,20,26,32,31,30,24,25,26,27,33,34,28,29,23,17]],"solution":[[0,"N","S"],[1,"S","E"],[2,"W","E"],[3,"W","E"],[4,"W","S"],[5,"N","E"],[6,"S","E"],[7,"W","N"],[8,"E","S"],[9,"S","W"],[10,"N","S"],[11,"N","S"],[12,"W","N"],[13,"N","E"],[14,"N","S"],[15,"S","N"],[16,"N","S"],[17,"S","E"],[18,"N","E"],[19,"N","E"],[20,"N","S"],[21,"E","N"],[22,"N","W"],[23,"S","N"],[24,"S","E"],[25,"W","E"],[26,"N","E","S","W"],[27,"W","S"],[28,"S","E"],[29,"W","N"],[30,"E","N"],[31,"E","W"],[32,"N","W"],[33,"N","E"],[34,"W","N"],[35,"N","E"]],"initialRotations":[1,1,1,1,3,2,1,1,1,1,0,0,3,1,1,1,0,3,0,3,0,3,1,1,3,0,1,2,1,0,1,1,2,1,1,3],"variants":[{"path":[12,6,7,1,2,3,4,10,16,22,21,15,9,8,14,20,26,32,31,30,24,25,26,27,33,34,28,29,23,17],"rotations":[1,4,2,2,4,2,4,4,4,4,0,0,4,1,2,2,0,4,0,3,0,4,4,2,4,0,2,4,4,0,4,2,4,4,4,3],"actions":[12,6,6,6,7,7,7,1,1,1,2,3,4,22,22,22,21,15,9,9,9,8,8,8,14,32,32,31,30,30,30,24,27,27,33,33,33,34,34,34,28,28,28,23,17,26],"stars":1,"paths":[[12,6,7,1,2,3,4,10,16,22,21,15,9,8,14,20,26,32,31,30,24,25,26,27,33,34,28,29,23,17]]}],"displayNumber":11,"chapter":1,"completionStars":1,"hintsEnabled":true,"hintTutorial":false,"readyCoach":false,"timeLimitSeconds":115,"lessonCells":[],"crossovers":[26],"sequentialCrossovers":[{"index":26,"first":["N","S"],"then":["E","W"],"rotation":0}],"fixed":[],"outage":{"breakCell":32,"turns":[[4,3],[32,3],[34,3]]}},
+{"id":41,"displayNumber":12,"chapter":1,"name":"Звёздное переплетение","timeLimitSeconds":90,"tutorial":false,"hintTutorial":false,"readyCoach":false,"houseEntryGap":false,"baseStars":1,"intro":"stars","nextLevelId":39,"size":6,"requireClosedCircuit":true,"source":{"index":12,"side":"W"},"goal":{"index":17,"side":"E"},"stars":[2],"hintRoute":[12,6,0,1,7,8,2,3,9,10,16,15,21,20,14,13,19,25,31,30,24,25,26,32,33,27,28,34,35,29,23,17],"paths":[[12,6,0,1,7,8,2,3,9,10,16,15,21,20,14,13,19,25,31,30,24,25,26,32,33,27,28,34,35,29,23,17],[12,6,0,1,7,8,14,13,19,25,31,30,24,25,26,20,21,15,16,10,9,3,4,5,11,17],[12,6,0,1,7,8,14,13,19,25,31,30,24,25,26,20,21,27,28,34,35,29,23,17],[12,6,0,1,7,8,14,13,19,25,31,30,24,25,26,32,33,27,28,22,21,15,16,10,9,3,4,5,11,17],[12,6,0,1,7,8,14,13,19,25,31,30,24,25,26,32,33,27,28,34,35,29,23,17]],"solution":[[0,"S","E"],[1,"W","S"],[2,"S","E"],[3,"W","S"],[4,"N","S"],[5,"N","E"],[6,"S","N"],[7,"N","E"],[8,"W","N"],[9,"N","E"],[10,"W","S"],[11,"N","S"],[12,"W","N"],[13,"E","S"],[14,"S","W"],[15,"E","S"],[16,"N","W"],[17,"S","E"],[18,"N","E"],[19,"N","S"],[20,"E","N"],[21,"N","W"],[22,"N","E"],[23,"S","N"],[24,"S","E"],[25,"N","E","S","W"],[26,"W","S"],[27,"S","E"],[28,"W","S"],[29,"S","N"],[30,"E","N"],[31,"N","W"],[32,"N","E"],[33,"W","N"],[34,"N","E"],[35,"W","N"]],"initialRotations":[2,1,1,3,3,2,0,1,1,0,2,0,3,3,0,3,3,3,0,1,3,1,1,1,1,0,3,3,0,1,1,1,1,1,3,1],"variants":[{"path":[12,6,0,1,7,8,2,3,9,10,16,15,21,20,14,13,19,25,31,30,24,25,26,32,33,27,28,34,35,29,23,17],"rotations":[4,4,4,4,3,2,0,4,4,0,4,0,4,4,0,4,4,4,0,2,4,4,1,2,4,0,4,4,0,2,4,4,4,4,4,4],"actions":[12,0,0,1,1,1,7,7,7,8,8,8,2,2,2,3,10,10,16,15,21,21,21,20,13,19,31,31,31,30,30,30,24,24,24,26,32,32,32,33,33,33,27,34,35,35,35,29,23,17],"stars":2,"paths":[[12,6,0,1,7,8,2,3,9,10,16,15,21,20,14,13,19,25,31,30,24,25,26,32,33,27,28,34,35,29,23,17]]},{"path":[12,6,0,1,7,8,14,13,19,25,31,30,24,25,26,20,21,15,16,10,9,3,4,5,11,17],"rotations":[4,4,1,3,3,2,0,4,3,0,4,0,4,4,1,4,4,3,0,2,5,4,1,1,4,0,5,3,0,1,4,4,1,1,3,1],"actions":[12,0,0,1,1,1,7,7,7,8,8,14,13,19,31,31,31,30,30,30,24,24,24,26,26,20,20,21,21,21,15,16,10,10],"stars":1,"paths":[[12,6,0,1,7,8,14,13,19,25,31,30,24,25,26,20,21,15,16,10,9,3,4,5,11,17]]},{"path":[12,6,0,1,7,8,14,13,19,25,31,30,24,25,26,20,21,27,28,34,35,29,23,17],"rotations":[4,4,1,3,3,2,0,4,3,0,2,0,4,4,1,3,3,4,0,2,5,3,1,2,4,0,5,3,0,2,4,4,1,1,4,4],"actions":[12,0,0,1,1,1,7,7,7,8,8,14,13,19,31,31,31,30,30,30,24,24,24,26,26,20,20,21,21,34,35,35,35,29,23,17],"stars":1,"paths":[[12,6,0,1,7,8,14,13,19,25,31,30,24,25,26,20,21,27,28,34,35,29,23,17]]},{"path":[12,6,0,1,7,8,14,13,19,25,31,30,24,25,26,32,33,27,28,22,21,15,16,10,9,3,4,5,11,17],"rotations":[4,4,1,3,3,2,0,4,3,0,4,0,4,4,1,4,4,3,0,2,3,1,2,1,4,0,4,4,1,1,4,4,4,4,3,1],"actions":[12,0,0,1,1,1,7,7,7,8,8,14,13,19,31,31,31,30,30,30,24,24,24,26,32,32,32,33,33,33,27,28,22,15,16,10,10],"stars":1,"paths":[[12,6,0,1,7,8,14,13,19,25,31,30,24,25,26,32,33,27,28,22,21,15,16,10,9,3,4,5,11,17]]},{"path":[12,6,0,1,7,8,14,13,19,25,31,30,24,25,26,32,33,27,28,34,35,29,23,17],"rotations":[4,4,1,3,3,2,0,4,3,0,2,0,4,4,1,3,3,4,0,2,3,1,1,2,4,0,4,4,0,2,4,4,4,4,4,4],"actions":[12,0,0,1,1,1,7,7,7,8,8,14,13,19,31,31,31,30,30,30,24,24,24,26,32,32,32,33,33,33,27,34,35,35,35,29,23,17],"stars":1,"paths":[[12,6,0,1,7,8,14,13,19,25,31,30,24,25,26,32,33,27,28,34,35,29,23,17]]}],"hintsEnabled":true,"lessonStar":2,"crossovers":[25],"sequentialCrossovers":[{"index":25,"first":["N","S"],"then":["E","W"],"rotation":0}],"fixed":[]},
+{"id":39,"displayNumber":13,"chapter":1,"timeLimitSeconds":70,"name":"Дорога к звезде","tutorial":false,"hintTutorial":false,"readyCoach":false,"houseEntryGap":false,"baseStars":1,"nextLevelId":40,"size":6,"requireClosedCircuit":true,"source":{"index":12,"side":"W"},"goal":{"index":17,"side":"E"},"stars":[18],"hintRoute":[12,18,19,13,7,1,2,3,9,8,14,20,26,32,31,30,24,25,26,27,28,34,35,29,23,22,21,15,16,10,4,5,11,17],"paths":[[12,6,7,8,14,20,26,32,31,30,24,25,26,27,28,34,35,29,23,22,21,15,16,10,4,5,11,17],[12,18,19,13,7,1,2,3,9,8,14,20,26,32,31,30,24,25,26,27,28,34,35,29,23,22,21,15,16,10,4,5,11,17]],"solution":[[0,"N","E"],[1,"S","E"],[2,"W","E"],[3,"W","S"],[4,"S","E"],[5,"W","S"],[6,"N","E"],[7,"S","N"],[8,"E","S"],[9,"N","W"],[10,"S","N"],[11,"N","S"],[12,"W","S"],[13,"S","N"],[14,"N","S"],[15,"S","E"],[16,"W","N"],[17,"N","E"],[18,"N","E"],[19,"W","N"],[20,"N","S"],[21,"E","N"],[22,"E","W"],[23,"S","W"],[24,"S","E"],[25,"W","E"],[26,"N","E","S","W"],[27,"W","E"],[28,"W","S"],[29,"S","N"],[30,"E","N"],[31,"E","W"],[32,"N","W"],[33,"N","S"],[34,"N","E"],[35,"W","N"]],"initialRotations":[3,0,1,1,0,1,1,3,1,3,1,1,1,1,0,1,1,1,1,3,1,1,2,1,1,0,0,1,1,1,1,0,2,2,1,0],"variants":[{"path":[12,6,7,8,14,20,26,32,31,30,24,25,26,27,28,34,35,29,23,22,21,15,16,10,4,5,11,17],"rotations":[3,0,1,1,0,4,1,3,1,3,2,2,1,1,0,4,4,4,1,3,2,4,2,4,4,0,0,2,4,2,4,0,4,2,4,0],"actions":[20,32,32,30,30,30,24,24,24,27,28,28,28,34,34,34,29,23,23,23,21,21,21,15,15,15,16,16,16,10,5,5,5,11,17,17,17],"stars":1,"paths":[[12,6,7,8,14,20,26,32,31,30,24,25,26,27,28,34,35,29,23,22,21,15,16,10,4,5,11,17]]},{"path":[12,18,19,13,7,1,2,3,9,8,14,20,26,32,31,30,24,25,26,27,28,34,35,29,23,22,21,15,16,10,4,5,11,17],"rotations":[3,0,2,4,0,4,1,4,4,4,2,2,4,2,0,4,4,4,4,4,2,4,2,4,4,0,0,2,4,2,4,0,4,2,4,0],"actions":[12,12,12,18,18,18,19,13,7,2,3,3,3,9,8,8,8,20,32,32,30,30,30,24,24,24,27,28,28,28,34,34,34,29,23,23,23,21,21,21,15,15,15,16,16,16,10,5,5,5,11,17,17,17],"stars":2,"paths":[[12,18,19,13,7,1,2,3,9,8,14,20,26,32,31,30,24,25,26,27,28,34,35,29,23,22,21,15,16,10,4,5,11,17]]}],"hintsEnabled":true,"crossovers":[26],"sequentialCrossovers":[{"index":26,"first":["N","S"],"then":["E","W"],"rotation":0}],"fixed":[],"lessonStar":18},
+{"id":40,"displayNumber":14,"chapter":1,"name":"Два огонька","timeLimitSeconds":75,"tutorial":false,"hintTutorial":false,"readyCoach":false,"houseEntryGap":false,"intro":"route","lessonStar":10,"nextLevelId":2,"size":6,"requireClosedCircuit":true,"source":{"index":12,"side":"W"},"goal":{"index":17,"side":"E"},"stars":[31,10],"hintRoute":[12,18,24,30,31,32,33,34,35,29,28,27,26,25,19,13,7,6,0,1,2,8,14,20,21,15,16,10,9,3,4,5,11,17],"paths":[[12,18,24,30,31,32,33,34,35,29,28,27,26,25,19,13,7,8,9,3,4,5,11,17],[12,18,24,30,31,32,33,34,35,29,28,27,26,25,19,13,7,8,9,15,16,22,23,17],[12,18,24,30,31,32,33,34,35,29,28,27,26,25,19,13,7,6,0,1,2,8,14,20,21,15,16,10,9,3,4,5,11,17],[12,18,24,30,31,32,33,34,35,29,28,27,26,25,19,13,7,6,0,1,2,8,14,20,21,15,16,22,23,17]],"solution":[[0,"S","E"],[1,"W","E"],[2,"W","S"],[3,"S","E"],[4,"W","E"],[5,"W","S"],[6,"E","N"],[7,"S","W"],[8,"N","S"],[9,"E","N"],[10,"S","W"],[11,"N","S"],[12,"W","S"],[13,"S","N"],[14,"N","S"],[15,"S","E"],[16,"W","N"],[17,"N","E"],[18,"N","S"],[19,"S","N"],[20,"N","E"],[21,"W","N"],[22,"N","E"],[23,"N","E"],[24,"N","S"],[25,"E","N"],[26,"E","W"],[27,"E","W"],[28,"E","W"],[29,"S","W"],[30,"N","E"],[31,"W","E"],[32,"W","E"],[33,"W","E"],[34,"W","E"],[35,"W","N"]],"initialRotations":[0,0,1,1,0,1,1,0,0,1,1,0,1,3,3,1,1,1,3,3,1,1,2,0,3,1,3,3,3,1,3,3,3,3,3,1],"variants":[{"stars":2,"rotations":[0,0,1,4,0,4,1,3,1,3,1,0,4,4,3,1,1,4,4,4,1,1,2,0,4,4,4,4,4,4,4,4,4,4,4,4],"path":[12,18,24,30,31,32,33,34,35,29,28,27,26,25,19,13,7,8,9,3,4,5,11,17],"paths":[[12,18,24,30,31,32,33,34,35,29,28,27,26,25,19,13,7,8,9,3,4,5,11,17]],"actions":[12,12,12,18,24,30,31,32,33,34,35,35,35,29,29,29,28,27,26,25,25,25,19,13,7,7,7,8,9,9,3,3,3,5,5,5,17,17,17]},{"stars":2,"rotations":[0,0,1,1,0,1,1,3,1,2,1,0,4,4,3,3,3,1,4,4,1,1,4,3,4,4,4,4,4,4,4,4,4,4,4,4],"path":[12,18,24,30,31,32,33,34,35,29,28,27,26,25,19,13,7,8,9,15,16,22,23,17],"paths":[[12,18,24,30,31,32,33,34,35,29,28,27,26,25,19,13,7,8,9,15,16,22,23,17]],"actions":[12,12,12,18,24,30,31,32,33,34,35,35,35,29,29,29,28,27,26,25,25,25,19,13,7,7,7,8,9,15,15,16,16,22,22,23,23,23]},{"stars":3,"rotations":[0,0,4,4,0,4,4,0,0,4,4,0,4,4,4,4,4,4,4,4,4,4,2,0,4,4,4,4,4,4,4,4,4,4,4,4],"path":[12,18,24,30,31,32,33,34,35,29,28,27,26,25,19,13,7,6,0,1,2,8,14,20,21,15,16,10,9,3,4,5,11,17],"paths":[[12,18,24,30,31,32,33,34,35,29,28,27,26,25,19,13,7,6,0,1,2,8,14,20,21,15,16,10,9,3,4,5,11,17]],"actions":[12,12,12,18,24,30,31,32,33,34,35,35,35,29,29,29,28,27,26,25,25,25,19,13,6,6,6,2,2,2,14,20,20,20,21,21,21,15,15,15,16,16,16,10,10,10,9,9,9,3,3,3,5,5,5,17,17,17]},{"stars":2,"rotations":[0,0,4,1,0,1,4,0,0,1,1,0,4,4,4,4,3,1,4,4,4,4,4,3,4,4,4,4,4,4,4,4,4,4,4,4],"path":[12,18,24,30,31,32,33,34,35,29,28,27,26,25,19,13,7,6,0,1,2,8,14,20,21,15,16,22,23,17],"paths":[[12,18,24,30,31,32,33,34,35,29,28,27,26,25,19,13,7,6,0,1,2,8,14,20,21,15,16,22,23,17]],"actions":[12,12,12,18,24,30,31,32,33,34,35,35,35,29,29,29,28,27,26,25,25,25,19,13,6,6,6,2,2,2,14,20,20,20,21,21,21,15,15,15,16,16,22,22,23,23,23]}],"hintsEnabled":true,"fixed":[],"lessonCells":[31,10]},
+{"id":2,"name":"Лабиринт на болтах","timeLimitSeconds":85,"intro":"fixed","lessonCells":[1],"fixed":[1],"tutorial":false,"nextLevelId":3,"size":6,"requireClosedCircuit":true,"source":{"index":12,"side":"W"},"goal":{"index":17,"side":"E"},"stars":[31,0],"hintRoute":[12,18,24,30,31,32,33,27,26,25,19,20,21,15,9,8,14,13,7,6,0,1,2,3,4,5,11,10,16,22,28,34,35,29,23,17],"paths":[[12,6,7,13,14,8,9,15,21,20,19,25,26,27,33,34,28,22,16,10,11,17],[12,18,24,30,31,32,33,27,26,25,19,20,21,15,9,10,16,22,28,34,35,29,23,17],[12,18,24,30,31,32,33,27,26,25,19,20,21,15,9,8,14,13,7,6,0,1,2,3,4,5,11,10,16,22,28,34,35,29,23,17]],"switches":[],"solution":[[0,"S","E"],[1,"W","E"],[2,"W","E"],[3,"W","E"],[4,"W","E"],[5,"W","S"],[6,"E","N"],[7,"S","W"],[8,"E","S"],[9,"S","W"],[10,"E","S"],[11,"N","W"],[12,"W","S"],[13,"E","N"],[14,"N","W"],[15,"S","N"],[16,"N","S"],[17,"S","E"],[18,"N","S"],[19,"S","E"],[20,"W","E"],[21,"W","N"],[22,"N","S"],[23,"S","N"],[24,"N","S"],[25,"E","N"],[26,"E","W"],[27,"S","W"],[28,"N","S"],[29,"S","N"],[30,"N","E"],[31,"W","E"],[32,"W","E"],[33,"W","N"],[34,"N","E"],[35,"W","N"]],"initialRotations":[0,0,3,3,3,1,2,1,1,1,1,3,1,0,1,3,3,3,3,1,3,1,3,3,3,1,3,1,3,0,1,3,3,2,1,1],"variants":[{"stars":1,"rotations":[0,0,3,3,3,1,5,4,4,4,4,3,1,0,4,4,4,3,3,4,4,4,4,3,3,4,4,4,4,0,1,3,3,5,3,1],"path":[12,6,7,13,14,8,9,15,21,20,19,25,26,27,33,34,28,22,16,10,11,17],"paths":[[12,6,7,13,14,8,9,15,21,20,19,25,26,27,33,34,28,22,16,10,11,17]],"actions":[6,6,6,7,7,7,14,14,14,8,8,8,9,9,9,15,21,21,21,20,19,19,19,25,25,25,26,27,27,27,33,33,33,34,34,28,22,16,10,10,10]},{"stars":2,"rotations":[0,0,3,3,3,1,2,1,1,3,1,3,4,0,1,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,4,4,4,4,4,4],"path":[12,18,24,30,31,32,33,27,26,25,19,20,21,15,9,10,16,22,28,34,35,29,23,17],"paths":[[12,18,24,30,31,32,33,27,26,25,19,20,21,15,9,10,16,22,28,34,35,29,23,17]],"actions":[12,12,12,18,24,30,30,30,31,32,33,33,27,27,27,26,25,25,25,19,19,19,20,21,21,21,15,9,9,16,22,28,34,34,34,35,35,35,23,17]},{"stars":3,"rotations":[0,0,4,4,4,4,4,4,4,4,4,4,4,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,4,4,4,4,4,4],"path":[12,18,24,30,31,32,33,27,26,25,19,20,21,15,9,8,14,13,7,6,0,1,2,3,4,5,11,10,16,22,28,34,35,29,23,17],"paths":[[12,18,24,30,31,32,33,27,26,25,19,20,21,15,9,8,14,13,7,6,0,1,2,3,4,5,11,10,16,22,28,34,35,29,23,17]],"actions":[12,12,12,18,24,30,30,30,31,32,33,33,27,27,27,26,25,25,25,19,19,19,20,21,21,21,15,9,9,9,8,8,8,14,14,14,7,7,7,6,6,2,3,4,5,5,5,11,10,10,10,16,22,28,34,34,34,35,35,35,23,17]}],"displayNumber":15,"chapter":1,"hintsEnabled":true,"hintTutorial":false}
+];
+function applyMiddleBoards(levels){
+ for(const board of middleBoards){const level=levels.find(item=>item.id===board.id);if(!level)throw new Error('Missing middle board '+board.id);Object.assign(level,board);}
 }
 
 // Authored chapter-one levels. Stable IDs preserve saved progress.
@@ -12599,1824 +12519,10 @@ const redesignedLevels = [
     "hintsEnabled": true,
     "hintTutorial": false
   },
-  {
-    "id": 10,
-    "name": "Нужное положение",
-    "tutorial": false,
-    "nextLevelId": 11,
-    "size": 5,
-    "requireClosedCircuit": true,
-    "source": {
-      "index": 10,
-      "side": "W"
-    },
-    "goal": {
-      "index": 14,
-      "side": "E"
-    },
-    "stars": [
-      5,
-      20
-    ],
-    "hintRoute": [
-      10,
-      5,
-      0,
-      1,
-      6,
-      11,
-      16,
-      15,
-      20,
-      21,
-      22,
-      17,
-      18,
-      13,
-      12,
-      7,
-      2,
-      3,
-      8,
-      9,
-      14
-    ],
-    "paths": [
-      [
-        10,
-        5,
-        0,
-        1,
-        6,
-        11,
-        16,
-        15,
-        20,
-        21,
-        22,
-        17,
-        18,
-        13,
-        12,
-        7,
-        2,
-        3,
-        8,
-        9,
-        14
-      ]
-    ],
-    "switches": [
-      {
-        "index": 16,
-        "linked": 13
-      }
-    ],
-    "solution": [
-      [
-        0,
-        "E",
-        "S"
-      ],
-      [
-        1,
-        "S",
-        "W"
-      ],
-      [
-        2,
-        "E",
-        "S"
-      ],
-      [
-        3,
-        "S",
-        "W"
-      ],
-      [
-        4,
-        "E",
-        "N"
-      ],
-      [
-        5,
-        "N",
-        "S"
-      ],
-      [
-        6,
-        "N",
-        "S"
-      ],
-      [
-        7,
-        "N",
-        "S"
-      ],
-      [
-        8,
-        "E",
-        "N"
-      ],
-      [
-        9,
-        "S",
-        "W"
-      ],
-      [
-        10,
-        "N",
-        "W"
-      ],
-      [
-        11,
-        "N",
-        "S"
-      ],
-      [
-        12,
-        "E",
-        "N"
-      ],
-      [
-        13,
-        "S",
-        "W"
-      ],
-      [
-        14,
-        "E",
-        "N"
-      ],
-      [
-        15,
-        "E",
-        "S"
-      ],
-      [
-        16,
-        "N",
-        "W"
-      ],
-      [
-        17,
-        "E",
-        "S"
-      ],
-      [
-        18,
-        "N",
-        "W"
-      ],
-      [
-        19,
-        "E",
-        "N"
-      ],
-      [
-        20,
-        "E",
-        "N"
-      ],
-      [
-        21,
-        "E",
-        "W"
-      ],
-      [
-        22,
-        "N",
-        "W"
-      ],
-      [
-        23,
-        "N",
-        "S"
-      ],
-      [
-        24,
-        "E",
-        "N"
-      ]
-    ],
-    "initialRotations": [
-      0,
-      2,
-      2,
-      3,
-      2,
-      0,
-      1,
-      1,
-      2,
-      3,
-      0,
-      0,
-      3,
-      1,
-      3,
-      3,
-      1,
-      3,
-      1,
-      1,
-      1,
-      3,
-      1,
-      1,
-      2
-    ],
-    "variants": [
-      {
-        "stars": 1,
-        "path": [
-          10,
-          15,
-          16,
-          11,
-          6,
-          1,
-          2,
-          7,
-          12,
-          13,
-          18,
-          19,
-          14
-        ],
-        "rotations": [
-          0,
-          3,
-          5,
-          3,
-          2,
-          0,
-          2,
-          2,
-          2,
-          3,
-          3,
-          0,
-          4,
-          4,
-          5,
-          3,
-          4,
-          3,
-          1,
-          3,
-          1,
-          3,
-          1,
-          1,
-          2
-        ],
-        "paths": [
-          [
-            10,
-            15,
-            16,
-            11,
-            6,
-            1,
-            2,
-            7,
-            12,
-            13,
-            18,
-            19,
-            14
-          ]
-        ],
-        "connected": [
-          1,
-          2,
-          6,
-          7,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          18,
-          19
-        ],
-        "actions": [
-          10,
-          10,
-          10,
-          16,
-          16,
-          16,
-          6,
-          1,
-          2,
-          2,
-          2,
-          7,
-          12,
-          19,
-          19,
-          14,
-          14
-        ]
-      },
-      {
-        "stars": 2,
-        "path": [
-          10,
-          5,
-          0,
-          1,
-          6,
-          11,
-          16,
-          17,
-          12,
-          13,
-          8,
-          9,
-          14
-        ],
-        "rotations": [
-          0,
-          4,
-          2,
-          3,
-          2,
-          0,
-          2,
-          1,
-          5,
-          4,
-          0,
-          0,
-          5,
-          1,
-          4,
-          3,
-          1,
-          6,
-          1,
-          1,
-          1,
-          3,
-          1,
-          1,
-          2
-        ],
-        "paths": [
-          [
-            10,
-            5,
-            0,
-            1,
-            6,
-            11,
-            16,
-            17,
-            12,
-            13,
-            8,
-            9,
-            14
-          ]
-        ],
-        "connected": [
-          0,
-          1,
-          5,
-          6,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          16,
-          17
-        ],
-        "actions": [
-          1,
-          1,
-          6,
-          17,
-          17,
-          17,
-          12,
-          12,
-          8,
-          8,
-          8,
-          9,
-          14
-        ]
-      },
-      {
-        "stars": 3,
-        "path": [
-          10,
-          5,
-          0,
-          1,
-          6,
-          11,
-          16,
-          15,
-          20,
-          21,
-          22,
-          17,
-          18,
-          13,
-          12,
-          7,
-          2,
-          3,
-          8,
-          9,
-          14
-        ],
-        "rotations": [
-          0,
-          4,
-          4,
-          4,
-          2,
-          0,
-          2,
-          2,
-          4,
-          4,
-          0,
-          0,
-          4,
-          4,
-          4,
-          4,
-          4,
-          4,
-          4,
-          1,
-          4,
-          4,
-          4,
-          1,
-          2
-        ],
-        "paths": [
-          [
-            10,
-            5,
-            0,
-            1,
-            6,
-            11,
-            16,
-            15,
-            20,
-            21,
-            22,
-            17,
-            18,
-            13,
-            12,
-            7,
-            2,
-            3,
-            8,
-            9,
-            14
-          ]
-        ],
-        "connected": [
-          0,
-          1,
-          2,
-          3,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18,
-          20,
-          21,
-          22
-        ],
-        "actions": [
-          1,
-          1,
-          6,
-          16,
-          16,
-          16,
-          15,
-          20,
-          20,
-          20,
-          21,
-          22,
-          22,
-          22,
-          17,
-          18,
-          18,
-          18,
-          12,
-          7,
-          2,
-          2,
-          3,
-          8,
-          8,
-          9,
-          14
-        ]
-      }
-    ],
-    "routeStyle": "corridor",
-    "displayNumber": 24,
-    "chapter": 1,
-    "hintsEnabled": true,
-    "hintTutorial": false
-  },
-  {
-    "id": 11,
-    "name": "Путь со звёздами",
-    "tutorial": false,
-    "nextLevelId": 12,
-    "size": 5,
-    "requireClosedCircuit": true,
-    "source": {
-      "index": 10,
-      "side": "W"
-    },
-    "goal": {
-      "index": 14,
-      "side": "E"
-    },
-    "stars": [
-      5,
-      22
-    ],
-    "hintRoute": [
-      10,
-      5,
-      0,
-      1,
-      2,
-      7,
-      6,
-      11,
-      16,
-      21,
-      22,
-      17,
-      12,
-      13,
-      8,
-      3,
-      4,
-      9,
-      14
-    ],
-    "paths": [
-      [
-        10,
-        5,
-        0,
-        1,
-        2,
-        7,
-        6,
-        11,
-        16,
-        21,
-        22,
-        17,
-        12,
-        13,
-        8,
-        3,
-        4,
-        9,
-        14
-      ]
-    ],
-    "switches": [
-      {
-        "index": 6,
-        "linked": 18
-      }
-    ],
-    "solution": [
-      [
-        0,
-        "E",
-        "S"
-      ],
-      [
-        1,
-        "E",
-        "W"
-      ],
-      [
-        2,
-        "S",
-        "W"
-      ],
-      [
-        3,
-        "E",
-        "S"
-      ],
-      [
-        4,
-        "S",
-        "W"
-      ],
-      [
-        5,
-        "N",
-        "S"
-      ],
-      [
-        6,
-        "E",
-        "S"
-      ],
-      [
-        7,
-        "N",
-        "W"
-      ],
-      [
-        8,
-        "N",
-        "S"
-      ],
-      [
-        9,
-        "N",
-        "S"
-      ],
-      [
-        10,
-        "N",
-        "W"
-      ],
-      [
-        11,
-        "N",
-        "S"
-      ],
-      [
-        12,
-        "E",
-        "S"
-      ],
-      [
-        13,
-        "N",
-        "W"
-      ],
-      [
-        14,
-        "E",
-        "N"
-      ],
-      [
-        15,
-        "N",
-        "S"
-      ],
-      [
-        16,
-        "N",
-        "S"
-      ],
-      [
-        17,
-        "N",
-        "S"
-      ],
-      [
-        18,
-        "E",
-        "S"
-      ],
-      [
-        19,
-        "E",
-        "N"
-      ],
-      [
-        20,
-        "E",
-        "N"
-      ],
-      [
-        21,
-        "E",
-        "N"
-      ],
-      [
-        22,
-        "N",
-        "W"
-      ],
-      [
-        23,
-        "E",
-        "N"
-      ],
-      [
-        24,
-        "E",
-        "N"
-      ]
-    ],
-    "initialRotations": [
-      0,
-      2,
-      1,
-      1,
-      3,
-      0,
-      1,
-      2,
-      2,
-      2,
-      0,
-      3,
-      0,
-      1,
-      1,
-      0,
-      0,
-      1,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      0
-    ],
-    "variants": [
-      {
-        "stars": 1,
-        "path": [
-          10,
-          15,
-          20,
-          21,
-          16,
-          11,
-          6,
-          7,
-          12,
-          13,
-          8,
-          3,
-          4,
-          9,
-          14
-        ],
-        "paths": [
-          [
-            10,
-            15,
-            20,
-            21,
-            16,
-            11,
-            6,
-            7,
-            12,
-            13,
-            8,
-            3,
-            4,
-            9,
-            14
-          ]
-        ],
-        "connected": [
-          3,
-          4,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          20,
-          21
-        ],
-        "rotations": [
-          0,
-          2,
-          1,
-          4,
-          4,
-          0,
-          4,
-          3,
-          2,
-          2,
-          3,
-          4,
-          3,
-          4,
-          4,
-          0,
-          0,
-          1,
-          4,
-          1,
-          0,
-          3,
-          1,
-          1,
-          0
-        ],
-        "actions": [
-          10,
-          10,
-          10,
-          21,
-          21,
-          11,
-          6,
-          6,
-          6,
-          7,
-          12,
-          12,
-          12,
-          13,
-          13,
-          13,
-          3,
-          3,
-          3,
-          4,
-          14,
-          14,
-          14
-        ]
-      },
-      {
-        "stars": 2,
-        "path": [
-          10,
-          15,
-          20,
-          21,
-          16,
-          11,
-          6,
-          7,
-          2,
-          3,
-          8,
-          13,
-          12,
-          17,
-          22,
-          23,
-          18,
-          19,
-          14
-        ],
-        "paths": [
-          [
-            10,
-            15,
-            20,
-            21,
-            16,
-            11,
-            6,
-            7,
-            2,
-            3,
-            8,
-            13,
-            12,
-            17,
-            22,
-            23,
-            18,
-            19,
-            14
-          ]
-        ],
-        "connected": [
-          2,
-          3,
-          6,
-          7,
-          8,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18,
-          19,
-          20,
-          21,
-          22,
-          23
-        ],
-        "rotations": [
-          0,
-          2,
-          3,
-          1,
-          3,
-          0,
-          4,
-          4,
-          2,
-          2,
-          3,
-          4,
-          0,
-          4,
-          1,
-          0,
-          0,
-          2,
-          4,
-          3,
-          0,
-          3,
-          1,
-          3,
-          0
-        ],
-        "actions": [
-          10,
-          10,
-          10,
-          21,
-          21,
-          11,
-          6,
-          6,
-          6,
-          7,
-          7,
-          2,
-          2,
-          13,
-          13,
-          13,
-          17,
-          23,
-          23,
-          19,
-          19
-        ]
-      },
-      {
-        "stars": 3,
-        "path": [
-          10,
-          5,
-          0,
-          1,
-          2,
-          7,
-          6,
-          11,
-          16,
-          21,
-          22,
-          17,
-          12,
-          13,
-          8,
-          3,
-          4,
-          9,
-          14
-        ],
-        "paths": [
-          [
-            10,
-            5,
-            0,
-            1,
-            2,
-            7,
-            6,
-            11,
-            16,
-            21,
-            22,
-            17,
-            12,
-            13,
-            8,
-            3,
-            4,
-            9,
-            14
-          ]
-        ],
-        "connected": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          16,
-          17,
-          21,
-          22
-        ],
-        "rotations": [
-          0,
-          2,
-          4,
-          4,
-          4,
-          0,
-          4,
-          4,
-          2,
-          2,
-          0,
-          4,
-          0,
-          4,
-          4,
-          0,
-          0,
-          2,
-          4,
-          1,
-          0,
-          4,
-          4,
-          1,
-          0
-        ],
-        "actions": [
-          2,
-          2,
-          2,
-          7,
-          7,
-          6,
-          6,
-          6,
-          11,
-          21,
-          21,
-          21,
-          22,
-          22,
-          22,
-          17,
-          13,
-          13,
-          13,
-          3,
-          3,
-          3,
-          4,
-          14,
-          14,
-          14
-        ]
-      }
-    ],
-    "routeStyle": "corridor",
-    "displayNumber": 25,
-    "chapter": 1,
-    "hintsEnabled": true,
-    "hintTutorial": false
-  },
-  {
-    "id": 12,
-    "name": "Согласованный свет",
-    "tutorial": false,
-    "nextLevelId": null,
-    "size": 5,
-    "requireClosedCircuit": true,
-    "source": {
-      "index": 10,
-      "side": "W"
-    },
-    "goal": {
-      "index": 14,
-      "side": "E"
-    },
-    "stars": [
-      2,
-      23
-    ],
-    "hintRoute": [
-      10,
-      15,
-      20,
-      21,
-      22,
-      17,
-      16,
-      11,
-      6,
-      5,
-      0,
-      1,
-      2,
-      7,
-      12,
-      13,
-      18,
-      23,
-      24,
-      19,
-      14
-    ],
-    "paths": [
-      [
-        10,
-        15,
-        20,
-        21,
-        22,
-        17,
-        16,
-        11,
-        6,
-        5,
-        0,
-        1,
-        2,
-        7,
-        12,
-        13,
-        18,
-        23,
-        24,
-        19,
-        14
-      ]
-    ],
-    "switches": [
-      {
-        "index": 16,
-        "linked": 8
-      }
-    ],
-    "solution": [
-      [
-        0,
-        "E",
-        "S"
-      ],
-      [
-        1,
-        "E",
-        "W"
-      ],
-      [
-        2,
-        "S",
-        "W"
-      ],
-      [
-        3,
-        "E",
-        "N"
-      ],
-      [
-        4,
-        "E",
-        "N"
-      ],
-      [
-        5,
-        "E",
-        "N"
-      ],
-      [
-        6,
-        "S",
-        "W"
-      ],
-      [
-        7,
-        "N",
-        "S"
-      ],
-      [
-        8,
-        "E",
-        "S"
-      ],
-      [
-        9,
-        "E",
-        "N"
-      ],
-      [
-        10,
-        "S",
-        "W"
-      ],
-      [
-        11,
-        "N",
-        "S"
-      ],
-      [
-        12,
-        "E",
-        "N"
-      ],
-      [
-        13,
-        "S",
-        "W"
-      ],
-      [
-        14,
-        "E",
-        "S"
-      ],
-      [
-        15,
-        "N",
-        "S"
-      ],
-      [
-        16,
-        "E",
-        "N"
-      ],
-      [
-        17,
-        "S",
-        "W"
-      ],
-      [
-        18,
-        "N",
-        "S"
-      ],
-      [
-        19,
-        "N",
-        "S"
-      ],
-      [
-        20,
-        "E",
-        "N"
-      ],
-      [
-        21,
-        "E",
-        "W"
-      ],
-      [
-        22,
-        "N",
-        "W"
-      ],
-      [
-        23,
-        "E",
-        "N"
-      ],
-      [
-        24,
-        "N",
-        "W"
-      ]
-    ],
-    "initialRotations": [
-      2,
-      0,
-      1,
-      1,
-      3,
-      1,
-      1,
-      3,
-      2,
-      0,
-      0,
-      0,
-      3,
-      2,
-      1,
-      0,
-      2,
-      2,
-      0,
-      1,
-      0,
-      0,
-      1,
-      2,
-      1
-    ],
-    "variants": [
-      {
-        "stars": 1,
-        "path": [
-          10,
-          5,
-          6,
-          11,
-          16,
-          17,
-          12,
-          13,
-          8,
-          9,
-          14
-        ],
-        "paths": [
-          [
-            10,
-            5,
-            6,
-            11,
-            16,
-            17,
-            12,
-            13,
-            8,
-            9,
-            14
-          ]
-        ],
-        "connected": [
-          5,
-          6,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          16,
-          17
-        ],
-        "rotations": [
-          2,
-          0,
-          1,
-          1,
-          3,
-          1,
-          4,
-          3,
-          4,
-          2,
-          1,
-          0,
-          5,
-          5,
-          3,
-          0,
-          4,
-          5,
-          0,
-          1,
-          0,
-          0,
-          1,
-          2,
-          1
-        ],
-        "actions": [
-          10,
-          6,
-          6,
-          6,
-          16,
-          16,
-          17,
-          17,
-          17,
-          12,
-          12,
-          13,
-          13,
-          13,
-          9,
-          9,
-          14,
-          14
-        ]
-      },
-      {
-        "stars": 2,
-        "path": [
-          10,
-          5,
-          6,
-          11,
-          16,
-          17,
-          12,
-          13,
-          18,
-          23,
-          24,
-          19,
-          14
-        ],
-        "paths": [
-          [
-            10,
-            5,
-            6,
-            11,
-            16,
-            17,
-            12,
-            13,
-            18,
-            23,
-            24,
-            19,
-            14
-          ]
-        ],
-        "connected": [
-          5,
-          6,
-          10,
-          11,
-          12,
-          13,
-          14,
-          16,
-          17,
-          18,
-          19,
-          23,
-          24
-        ],
-        "rotations": [
-          2,
-          0,
-          1,
-          1,
-          3,
-          1,
-          4,
-          3,
-          4,
-          0,
-          1,
-          0,
-          5,
-          4,
-          4,
-          0,
-          4,
-          5,
-          0,
-          2,
-          0,
-          0,
-          1,
-          4,
-          4
-        ],
-        "actions": [
-          10,
-          6,
-          6,
-          6,
-          16,
-          16,
-          17,
-          17,
-          17,
-          12,
-          12,
-          13,
-          13,
-          23,
-          23,
-          24,
-          24,
-          24,
-          19,
-          14,
-          14,
-          14
-        ]
-      },
-      {
-        "stars": 2,
-        "path": [
-          10,
-          15,
-          20,
-          21,
-          22,
-          17,
-          16,
-          11,
-          6,
-          5,
-          0,
-          1,
-          2,
-          7,
-          12,
-          13,
-          8,
-          9,
-          14
-        ],
-        "paths": [
-          [
-            10,
-            15,
-            20,
-            21,
-            22,
-            17,
-            16,
-            11,
-            6,
-            5,
-            0,
-            1,
-            2,
-            7,
-            12,
-            13,
-            8,
-            9,
-            14
-          ]
-        ],
-        "connected": [
-          0,
-          1,
-          2,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          20,
-          21,
-          22
-        ],
-        "rotations": [
-          4,
-          0,
-          4,
-          1,
-          3,
-          4,
-          4,
-          4,
-          4,
-          2,
-          0,
-          0,
-          4,
-          5,
-          3,
-          0,
-          4,
-          4,
-          0,
-          1,
-          0,
-          0,
-          4,
-          2,
-          1
-        ],
-        "actions": [
-          22,
-          22,
-          22,
-          17,
-          17,
-          16,
-          16,
-          6,
-          6,
-          6,
-          5,
-          5,
-          5,
-          0,
-          0,
-          2,
-          2,
-          2,
-          7,
-          12,
-          13,
-          13,
-          13,
-          9,
-          9,
-          14,
-          14
-        ]
-      },
-      {
-        "stars": 3,
-        "path": [
-          10,
-          15,
-          20,
-          21,
-          22,
-          17,
-          16,
-          11,
-          6,
-          5,
-          0,
-          1,
-          2,
-          7,
-          12,
-          13,
-          18,
-          23,
-          24,
-          19,
-          14
-        ],
-        "paths": [
-          [
-            10,
-            15,
-            20,
-            21,
-            22,
-            17,
-            16,
-            11,
-            6,
-            5,
-            0,
-            1,
-            2,
-            7,
-            12,
-            13,
-            18,
-            23,
-            24,
-            19,
-            14
-          ]
-        ],
-        "connected": [
-          0,
-          1,
-          2,
-          5,
-          6,
-          7,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18,
-          19,
-          20,
-          21,
-          22,
-          23,
-          24
-        ],
-        "rotations": [
-          4,
-          0,
-          4,
-          1,
-          3,
-          4,
-          4,
-          4,
-          4,
-          0,
-          0,
-          0,
-          4,
-          4,
-          4,
-          0,
-          4,
-          4,
-          0,
-          2,
-          0,
-          0,
-          4,
-          4,
-          4
-        ],
-        "actions": [
-          22,
-          22,
-          22,
-          17,
-          17,
-          16,
-          16,
-          6,
-          6,
-          6,
-          5,
-          5,
-          5,
-          0,
-          0,
-          2,
-          2,
-          2,
-          7,
-          12,
-          13,
-          13,
-          23,
-          23,
-          24,
-          24,
-          24,
-          19,
-          14,
-          14,
-          14
-        ]
-      }
-    ],
-    "routeStyle": "corridor",
-    "displayNumber": 26,
-    "chapter": 1,
-    "hintsEnabled": true,
-    "hintTutorial": false
-  }
+  {"id":10,"name":"Дальний рычаг","displayNumber":24,"chapter":1,"tutorial":false,"hintsEnabled":true,"hintTutorial":false},
+  {"id":11,"name":"Подвижный обход","displayNumber":25,"chapter":1,"tutorial":false,"hintsEnabled":true,"hintTutorial":false},
+  {"id":12,"name":"Двойное управление","displayNumber":26,"chapter":1,"tutorial":false,"hintsEnabled":true,"hintTutorial":false},
+  {"id":45,"name":"Последний рубеж","displayNumber":27,"chapter":1,"tutorial":false,"hintsEnabled":true,"hintTutorial":false}
 ];
 
 // These early routes deliberately change direction near both the transformer and the
@@ -14547,7 +12653,7 @@ if (revisedLevelSix) {
     initialRotations: outageInitialRotations,
     hintRoute: outagePath,
     variants: [{
-      stars: 3,
+      stars: 1,
       rotations: outageSolvedRotations,
       path: outagePath,
       paths: [outagePath],
@@ -14872,7 +12978,7 @@ if (fixedMazeLevel) {
 
 // Applied first-attempt timing model. A break now caps the remaining charge
 // at 30% of the level's initial timer, without reducing a smaller reserve.
-const balancedLevelTimeSeconds = [25, 35, 45, 50, 70, 70, 65, 70, 75, 80, 100, 115, 95, 85, 75, 100, 110, 115];
+const balancedLevelTimeSeconds = [25, 35, 45, 50, 70, 70, 70, 70, 75, 80, 100, 115, 90, 70, 75, 85, 110, 115];
 for (const level of redesignedLevels) {
   if (level.displayNumber <= balancedLevelTimeSeconds.length)
     level.timeLimitSeconds = balancedLevelTimeSeconds[level.displayNumber - 1];
@@ -15063,7 +13169,7 @@ const harderPlaytestBoards = [
       3,
       2
     ],
-    "timeLimitSeconds": 65
+    "timeLimitSeconds": 70
   },
   {
     "number": 8,
@@ -16825,7 +14931,7 @@ const ninthLevel = redesignedLevels.find(level => level.id === 43);
 if (ninthLevel) {
   const route = [12,6,0,1,2,3,4,5,11,10,9,15,16,22,21,27,26,20,14,8,7,13,19,25,24,30,31,32,33,34,28,29,23,17];
   const solution = Array.from({ length: 36 }, (_, index) => [index]);
-  Object.assign(ninthLevel, { size: 6, source: { index: 12, side: 'W' }, goal: { index: 17, side: 'E' }, timeLimitSeconds: 95 });
+  Object.assign(ninthLevel, { size: 6, source: { index: 12, side: 'W' }, goal: { index: 17, side: 'E' }, timeLimitSeconds: 75 });
   for (const [position, index] of route.entries()) {
     const incoming = position === 0 ? ninthLevel.source.side : earlyRouteOpposite[difficultyDirection(ninthLevel, route[position - 1], index)];
     const outgoing = position === route.length - 1 ? ninthLevel.goal.side : difficultyDirection(ninthLevel, index, route[position + 1]);
@@ -16839,6 +14945,7 @@ if (ninthLevel) {
 }
 
 applyUndergroundBoards(redesignedLevels);
+applyLateBoards(redesignedLevels);
 
 // Before collectible chambers appear, completing a board awards one star.
 // The first single chamber raises the available result to two; two chambers
@@ -16871,6 +14978,7 @@ for (const [index, level] of redesignedLevels.entries()) {
   level.displayNumber = index + 1;
   level.nextLevelId = redesignedLevels[index + 1]?.id ?? null;
 }
+applyMiddleBoards(redesignedLevels);
 
 
 const oppositeSide = { N: 'S', E: 'W', S: 'N', W: 'E' };
@@ -17136,6 +15244,15 @@ function glassFlowPaths(cells, level = firstGlassLevel) {
   return traceGlassCircuit(cells,level).flowPaths;
 }
 
+function glassCrossoverGeometry(index, size, sequence, turns = 0) {
+  const rotation = ((turns + ((sequence?.first ?? ['N','S']).includes('E') ? 1 : 0)) % 4 + 4) % 4;
+  const bridge = ['N','E','S','W'][rotation], horizontal = rotation % 2 === 0;
+  const cx = index % size * 100 + 50, cy = Math.floor(index / size) * 100 + 50;
+  return { rotation, bridge,
+    underpass: horizontal ? `M${cx},${cy-50}L${cx},${cy+50}` : `M${cx-50},${cy}L${cx+50},${cy}`,
+    overpass: glassFlowCellPath(index,horizontal?'W':'N',horizontal?'E':'S',true,0,size,bridge) };
+}
+
 function glassFlowCellPath(index, entry, exit, throughCenter = false, inset = 0, size = 4, crossoverBridge = null) {
   const vectors = { N: [0,-1], E: [1,0], S: [0,1], W: [-1,0] };
   const c = [(index % size) * 100 + 50, Math.floor(index / size) * 100 + 50];
@@ -17145,11 +15262,12 @@ function glassFlowCellPath(index, entry, exit, throughCenter = false, inset = 0,
   if (!exit) return `M${p}L${c}`;
   const q = point(exit, 50 - inset);
   if (crossoverBridge && oppositeSide[entry] === exit) {
-    const raised = crossoverBridge === 'horizontal'
+    const bend = {horizontal:'N',vertical:'E'}[crossoverBridge] ?? crossoverBridge;
+    const raised = bend === 'N' || bend === 'S'
       ? entry === 'E' || entry === 'W'
       : entry === 'N' || entry === 'S';
     if (raised) {
-      const apex = crossoverBridge === 'horizontal' ? [c[0], c[1] - 18] : [c[0] + 18, c[1]];
+      const apex = point(bend,18);
       return `M${p}L${point(entry,22)}Q${apex} ${point(exit,22)}L${q}`;
     }
     // The current disappears beneath the raised pipe and reappears on the
@@ -17185,12 +15303,14 @@ function glassWaveDistance(timeline, elapsed) {
   );
 }
 
-const glassTestPulseDuration = 1150;
+function glassTestPulseDuration(length) {
+  return Math.max(1800, length * 2);
+}
 
 function reconcileGlassPulse(previous, next, editedCell, elapsed) {
   const distance = Math.min(
     previous.length,
-    Math.max(0, (elapsed / glassTestPulseDuration) * previous.length),
+    Math.max(0, (elapsed / glassTestPulseDuration(previous.length)) * previous.length),
   );
   if (previous.d === next.d && previous.complete === next.complete)
     return { status: 'unchanged', elapsed, distance };
@@ -17210,7 +15330,7 @@ function reconcileGlassPulse(previous, next, editedCell, elapsed) {
 
   return {
     status: 'continue',
-    elapsed: (distance / next.length) * glassTestPulseDuration,
+    elapsed: (distance / next.length) * glassTestPulseDuration(next.length),
     distance,
   };
 }
@@ -17353,13 +15473,19 @@ function createFirstEnergyCanvas(root, svg, reduced = false) {
         interior.fill();
         continue;
       }
-      const [x, y] = el.style.transformOrigin.split(' ').map(parseFloat),
+      const offset = el.style.transform.match(/^translate\(([-\d.]+)px,\s*([-\d.]+)px\)$/),
+        [x, y] = el.style.transformOrigin.split(' ').map(parseFloat),
         angle =
           (number(el.style.transform.replace('rotate(', '')) * Math.PI) / 180;
       interior.save();
-      interior.translate(x, y);
-      interior.rotate(angle);
-      interior.translate(-x, -y);
+      if (offset) {
+        // Sliding pipes carry the light opening with their carriage.
+        interior.translate(Number(offset[1]), Number(offset[2]));
+      } else {
+        interior.translate(x, y);
+        interior.rotate(angle);
+        interior.translate(-x, -y);
+      }
       interior.stroke(shape(el));
       interior.restore();
     }
@@ -17715,9 +15841,8 @@ function createGlassEnergy({ root, svg, sourceButton, reduced, onState, onAccept
     }
     for (const relay of circuit?.crossoverRelays ?? []) {
       if (!relay.node) continue;
-      // The relay reacts as the transformer charge enters its sensing channel.
-      // Waiting for unlockDistance made the shutter look inert during the pass.
-      const opensAt = relay.firstDistance;
+      // The lower channel must be traversed before its upper shutters lift.
+      const opensAt = relay.unlockDistance;
       const secondOpensAt = Number.isFinite(relay.gateDistance) ? Math.max(opensAt + 95, relay.gateDistance - 95) : Infinity;
       const clearsAt = (relay.unlockDistance ?? opensAt) + 95;
       const state = glassRelayState({ opensAt, closesAt: relay.shuttersClearAfterFirst ? clearsAt : opensAt + 95,
@@ -17960,14 +16085,15 @@ function createGlassEnergy({ root, svg, sourceButton, reduced, onState, onAccept
       beaconPower =
         0.15 + 0.65 * Math.max(0, 1 - Math.abs(cycle - 180) / 100, 1 - Math.abs(cycle - 430) / 100);
     }
-    if (!run && !isPowered && !reducedMotion && clock >= nextPulse) {
+    if (!pulse && !run && !isPowered && !reducedMotion && clock >= nextPulse) {
       startTestPulse(false);
     }
     if (pulse) {
       const elapsed = clock - pulse.start,
-        progress = clamp(elapsed / glassTestPulseDuration),
-        distance = elapsed / glassTestPulseDuration * circuit.length,
-        duration = glassTestPulseDuration * (circuit.complete ? externalEnd() / circuit.length : 1);
+        travel = glassTestPulseDuration(circuit.length),
+        progress = clamp(elapsed / travel),
+        distance = elapsed / travel * circuit.length,
+        duration = travel * (circuit.complete ? externalEnd() / circuit.length : 1);
       externalDistance = distance;
       relayDistance = distance;
       externalStrength = 0.32 * (elapsed < duration ? 1 : fade(elapsed - duration, 250));
@@ -17987,12 +16113,13 @@ function createGlassEnergy({ root, svg, sourceButton, reduced, onState, onAccept
         circuit.breakCollar.softFlashAt = clock;
       }
       feed = Math.max(feed, 0.32 * fade(elapsed, 280));
-      if (!circuit.complete && elapsed >= glassTestPulseDuration - 50)
+      if (!circuit.complete && elapsed >= travel - 50)
         endGlow.style.opacity = String(
-          0.3 * fade(elapsed - glassTestPulseDuration, 250),
+          0.3 * fade(elapsed - travel, 250),
         );
       if (elapsed >= duration + 250) {
         pulse = null;
+        nextPulse = clock + 900;
         hideWave();
       }
     }
@@ -18260,9 +16387,9 @@ function createGlassEnergy({ root, svg, sourceButton, reduced, onState, onAccept
     const progressStorageKey = 'teply-svet.progress.v1';
 // Stable save IDs, not visible numbers. Keep this mapping checked against the catalog.
 const firstChapterLevelIds = [
-    31, 32, 33, 34, 36, 37, 42, 38, 43, 44, 1, 41, 39, 40, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+    31, 32, 33, 34, 36, 37, 42, 38, 43, 44, 1, 41, 39, 40, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 45,
 ];
-const firstChapterFinalLevelId = 12;
+const firstChapterFinalLevelId = 45;
 function getLevelStarCap(levelId) {
     // Retired results remain in the save and wallet history with their original cap.
     if (levelId === 35)
@@ -18386,7 +16513,8 @@ const maxChargeLives = 5;
 const chargeLifeRechargeMs = 20 * 60 * 1000;
 const dailyChargeCooldown = 24 * 60 * 60 * 1000;
 const chargeLifeStarCost = 3;
-const hintStarCost = 2;
+const hintStarCost = 5;
+const rewardedStarAmount = 3;
 function createHintId() {
     if (typeof crypto.randomUUID === 'function')
         return crypto.randomUUID();
@@ -18404,14 +16532,26 @@ function capAttemptTimer(attempt, timeLimitMs, now = Date.now()) {
         attempt.timerDeadlineAt = Math.min(attempt.timerDeadlineAt, now + limit);
 }
 function refreshAttemptTimer(attempt, timeLimitMs) {
-    attempt.timeRemainingMs = Math.max(1_000, Math.floor(timeLimitMs));
+    attempt.timeRemainingMs = Math.max(0, Math.floor(timeLimitMs));
     attempt.timerStarted = false;
     attempt.timerDeadlineAt = null;
 }
 function returningAttemptTimeLimit(attempt, timeLimitMs, outageTimeLimitMs) {
-    return attempt.outageTriggered && outageTimeLimitMs !== null ? outageTimeLimitMs : timeLimitMs;
+    return attempt.outageTriggered && outageTimeLimitMs !== null
+        ? Math.min(attempt.timeRemainingMs ?? outageTimeLimitMs, outageTimeLimitMs)
+        : timeLimitMs;
 }
 function samePuzzleWithChangedTimer(previous, next) {
+    const previousSlider = previous.indexOf('|sliders:');
+    const nextSlider = next.indexOf('|sliders:');
+    if (previousSlider >= 0 || nextSlider >= 0) {
+        if (previousSlider < 0 ||
+            nextSlider < 0 ||
+            previous.slice(previousSlider) !== next.slice(nextSlider))
+            return false;
+        previous = previous.slice(0, previousSlider);
+        next = next.slice(0, nextSlider);
+    }
     const previousEnd = previous.lastIndexOf('|');
     const nextEnd = next.lastIndexOf('|');
     if (previousEnd <= 0 ||
@@ -18432,7 +16572,9 @@ function samePuzzleWithChangedTimer(previous, next) {
             const outage = JSON.parse(field);
             if (outage === null || typeof outage !== 'object' || Array.isArray(outage))
                 return field;
-            const { retrySeconds, remainingPenaltySeconds, ...board } = outage;
+            const { retrySeconds, remainingPenaltySeconds, bonusSeconds, ...board } = outage;
+            if (Array.isArray(board.variants))
+                board.variants = board.variants.map(({ stars, ...route }) => route);
             return JSON.stringify(board);
         };
         return withoutClock(a[13]) === withoutClock(b[13]);
@@ -18584,7 +16726,7 @@ function acceptConfirmedStarReward(wallet, receipt) {
         wallet.rewardedReceipts.includes(receipt.id))
         return false;
     wallet.rewardedReceipts.push(receipt.id);
-    wallet.starBalance++;
+    wallet.starBalance += rewardedStarAmount;
     return true;
 }
 function applyChargeAttemptFailure(wallet, request) {
@@ -18730,6 +16872,16 @@ function migrateHintWallet(value, incoming = createEmptyProgress()) {
     }
     refreshChargeLives(wallet, Date.now());
     return wallet;
+}
+function completeHintAttempt(wallet, levelId, attemptId, stars) {
+    const attempt = wallet.attempts[levelId];
+    if (!attempt || attempt.id !== attemptId || attempt.completed)
+        return false;
+    const result = recordLevelResult(wallet.progress, levelId, stars);
+    syncHintProgress(wallet, result.progress);
+    wallet.starBalance += result.gainedStars;
+    attempt.completed = true;
+    return true;
 }
 function createHintWalletStore() {
     let database = null;
@@ -18893,14 +17045,7 @@ function createHintWalletStore() {
         },
         complete(levelId, attemptId, stars) {
             return transact((wallet) => {
-                const attempt = wallet.attempts[levelId];
-                if (!attempt || attempt.id !== attemptId)
-                    return false;
-                const result = recordLevelResult(wallet.progress, levelId, stars);
-                syncHintProgress(wallet, result.progress);
-                wallet.starBalance += result.gainedStars;
-                attempt.completed = true;
-                return true;
+                return completeHintAttempt(wallet, levelId, attemptId, stars);
             });
         },
         saveTimer(levelId, attemptId, remainingMs, started, deadlineAt) {
@@ -19028,7 +17173,7 @@ function layout(){
     root.dataset.sceneScroll='false';root.style.minHeight='';
     if(!portrait)return;
     const style=getComputedStyle(root),w=W-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight),h=H-parseFloat(style.paddingTop)-parseFloat(style.paddingBottom);
-    const header=48,gutter=W<280?2:4,room=h-header;
+    const header=100,gutter=W<280?2:4,room=h-header;
     // Start with the proven compact fit, including the visible pipe gaps.
     const minSource=clamp(44,w*.06,72),minHouse=clamp(64,w*.085,104),minGap=clamp(18,w*.026,28),chargeDepth=43,sourceGap=clamp(8,w*.02,14);
     let footer=8;
@@ -19596,7 +17741,7 @@ function createGlassScenery(root) {
       const timerVisitKey=`teply-svet.timer-visit.v1.${level.id}`;
       let refreshTimerOnEntry=false,leavingLevel=false;
       try{refreshTimerOnEntry=sessionStorage.getItem(timerVisitKey)!=='active';}catch{refreshTimerOnEntry=true;}
-      const outageTimeLimitMs=level.outage?Math.floor(timeLimitMs*.3):null;
+      const outageTimeLimitMs=level.outage?glassOutageRemainingMs(timeLimitMs,timeLimitMs):null;
       // Do not expose a playable-looking field before its saved attempt can accept moves.
       let opened;
       try{
@@ -19636,7 +17781,7 @@ function createGlassScenery(root) {
       const lessonContent={
         stars:{title:'Собери звёзды',copy:'Проведи через них ток.',icon:`<img src="data:image/png;base64,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" alt="">`},
         route:{title:'Звёздный обход',copy:'Проведи свет через обе звезды к дому.',icon:''},
-        switch:{title:'Связанный рубильник',copy:'Рубильник поворачивает сразу две трубы.',icon:`<span class="lesson-switch"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iOTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogIDxkZWZzLz4KICA8Zz4KICAgIDxwYXRoIHN0cm9rZT0ibm9uZSIgZmlsbD0iI0RFQTMxMiIgZD0iTTIuMyAxMy43IFEwIDExLjM1IDAgOCAwIDQuNjUgMi4zIDIuMzUgNC42NSAwIDggMCAxMS4zNSAwIDEzLjY1IDIuMzUgMTYgNC42NSAxNiA4IDE2IDExLjM1IDEzLjY1IDEzLjcgTDEyIDE1IDEyIDgxLjA1IDEzLjY1IDgyLjM1IFExNiA4NC43NSAxNiA4OCAxNiA5MS4zNSAxMy42NSA5My43IDExLjM1IDk2IDggOTYgNC42NSA5NiAyLjMgOTMuNyAwIDkxLjM1IDAgODggMCA4NC43NSAyLjMgODIuMzUgTDQgODEuMDUgNCAxNSAyLjMgMTMuNyBNMy43NSAxMi4yNSBRNC43NSAxMy4yNSA2IDEzLjcgTDYgODIuMzUgUTQuNzUgODIuNzUgMy43NSA4My43NSAyIDg1LjU1IDIgODggMiA5MC41IDMuNzUgOTIuMjUgNS41IDk0IDggOTQgMTAuNSA5NCAxMi4yNSA5Mi4yNSAxNCA5MC41IDE0IDg4IDE0IDg1LjU1IDEyLjI1IDgzLjc1IDExLjI1IDgyLjc1IDEwIDgyLjM1IEwxMCAxMy43IFExMS4yNSAxMy4yNSAxMi4yNSAxMi4yNSAxNCAxMC41IDE0IDggMTQgNS41IDEyLjI1IDMuNzUgMTAuNSAyIDggMiA1LjUgMiAzLjc1IDMuNzUgMiA1LjUgMiA4IDIgMTAuNSAzLjc1IDEyLjI1Ii8+CiAgICA8cGF0aCBzdHJva2U9Im5vbmUiIGZpbGw9IiNGRkVBOUMiIGQ9Ik0zLjc1IDEyLjI1IFEyIDEwLjUgMiA4IDIgNS41IDMuNzUgMy43NSA1LjUgMiA4IDIgMTAuNSAyIDEyLjI1IDMuNzUgMTQgNS41IDE0IDggMTQgMTAuNSAxMi4yNSAxMi4yNSAxMS4yNSAxMy4yNSAxMCAxMy43IEwxMCA4Mi4zNSBRMTEuMjUgODIuNzUgMTIuMjUgODMuNzUgMTQgODUuNTUgMTQgODggMTQgOTAuNSAxMi4yNSA5Mi4yNSAxMC41IDk0IDggOTQgNS41IDk0IDMuNzUgOTIuMjUgMiA5MC41IDIgODggMiA4NS41NSAzLjc1IDgzLjc1IDQuNzUgODIuNzUgNiA4Mi4zNSBMNiAxMy43IFE0Ljc1IDEzLjI1IDMuNzUgMTIuMjUiLz4KICA8L2c+Cjwvc3ZnPg==" alt=""><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMzIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogIDxkZWZzLz4KICA8Zz4KICAgIDxwYXRoIHN0cm9rZT0ibm9uZSIgZmlsbD0iI0RFQTMxMiIgZD0iTTIgMTIgTDIgMjggUTIgMjguNyAyLjQgMjkuMjUgTDIuNjUgMjkuNDUgMy43IDMwIDQgMzAgMjAgMzAgMjAuMzUgMzAgMjEuNCAyOS41IDIxLjUgMjkuNCBRMjIgMjguOCAyMiAyOCBMMjIgMTIgUTIyIDExLjIgMjEuNDUgMTAuNjUgTDIxLjIgMTAuMzUgMTMuNDUgMi42IDEzLjUgMi42IFExMi44NSAyIDEyLjA1IDIgTDEyIDIgUTExLjIgMiAxMC42NSAyLjYgTDEwLjM1IDIuOCAyLjggMTAuMzUgMi42IDEwLjY1IFEyIDExLjIgMiAxMiBNMS4xNSA5LjE1IEw5LjE1IDEuMTUgOS4yIDEuMTUgUTEwLjM1IDAgMTIgMCBMMTIuMDUgMCBRMTMuNjUgMCAxNC44NSAxLjE1IEwyMi44NSA5LjE1IDIyLjg1IDkuMiBRMjQgMTAuMzUgMjQgMTIgTDI0IDI4IFEyNCAyOS42NSAyMi44NSAzMC44NSAyMS45IDMxLjc1IDIwLjY1IDMxLjk1IEwyMCAzMiA0IDMyIDMuMzUgMzEuOTUgUTIuMSAzMS43NSAxLjIgMzAuODUgTDEuMTUgMzAuODUgUTAgMjkuNjUgMCAyOCBMMCAxMiBRMCAxMC4zNSAxLjE1IDkuMiBMMS4xNSA5LjE1Ii8+CiAgICA8cGF0aCBzdHJva2U9Im5vbmUiIGZpbGw9IiNGRkVBOUMiIGQ9Ik0yIDEyIFEyIDExLjIgMi42IDEwLjY1IEwyLjggMTAuMzUgMTAuMzUgMi44IDEwLjY1IDIuNiBRMTEuMiAyIDEyIDIgTDEyLjA1IDIgUTEyLjg1IDIgMTMuNSAyLjYgTDEzLjQ1IDIuNiAyMS4yIDEwLjM1IDIxLjQ1IDEwLjY1IFEyMiAxMS4yIDIyIDEyIEwyMiAyOCBRMjIgMjguOCAyMS41IDI5LjQgTDIxLjQgMjkuNSAyMC4zNSAzMCAyMCAzMCA0IDMwIDMuNyAzMCAyLjY1IDI5LjQ1IDIuNCAyOS4yNSBRMiAyOC43IDIgMjggTDIgMTIgTTQuMjUgMTEuOCBMNCAxMi4wNSA0IDI4IDIwIDI4IDIwIDEyLjA1IDE5Ljc1IDExLjc1IDEyLjA1IDQuMDUgMTEuOCA0LjI1IDQuMjUgMTEuOCIvPgogICAgPHBhdGggc3Ryb2tlPSJub25lIiBmaWxsPSIjRkZDQzAwIiBkPSJNNC4yNSAxMS44IEwxMS44IDQuMjUgMTIuMDUgNC4wNSAxOS43NSAxMS43NSAyMCAxMi4wNSAyMCAyOCA0IDI4IDQgMTIuMDUgNC4yNSAxMS44Ii8+CiAgPC9nPgo8L3N2Zz4=" alt=""></span>`},
+        switch:{title:'Связанный рычаг',copy:'Рычаг поворачивает обе отмеченные трубы.',icon:`<span class="lesson-switch"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iOTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogIDxkZWZzLz4KICA8Zz4KICAgIDxwYXRoIHN0cm9rZT0ibm9uZSIgZmlsbD0iI0RFQTMxMiIgZD0iTTIuMyAxMy43IFEwIDExLjM1IDAgOCAwIDQuNjUgMi4zIDIuMzUgNC42NSAwIDggMCAxMS4zNSAwIDEzLjY1IDIuMzUgMTYgNC42NSAxNiA4IDE2IDExLjM1IDEzLjY1IDEzLjcgTDEyIDE1IDEyIDgxLjA1IDEzLjY1IDgyLjM1IFExNiA4NC43NSAxNiA4OCAxNiA5MS4zNSAxMy42NSA5My43IDExLjM1IDk2IDggOTYgNC42NSA5NiAyLjMgOTMuNyAwIDkxLjM1IDAgODggMCA4NC43NSAyLjMgODIuMzUgTDQgODEuMDUgNCAxNSAyLjMgMTMuNyBNMy43NSAxMi4yNSBRNC43NSAxMy4yNSA2IDEzLjcgTDYgODIuMzUgUTQuNzUgODIuNzUgMy43NSA4My43NSAyIDg1LjU1IDIgODggMiA5MC41IDMuNzUgOTIuMjUgNS41IDk0IDggOTQgMTAuNSA5NCAxMi4yNSA5Mi4yNSAxNCA5MC41IDE0IDg4IDE0IDg1LjU1IDEyLjI1IDgzLjc1IDExLjI1IDgyLjc1IDEwIDgyLjM1IEwxMCAxMy43IFExMS4yNSAxMy4yNSAxMi4yNSAxMi4yNSAxNCAxMC41IDE0IDggMTQgNS41IDEyLjI1IDMuNzUgMTAuNSAyIDggMiA1LjUgMiAzLjc1IDMuNzUgMiA1LjUgMiA4IDIgMTAuNSAzLjc1IDEyLjI1Ii8+CiAgICA8cGF0aCBzdHJva2U9Im5vbmUiIGZpbGw9IiNGRkVBOUMiIGQ9Ik0zLjc1IDEyLjI1IFEyIDEwLjUgMiA4IDIgNS41IDMuNzUgMy43NSA1LjUgMiA4IDIgMTAuNSAyIDEyLjI1IDMuNzUgMTQgNS41IDE0IDggMTQgMTAuNSAxMi4yNSAxMi4yNSAxMS4yNSAxMy4yNSAxMCAxMy43IEwxMCA4Mi4zNSBRMTEuMjUgODIuNzUgMTIuMjUgODMuNzUgMTQgODUuNTUgMTQgODggMTQgOTAuNSAxMi4yNSA5Mi4yNSAxMC41IDk0IDggOTQgNS41IDk0IDMuNzUgOTIuMjUgMiA5MC41IDIgODggMiA4NS41NSAzLjc1IDgzLjc1IDQuNzUgODIuNzUgNiA4Mi4zNSBMNiAxMy43IFE0Ljc1IDEzLjI1IDMuNzUgMTIuMjUiLz4KICA8L2c+Cjwvc3ZnPg==" alt=""><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMzIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogIDxkZWZzLz4KICA8Zz4KICAgIDxwYXRoIHN0cm9rZT0ibm9uZSIgZmlsbD0iI0RFQTMxMiIgZD0iTTIgMTIgTDIgMjggUTIgMjguNyAyLjQgMjkuMjUgTDIuNjUgMjkuNDUgMy43IDMwIDQgMzAgMjAgMzAgMjAuMzUgMzAgMjEuNCAyOS41IDIxLjUgMjkuNCBRMjIgMjguOCAyMiAyOCBMMjIgMTIgUTIyIDExLjIgMjEuNDUgMTAuNjUgTDIxLjIgMTAuMzUgMTMuNDUgMi42IDEzLjUgMi42IFExMi44NSAyIDEyLjA1IDIgTDEyIDIgUTExLjIgMiAxMC42NSAyLjYgTDEwLjM1IDIuOCAyLjggMTAuMzUgMi42IDEwLjY1IFEyIDExLjIgMiAxMiBNMS4xNSA5LjE1IEw5LjE1IDEuMTUgOS4yIDEuMTUgUTEwLjM1IDAgMTIgMCBMMTIuMDUgMCBRMTMuNjUgMCAxNC44NSAxLjE1IEwyMi44NSA5LjE1IDIyLjg1IDkuMiBRMjQgMTAuMzUgMjQgMTIgTDI0IDI4IFEyNCAyOS42NSAyMi44NSAzMC44NSAyMS45IDMxLjc1IDIwLjY1IDMxLjk1IEwyMCAzMiA0IDMyIDMuMzUgMzEuOTUgUTIuMSAzMS43NSAxLjIgMzAuODUgTDEuMTUgMzAuODUgUTAgMjkuNjUgMCAyOCBMMCAxMiBRMCAxMC4zNSAxLjE1IDkuMiBMMS4xNSA5LjE1Ii8+CiAgICA8cGF0aCBzdHJva2U9Im5vbmUiIGZpbGw9IiNGRkVBOUMiIGQ9Ik0yIDEyIFEyIDExLjIgMi42IDEwLjY1IEwyLjggMTAuMzUgMTAuMzUgMi44IDEwLjY1IDIuNiBRMTEuMiAyIDEyIDIgTDEyLjA1IDIgUTEyLjg1IDIgMTMuNSAyLjYgTDEzLjQ1IDIuNiAyMS4yIDEwLjM1IDIxLjQ1IDEwLjY1IFEyMiAxMS4yIDIyIDEyIEwyMiAyOCBRMjIgMjguOCAyMS41IDI5LjQgTDIxLjQgMjkuNSAyMC4zNSAzMCAyMCAzMCA0IDMwIDMuNyAzMCAyLjY1IDI5LjQ1IDIuNCAyOS4yNSBRMiAyOC43IDIgMjggTDIgMTIgTTQuMjUgMTEuOCBMNCAxMi4wNSA0IDI4IDIwIDI4IDIwIDEyLjA1IDE5Ljc1IDExLjc1IDEyLjA1IDQuMDUgMTEuOCA0LjI1IDQuMjUgMTEuOCIvPgogICAgPHBhdGggc3Ryb2tlPSJub25lIiBmaWxsPSIjRkZDQzAwIiBkPSJNNC4yNSAxMS44IEwxMS44IDQuMjUgMTIuMDUgNC4wNSAxOS43NSAxMS43NSAyMCAxMi4wNSAyMCAyOCA0IDI4IDQgMTIuMDUgNC4yNSAxMS44Ii8+CiAgPC9nPgo8L3N2Zz4=" alt=""></span>`},
         branch:{title:'Тройник',copy:'Тройник может увести ток в ложную ветку. Найди один цельный путь к дому.',icon:''},
         crossover:{title:'Крестовина с реле',copy:'Ток в нижней трубе открывает верхнюю.',icon:''},
         'one-way':{title:'Только по стрелке',copy:'Свет проходит через эту трубу лишь в направлении стрелки.',icon:''},
@@ -19672,7 +17817,7 @@ function createGlassScenery(root) {
       function prepareLesson(){
         const content=lessonContent[level.intro];if(!content||introPending||lessonOpen)return;
         try{if(sessionStorage.getItem(lessonSeenKey)===currentAttempt?.id)return;}catch{}
-        lessonOverlay.dataset.kind=level.intro;if(spotlightLesson){lessonOverlay.querySelector('.lesson-spotlight')?.remove();lessonOverlay.insertAdjacentHTML('afterbegin',`<svg class="lesson-spotlight" aria-hidden="true"><defs><mask id="star-lesson-mask"><rect width="100%" height="100%" fill="white"/>${lessonCells.map(index=>`<circle class="lesson-hole" data-cell="${index}" fill="black"/>`).join('')}</mask></defs><rect width="100%" height="100%" fill="#031923cc" mask="url(#star-lesson-mask)"/></svg>`);if(starLesson)lessonCells.forEach(index=>svg.querySelector(`.star-chamber[data-cell='${index}']`).classList.add('star-lesson-target'));else lessonCells.forEach(index=>turnButtons.get(index).classList.add('lesson-target'));}const icon=lessonOverlay.querySelector('.lesson-icon');icon.dataset.kind=level.intro;icon.innerHTML=content.icon;lessonOverlay.querySelector('.lesson-title').textContent=content.title;lessonOverlay.querySelector('.lesson-copy').textContent=content.copy;queueEntryGuidance(()=>setLessonOpen(true));
+        lessonOverlay.dataset.kind=level.intro;if(spotlightLesson){lessonOverlay.querySelector('.lesson-spotlight')?.remove();lessonOverlay.insertAdjacentHTML('afterbegin',`<svg class="lesson-spotlight" aria-hidden="true"><defs><mask id="star-lesson-mask"><rect width="100%" height="100%" fill="white"/>${lessonCells.map(index=>`<circle class="lesson-hole" data-cell="${index}" fill="black"/>`).join('')}</mask></defs><rect width="100%" height="100%" fill="#031923cc" mask="url(#star-lesson-mask)"/></svg>`);if(starLesson)lessonCells.forEach(index=>svg.querySelector(`.star-chamber[data-cell='${index}']`).classList.add('star-lesson-target'));else lessonCells.forEach(index=>turnButtons.get(index).classList.add('lesson-target'));}const icon=lessonOverlay.querySelector('.lesson-icon');icon.dataset.kind=level.intro;icon.innerHTML=content.icon;lessonOverlay.querySelector('.lesson-title').textContent=level.lessonTitle??content.title;lessonOverlay.querySelector('.lesson-copy').textContent=level.lessonCopy??content.copy;queueEntryGuidance(()=>setLessonOpen(true));
       }
       let savedPreferences={sound:true,music:true};
       try{const stored=JSON.parse(sessionStorage.getItem('teply-svet.preferences.v1'));if(stored&&typeof stored==='object'){if(typeof stored.sound==='boolean')savedPreferences.sound=stored.sound;if(typeof stored.music==='boolean')savedPreferences.music=stored.music;}}catch{}
@@ -19705,12 +17850,13 @@ function createGlassScenery(root) {
       }
       async function leaveLevelWithFeedback(action){
         if(state.powered&&!await saveCompletion())return;
+        
         const audible=soundButton.getAttribute('aria-pressed')==='true'&&!document.hidden;
         playActionSound('ui');
         if(audible)setTimeout(()=>leaveLevel(action),90);else leaveLevel(action);
       }
       for(let index=0;index<level.size*level.size;index++){
-        if((route.find(cell=>cell[0]===index)?.length??0)<2&&!sliderCells.has(index))continue;
+        if(![level.solution,level.outage?.solution].some(board=>(board?.find(cell=>cell[0]===index)?.length??0)>1)&&!sliderCells.has(index))continue;
         const button=turnTemplate.content.firstElementChild.cloneNode(true),row=Math.floor(index/level.size),column=index%level.size;
         button.dataset.cell=String(index);button.style.setProperty('--row',row);button.style.setProperty('--column',column);
         if(crossoverCells.has(index))button.classList.add('crossover-pipe');
@@ -19720,14 +17866,23 @@ function createGlassScenery(root) {
         if(hatchCells.has(index))button.classList.add('tunnel-hatch');
         if(fixedCells.has(index)){button.classList.add('fixed-pipe');button.setAttribute('aria-label',`Закреплённая труба: строка ${row+1}, столбец ${column+1}`);}else button.setAttribute('aria-label',`Повернуть деталь: строка ${row+1}, столбец ${column+1}`);
         if(sliderCells.has(index)){button.classList.add('slider-control');button.setAttribute('aria-label',`Сдвинуть трубу: строка ${row+1}, столбец ${column+1}`);}
-        if(hatchCells.has(index)){button.disabled=true;button.tabIndex=-1;button.setAttribute('aria-label',`Неподвижный подземный люк: строка ${row+1}, столбец ${column+1}`);}
+        if(hatchCells.has(index)){button.disabled=true;button.tabIndex=-1;const color=level.hatches.length>1?` (${glassHatchPairTone(hatchCells.get(index).number).name})`:'';button.setAttribute('aria-label',`Неподвижный подземный люк${color}: строка ${row+1}, столбец ${column+1}`);}
         turnLayer.append(button);turnButtons.set(index,button);
       }
       turnTemplate.remove();
+      function syncTurnControls(){
+        for(const [index,button]of turnButtons){
+          const empty=(route.find(cell=>cell[0]===index)?.length??0)<2&&!sliderCells.has(index);
+          button.hidden=empty;button.disabled=empty||hatchCells.has(index);
+        }
+      }
+      syncTurnControls();
       const linkedSwitches=level.switches??[],actionableCell=cell=>linkedSwitches.find(item=>item.linked===cell)?.index??cell;
       for(const item of linkedSwitches){
         const control=turnButtons.get(item.index),linked=turnButtons.get(item.linked),device=document.createElement('span');
-        control.classList.add('switch-control');control.setAttribute('aria-label',`Переключить связанный рубильник: строка ${Math.floor(item.index/level.size)+1}, столбец ${item.index%level.size+1}`);
+        const [color,shade,glow,name]=[['#75d9ed','#28798e','#75d9ed30','бирюзовый'],['#f5a18b','#9b4c3a','#f5a18b30','коралловый']][linkedSwitches.indexOf(item)%2];
+        for(const button of [control,linked]){button.style.setProperty('--link-color',color);button.style.setProperty('--link-shade',shade);button.style.setProperty('--link-glow',glow);}
+        control.classList.add('switch-control');control.setAttribute('aria-label',`Переключить ${name} рычаг: строка ${Math.floor(item.index/level.size)+1}, столбец ${item.index%level.size+1}`);
         device.className='switch-device';device.setAttribute('aria-hidden','true');device.innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 86" aria-hidden="true">
   <defs>
     <linearGradient id="switch-brass" x2="1" y2="1"><stop stop-color="#ffdf82"/><stop offset=".28" stop-color="#bf8534"/><stop offset=".6" stop-color="#f2c76a"/><stop offset="1" stop-color="#805021"/></linearGradient>
@@ -19736,7 +17891,7 @@ function createGlassScenery(root) {
   </defs>
   <rect x="7" y="4" width="50" height="80" rx="11" fill="#061f27" opacity=".7"/>
   <rect x="7" y="2" width="50" height="80" rx="11" fill="url(#switch-brass)" stroke="#805121" stroke-width="1.5"/>
-  <rect x="10" y="5" width="44" height="74" rx="8" fill="url(#switch-plate)" stroke="#ffe49a" stroke-width=".8"/>
+  <rect class="switch-pair-rim" x="10" y="5" width="44" height="74" rx="8" fill="url(#switch-plate)" stroke="#ffe49a" stroke-width=".8"/>
   <path d="M15 9H49M14 10V72" fill="none" stroke="#87b2a4" opacity=".25"/>
   <g fill="url(#switch-brass)" stroke="#795327" stroke-width="1"><circle cx="32" cy="12" r="3"/><circle cx="32" cy="72" r="3"/><path d="M30 14l4-4M30 74l4-4"/></g>
   <circle cx="32" cy="24" r="5.5" fill="#805021" stroke="#be9145"/>
@@ -19745,13 +17900,13 @@ function createGlassScenery(root) {
   <circle cx="32" cy="46" r="12" fill="url(#switch-brass)" stroke="#74471f" stroke-width="1.5"/>
   <g class="switch-handle">
     <rect x="28" y="28" width="8" height="20" rx="3" fill="url(#switch-brass)" stroke="#765023"/>
-    <rect x="26" y="13" width="12" height="25" rx="6" fill="url(#switch-cream)" stroke="#b58b46" stroke-width="1.2"/>
+    <rect class="switch-grip" x="26" y="13" width="12" height="25" rx="6" fill="url(#switch-cream)" stroke="#b58b46" stroke-width="1.2"/>
     <path d="M29 19v11" stroke="#fffbe3" stroke-width="3" stroke-linecap="round" opacity=".8"/>
   </g>
   <circle cx="32" cy="46" r="7" fill="url(#switch-brass)" stroke="#ffe599" stroke-width=".8"/>
 </svg>
 `;control.append(device);
-        linked.classList.add('switch-linked');linked.setAttribute('aria-disabled','true');linked.tabIndex=-1;linked.setAttribute('aria-label','Труба связана с рубильником');
+        linked.classList.add('switch-linked');linked.setAttribute('aria-disabled','true');linked.tabIndex=-1;linked.setAttribute('aria-label',`Связанный рычаг: ${name}`);
       }
       const hintTitle=hintTooltip.querySelector('.hint-tooltip-title'),hintDetail=hintTooltip.querySelector('.hint-tooltip-detail');
       // The wallet and logical attempt are committed together before a visual turn.
@@ -19824,7 +17979,7 @@ function createGlassScenery(root) {
       function updateChargeHud(){
         const ratio=timerDisabled?1:Math.max(0,Math.min(1,timerRemainingMs/timeLimitMs)),active=timerRemainingMs>0?Math.max(1,Math.ceil(ratio*chargeSegments.length)):0,lives=walletSnapshot?.lives??0;
         chargeSegments.forEach((segment,index)=>{const fill=Math.max(0,Math.min(1,ratio*chargeSegments.length-index));segment.dataset.active=String(fill>0);segment.style.setProperty('--charge-fill',`${(fill*100).toFixed(2)}%`);});chargeMeter.dataset.segments=String(active);chargeMeter.setAttribute('aria-label',`Запас энергии: ${active} из ${chargeSegments.length} секций`);
-        lifeCount.textContent=walletSnapshot?String(lives):'…';lifeMeter.dataset.empty=String(lives===0);lifeMeter.dataset.low=String(lives>0&&lives<=1);lifeButton.setAttribute('aria-label',`Предохранителей: ${lives}. Пополнить запас`);
+        lifeCount.textContent=walletSnapshot?String(lives):'…';lifeCount.style.setProperty('--hint-count-font',`${Math.max(10,18-Math.max(0,String(lives).length-2)*2)}px`);lifeMeter.dataset.empty=String(lives===0);lifeMeter.dataset.low=String(lives>0&&lives<=1);lifeButton.setAttribute('aria-label',`Предохранителей: ${lives}. Пополнить запас`);
         root.dataset.chargeWarning=String(!timerDisabled&&timerStarted&&ratio<=.25);
         root.dataset.chargeStage=!timerDisabled&&timerStarted&&!state.powered?(ratio<=.25?'critical':ratio<=.5?'low':'normal'):'normal';
         root.dataset.chargeLevel=!timerDisabled&&timerStarted&&!state.powered?String(active):'6';
@@ -19908,10 +18063,10 @@ function createGlassScenery(root) {
         const lives=walletSnapshot?.lives??0,wait=walletSnapshot?.lifeRefillAt?Math.max(0,walletSnapshot.lifeRefillAt-Date.now()):0;
         lifeStoreCount.textContent=walletSnapshot?String(lives):'—';lifeStoreStars.forEach(node=>node.textContent=walletSnapshot?String(walletSnapshot.starBalance):'—');
         lifeStoreBuy.disabled=!walletSnapshot||inputBusy;
-        lifeStoreAd.disabled=inputBusy||!rewardedHost?.available;
+        lifeStoreAd.disabled=inputBusy||!rewardedHost?.available;lifeStoreAd.querySelector('span').textContent=`Смотреть рекламу · +${rewardedStarAmount} ★`;
         lifeStore.querySelector('[data-action="life-stars-back"]').disabled=inputBusy;
         lifeStore.querySelector('[data-action="life-close"]').disabled=inputBusy;
-        lifeStoreAdNote.textContent=rewardedHost?.available?'Звезда за полный просмотр.':'Видео появится в версии для Яндекс Игр.';
+        lifeStoreAdNote.textContent=rewardedHost?.available?'Звёзды за полный просмотр.':'Видео появится в версии для Яндекс Игр.';
         lifeStoreWait.textContent=lives<maxChargeLives&&wait>0?`+1 бесплатно через ${Math.ceil(wait/60_000)} мин`:'';lifeStoreWait.hidden=!lifeStoreWait.textContent;
       }
       function setLifeStoreView(stars){
@@ -19951,9 +18106,9 @@ function createGlassScenery(root) {
         try{
           rewardedAdActive=true;syncChargeClock(true);
           const rewarded=await rewardedHost.showStarAd();
-          if(rewarded){const response=await hintWallet.acceptRewardedStar(`star:${createHintId()}`);acceptWallet(response.wallet,false);lifeStoreStatus.textContent=response.result?'Получена 1 звезда!':'Звезда уже получена.';}
+          if(rewarded){const response=await hintWallet.acceptRewardedStar(`star:${createHintId()}`);acceptWallet(response.wallet,false);lifeStoreStatus.textContent=response.result?`Получено ${rewardedStarAmount} ★!`:'Награда уже получена.';}
           else lifeStoreStatus.textContent='Просмотр не завершён.';
-        }catch{lifeStoreStatus.textContent='Не удалось сохранить звезду. Попробуй позже.';}
+        }catch{lifeStoreStatus.textContent='Не удалось сохранить звёзды. Попробуй позже.';}
         finally{rewardedAdActive=false;setInputBusy(false);syncChargeClock(true);lifeStoreAd.focus({preventScroll:true});}
       }
       function updateTimeoutPanel(){
@@ -20014,7 +18169,7 @@ function createGlassScenery(root) {
         refillButton.hidden=!available;
         refillBuy.disabled=!walletSnapshot||walletSnapshot.starBalance<hintStarCost;
         refillBuy.querySelector('.hint-shop-price').textContent=`★ ${hintStarCost}`;
-        refillBuy.setAttribute('aria-label',`Купить 1 подсказку за ${hintStarCost} звезды`);
+        refillBuy.setAttribute('aria-label',`Купить 1 подсказку за ${hintStarCost} звёзд`);
         refillCount.textContent=walletSnapshot?String(walletSnapshot.balance):'—';refillStars.textContent=walletSnapshot?String(walletSnapshot.starBalance):'—';
         refillAd.hidden=!rewardedHost?.available;refillAdNote.hidden=!!rewardedHost?.available;
         const wait=walletSnapshot?Math.max(0,freeHintAvailableAt(walletSnapshot)-Date.now()):0;
@@ -20090,7 +18245,7 @@ function createGlassScenery(root) {
       function saveCompletion(){
         if(progressSaved)return completionSave;progressSaved=true;
         const awardedStars=state.earnedStars;
-        completionSave=hintWallet.complete(level.id,currentAttempt.id,awardedStars).then(response=>{acceptWallet(response.wallet,false);root.dataset.progressSaved=String(response.result);return response.result;}).catch(()=>{progressSaved=false;root.dataset.progressSaved='false';root.querySelector('.screen-reader').textContent='Не удалось сохранить результат. Нажми продолжить ещё раз.';return false;});
+        completionSave=hintWallet.complete(level.id,currentAttempt.id,awardedStars).then(response=>{acceptWallet(response.wallet,false);const saved=response.result||response.wallet.attempts[level.id]?.completed;root.dataset.progressSaved=String(saved);return saved;}).catch(()=>{progressSaved=false;root.dataset.progressSaved='false';root.querySelector('.screen-reader').textContent='Не удалось сохранить результат. Нажми продолжить ещё раз.';return false;});
         return completionSave;
       }
       function showResult(){
@@ -20124,7 +18279,8 @@ function createGlassScenery(root) {
       const edge=(index,side,inset=0)=>center(index).map((n,k)=>n+port[side][k]*(50-inset));
       function pathFor(index,...args){
         const inset=typeof args.at(-1)==='number'?args.pop():0,ports=args,c=center(index);
-        if(ports.length===1)return hatchCells.has(index)?glassHatchPipePath(index,ports[0],level.size,inset,false,level.hatchArtStyle):`M${edge(index,ports[0],inset)}L${c}`;
+        if(crossoverCells.has(index)){const geometry=glassCrossoverGeometry(index,level.size,sequentialCrossoverCells.get(index));return geometry.underpass+geometry.overpass;}
+        if(ports.length===1)return hatchCells.has(index)?glassHatchPipePath(index,ports[0],level.size,inset):`M${edge(index,ports[0],inset)}L${c}`;
         if(ports.length!==2||state.stars&&starCells.has(index))return ports.map(side=>`M${edge(index,side,inset)}L${c}`).join('');
         const [a,b]=ports,p=edge(index,a,inset),q=edge(index,b,inset);
         if(port[a][0]+port[b][0]===0&&port[a][1]+port[b][1]===0)return `M${p}L${q}`;
@@ -20164,8 +18320,8 @@ function createGlassScenery(root) {
           mark.append(node('path',{class:'crossover-arrow',d:'M-11,-21H2V-26L12,-19L2,-12V-17H-11Z'}));container.append(mark);
         }
         if(sequentialCrossoverCells.has(index)){
-          const sequence=sequentialCrossoverCells.get(index),first=sequence.first??['N','S'],firstChannel=first.includes('W')||first.includes('E')?'bridge':'lower';
-          const mechanism=node('g',{class:'sequential-crossover-mechanism','data-cell':index,'data-sequence-state':'closed','data-first-channel':firstChannel,transform:`translate(${cx} ${cy})`});
+          const geometry=glassCrossoverGeometry(index,level.size,sequentialCrossoverCells.get(index));
+          const mechanism=node('g',{class:'sequential-crossover-mechanism','data-cell':index,'data-sequence-state':'closed','data-first-channel':'lower',transform:`translate(${cx} ${cy}) rotate(${geometry.rotation*90})`});
           const sideSlides=true;if(sideSlides)mechanism.dataset.relayArt='side-slides';
           if(!sideSlides)mechanism.append(node('path',{class:'crossover-relay-arm',d:'M-10,6L-7,-8M10,6L7,-8'}));
           if(sideSlides){
@@ -20254,6 +18410,7 @@ function createGlassScenery(root) {
       }
       const pipePieces=new Map(),collarPieces=new Map(),maskPieces=new Map(),interiorMask=svg.querySelector('.interior-mask');
       function rebuildPipeBoard(){
+        syncTurnControls();
         fixedOverlay.replaceChildren();
         solutionByCell=new Map(route.map(cell=>[cell[0],cell]));const firstBuild=pipePieces.size===0;
         for(let index=0;index<level.size*level.size;index++){
@@ -20261,10 +18418,10 @@ function createGlassScenery(root) {
           const pipePiece=pipePieces.get(index)??node('g',{class:'pipe-piece','data-cell':index}),collarPiece=collarPieces.get(index)??node('g',{class:'collar-piece','data-cell':index});
           pipePiece.replaceChildren();collarPiece.replaceChildren();
           pipePiece.style.transformOrigin=`${cx}px ${cy}px`;collarPiece.style.transformOrigin=`${cx}px ${cy}px`;
-          const hatch=hatchCells.get(index),hatchArt=hatch?createGlassHatchArt({node,index,cx,cy,side:ports[0],number:hatch.number,symbol:level.hatches.length>1?hatch.symbol:null,style:level.hatchArtStyle}):null;
+          const hatch=hatchCells.get(index),hatchArt=hatch?createGlassHatchArt({node,index,cx,cy,side:ports[0],number:hatch.number,symbol:level.hatches.length>1?hatch.symbol:null,colored:level.hatches.length>1}):null;
           if(hatchArt)pipePiece.append(hatchArt.shadow,hatchArt.back);
           if(crossoverCells.has(index)){
-            const vertical=`M${edge(index,'N')}L${edge(index,'S')}`,horizontal=`M${edge(index,'W')}L${[cx-22,cy]}Q${[cx,cy-18]} ${[cx+22,cy]}L${edge(index,'E')}`;
+            const {underpass:vertical,overpass:horizontal}=glassCrossoverGeometry(index,level.size,sequentialCrossoverCells.get(index));
             const layerStyle=sequentialCrossoverCells.has(index);appendPipeLayers(pipePiece,vertical,1,layerStyle?'crossover-underpass':'');pipePiece.append(node('path',{class:'mechanic-bridge-cut',d:horizontal}));appendPipeLayers(pipePiece,horizontal,1,layerStyle?'crossover-overpass':'');
           }else appendPipeLayers(pipePiece,d);
           appendMechanicArt(pipePiece,index,ports,fixedOverlay);
@@ -20353,8 +18510,8 @@ function createGlassScenery(root) {
           let d='',length=0;
           strand.forEach(([index,entry,exit],order)=>{
             const isLast=order===strand.length-1,isGoal=goals.some(goal=>goal.index===index&&goal.side===exit),inset=isLast&&!isGoal?5:0;
-            const crossoverBridge=crossoverCells.has(index)?(state.rotations[index]%2===0?'horizontal':'vertical'):null;
-            const part=hatchCells.has(index)?glassHatchPipePath(index,entry||exit,level.size,inset,!entry,level.hatchArtStyle):glassFlowCellPath(index,entry,exit,starCells.has(index)||orientedByCell.get(index).length>2,inset,level.size,crossoverBridge),size=flowLength(part),start=length;
+            const crossoverBridge=crossoverCells.has(index)?glassCrossoverGeometry(index,level.size,sequentialCrossoverCells.get(index),state.rotations[index]).bridge:null;
+            const part=hatchCells.has(index)?glassHatchPipePath(index,entry||exit,level.size,inset,!entry):glassFlowCellPath(index,entry,exit,starCells.has(index)||orientedByCell.get(index).length>2,inset,level.size,crossoverBridge),size=flowLength(part),start=length;
             // The outgoing hatch begins a new visible strand. Never draw a
             // surface wire between remote mouths or restart its wave distance.
             d+=order&&entry?part.replace(/^M[^LQ]+/,''):part;length+=size;
@@ -20547,6 +18704,30 @@ function createGlassScenery(root) {
         const spotlight=lessonOverlay.querySelector('.lesson-spotlight');spotlight.setAttribute('viewBox',`0 0 ${bounds.width} ${bounds.height}`);
         for(const hole of spotlight.querySelectorAll('.lesson-hole[data-cell]')){const cell=Number(hole.dataset.cell);hole.setAttribute('cx',cellPoint(cell).x);hole.setAttribute('cy',cellPoint(cell).y);hole.setAttribute('r',spotlightLesson&&!starLesson?board.width*.49/level.size:r);}
         card.style.width='';
+        if(level.size===6&&level.intro==='switch'){
+          const targets=lessonCells.map(cell=>turnButtons.get(cell).getBoundingClientRect()),normalWidth=card.offsetWidth,headerBottom=levelHeader.getBoundingClientRect().bottom-bounds.top+8;
+          let best=null;
+          for(const width of new Set([normalWidth,Math.min(normalWidth,226)])){
+            card.style.width=`${width}px`;
+            for(const [order,pair] of level.switches.entries())for(const below of [false,true]){
+              card.style.padding=below?'24px 18px 15px':'15px 18px 24px';
+              const target=turnButtons.get(pair.index).getBoundingClientRect(),height=card.offsetHeight,anchor=target.left-bounds.left+target.width/2,y=below?target.bottom-bounds.top+6:target.top-bounds.top-height-6;
+              for(const flip of [false,true]){
+                const x=anchor-width*(flip?.087:.913);
+                if(x<12||x+width>bounds.width-12||y<Math.max(8,headerBottom)||y+height>bounds.height-8)continue;
+                if(targets.some(t=>x<t.right-bounds.left+4&&x+width>t.left-bounds.left-4&&y<t.bottom-bounds.top+4&&y+height>t.top-bounds.top-4))continue;
+                const score=order*1000+(normalWidth-width)+(below?1:0);
+                if(!best||score<best.score)best={x,y,width,below,flip,score};
+              }
+            }
+          }
+          if(best){
+            card.style.width=`${best.width}px`;card.style.padding=best.below?'24px 18px 15px':'15px 18px 24px';
+            card.style.setProperty('--bubble-x',best.flip?-1:1);card.style.setProperty('--bubble-y',best.below?-1:1);
+            card.style.left=`${best.x}px`;card.style.top=`${best.y}px`;return;
+          }
+          card.style.width='';
+        }
         if(level.size===5&&level.intro==='switch'&&bounds.height<360){
           const leftSpace=cx-r-24;
           if(leftSpace>=160){
@@ -20603,7 +18784,7 @@ function createGlassScenery(root) {
       reduced.addEventListener('change',()=>{if(reduced.matches){hintAnimations.forEach(animation=>animation.cancel());hintAnimations=[];idleCoachAnimation?.cancel();idleCoachAnimation=null;readyCoachAnimation?.cancel();readyCoachAnimation=null;}energy.setReduced(reduced.matches);syncPause();});
       hintWallet.subscribe(wallet=>acceptWallet(wallet,!inputBusy&&!hintBusy));
       const refreshWallet=()=>{void hintWallet.read().then(response=>acceptWallet(response.wallet,!inputBusy&&!hintBusy)).catch(()=>{walletError=true;updateHint();});};
-      window.addEventListener('focus',refreshWallet);window.addEventListener('pageshow',refreshWallet);window.addEventListener('pagehide',()=>{if(leavingLevel)return;syncChargeClock();saveChargeTimer(true);});document.addEventListener('visibilitychange',()=>{syncPause();if(document.hidden&&!leavingLevel)saveChargeTimer(true);else if(!document.hidden)refreshWallet();});
+      window.addEventListener('focus',refreshWallet);window.addEventListener('pageshow',refreshWallet);window.addEventListener('pagehide',()=>{if(leavingLevel)return;syncChargeClock();saveChargeTimer(true);});document.addEventListener('visibilitychange',()=>{syncPause();if(document.hidden&&!leavingLevel){saveChargeTimer(true);}else if(!document.hidden)refreshWallet();});
       refillOverlay.addEventListener('click',event=>{if(event.target===refillOverlay)setRefillOpen(false);});
       refillOverlay.addEventListener('keydown',event=>{if(event.key==='Escape')setRefillOpen(false);if(event.key==='Tab'){const controls=[...refillOverlay.querySelectorAll('button')].filter(b=>!b.hidden&&!b.disabled),first=controls[0],last=controls.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}}});
       timeoutOverlay.addEventListener('keydown',event=>{if(event.key!=='Tab')return;const controls=[...timeoutOverlay.querySelectorAll('button:not([hidden])')],first=controls[0],last=controls.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}});

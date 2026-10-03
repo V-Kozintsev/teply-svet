@@ -6,7 +6,7 @@
   </defs>
   <rect x="7" y="4" width="50" height="80" rx="11" fill="#061f27" opacity=".7"/>
   <rect x="7" y="2" width="50" height="80" rx="11" fill="url(#switch-brass)" stroke="#805121" stroke-width="1.5"/>
-  <rect x="10" y="5" width="44" height="74" rx="8" fill="url(#switch-plate)" stroke="#ffe49a" stroke-width=".8"/>
+  <rect class="switch-pair-rim" x="10" y="5" width="44" height="74" rx="8" fill="url(#switch-plate)" stroke="#ffe49a" stroke-width=".8"/>
   <path d="M15 9H49M14 10V72" fill="none" stroke="#87b2a4" opacity=".25"/>
   <g fill="url(#switch-brass)" stroke="#795327" stroke-width="1"><circle cx="32" cy="12" r="3"/><circle cx="32" cy="72" r="3"/><path d="M30 14l4-4M30 74l4-4"/></g>
   <circle cx="32" cy="24" r="5.5" fill="#805021" stroke="#be9145"/>
@@ -15,7 +15,7 @@
   <circle cx="32" cy="46" r="12" fill="url(#switch-brass)" stroke="#74471f" stroke-width="1.5"/>
   <g class="switch-handle">
     <rect x="28" y="28" width="8" height="20" rx="3" fill="url(#switch-brass)" stroke="#765023"/>
-    <rect x="26" y="13" width="12" height="25" rx="6" fill="url(#switch-cream)" stroke="#b58b46" stroke-width="1.2"/>
+    <rect class="switch-grip" x="26" y="13" width="12" height="25" rx="6" fill="url(#switch-cream)" stroke="#b58b46" stroke-width="1.2"/>
     <path d="M29 19v11" stroke="#fffbe3" stroke-width="3" stroke-linecap="round" opacity=".8"/>
   </g>
   <circle cx="32" cy="46" r="7" fill="url(#switch-brass)" stroke="#ffe599" stroke-width=".8"/>

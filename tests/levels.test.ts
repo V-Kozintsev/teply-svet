@@ -76,8 +76,8 @@ test('a small or empty catalog does not invent additional levels', () => {
   assert.deepEqual(empty.items, []);
 });
 
-test('the current chapter contains its 25 playable stable routes', () => {
-  assert.equal(levels.length, 25);
+test('the current chapter contains its 26 playable stable routes', () => {
+  assert.equal(levels.length, 26);
   assert.deepEqual(
     getLevelPage(levels).items.map((level) => level.state),
     ['current', ...Array.from({ length: 11 }, () => 'locked')],
@@ -92,11 +92,8 @@ test('the current chapter contains its 25 playable stable routes', () => {
   );
   assert.ok(levels.every((level) => getLevelUrl(level, 'https://example.test/game/')));
   assert.equal(
-    getLevelUrl(
-      levels.find((level) => level.id === 12)!,
-      'https://example.test/game/',
-    ),
-    'https://example.test/game/levels/12/index.html',
+    getLevelUrl(levels.at(-1)!, 'https://example.test/game/'),
+    'https://example.test/game/levels/45/index.html',
   );
 });
 
@@ -155,15 +152,31 @@ test('learning sequence does not map removed legacy saves', () => {
     current.find((l) => l.id === 13),
     undefined,
   );
-  assert.equal(
-    current.find((l) => l.id === 45),
-    undefined,
-  );
-  assert.equal(current.filter((l) => l.chapter === 1).length, 25);
+  assert.equal(current.find((l) => l.id === 45)?.stars, 0);
+  assert.equal(current.filter((l) => l.chapter === 1).length, 26);
   assert.deepEqual(
     current.map((l) => l.displayNumber),
-    Array.from({ length: 25 }, (_, i) => i + 1),
+    Array.from({ length: 26 }, (_, i) => i + 1),
   );
+});
+
+test('finishing the former chapter unlocks the new finale without changing old results', () => {
+  let progress = createEmptyProgress();
+  for (const level of levels.slice(0, -1))
+    progress = recordLevelResult(progress, level.id, 3).progress;
+  progress = recordLevelResult(progress, 35, 1).progress;
+  const before = structuredClone(progress);
+  const current = applyLevelProgress(levels, progress);
+  const page = getLevelPage(current);
+  assert.equal(page.page, 2);
+  assert.equal(page.completed, 25);
+  assert.equal(page.items.at(-1)?.id, 45);
+  assert.equal(page.items.at(-1)?.state, 'current');
+  assert.equal(current.find((level) => level.id === 12)?.stars, 3);
+  assert.deepEqual(progress, before);
+  const finished = applyLevelProgress(levels, recordLevelResult(progress, 45, 3).progress);
+  assert.equal(getLevelPage(finished).completed, 26);
+  assert.equal(getLevelPage(finished).items.at(-1)?.state, 'completed');
 });
 
 test('inserting the no-star ramp caps early scores and unlocks the new seventh entry', () => {

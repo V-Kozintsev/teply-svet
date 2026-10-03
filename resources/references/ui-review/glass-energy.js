@@ -263,6 +263,15 @@ export function glassFlowPaths(cells, level = firstGlassLevel) {
   return traceGlassCircuit(cells,level).flowPaths;
 }
 
+export function glassCrossoverGeometry(index, size, sequence, turns = 0) {
+  const rotation = ((turns + ((sequence?.first ?? ['N','S']).includes('E') ? 1 : 0)) % 4 + 4) % 4;
+  const bridge = ['N','E','S','W'][rotation], horizontal = rotation % 2 === 0;
+  const cx = index % size * 100 + 50, cy = Math.floor(index / size) * 100 + 50;
+  return { rotation, bridge,
+    underpass: horizontal ? `M${cx},${cy-50}L${cx},${cy+50}` : `M${cx-50},${cy}L${cx+50},${cy}`,
+    overpass: glassFlowCellPath(index,horizontal?'W':'N',horizontal?'E':'S',true,0,size,bridge) };
+}
+
 export function glassFlowCellPath(index, entry, exit, throughCenter = false, inset = 0, size = 4, crossoverBridge = null) {
   const vectors = { N: [0,-1], E: [1,0], S: [0,1], W: [-1,0] };
   const c = [(index % size) * 100 + 50, Math.floor(index / size) * 100 + 50];
@@ -272,11 +281,12 @@ export function glassFlowCellPath(index, entry, exit, throughCenter = false, ins
   if (!exit) return `M${p}L${c}`;
   const q = point(exit, 50 - inset);
   if (crossoverBridge && oppositeSide[entry] === exit) {
-    const raised = crossoverBridge === 'horizontal'
+    const bend = {horizontal:'N',vertical:'E'}[crossoverBridge] ?? crossoverBridge;
+    const raised = bend === 'N' || bend === 'S'
       ? entry === 'E' || entry === 'W'
       : entry === 'N' || entry === 'S';
     if (raised) {
-      const apex = crossoverBridge === 'horizontal' ? [c[0], c[1] - 18] : [c[0] + 18, c[1]];
+      const apex = point(bend,18);
       return `M${p}L${point(entry,22)}Q${apex} ${point(exit,22)}L${q}`;
     }
     // The current disappears beneath the raised pipe and reappears on the
@@ -312,12 +322,14 @@ export function glassWaveDistance(timeline, elapsed) {
   );
 }
 
-const glassTestPulseDuration = 1150;
+export function glassTestPulseDuration(length) {
+  return Math.max(1800, length * 2);
+}
 
 export function reconcileGlassPulse(previous, next, editedCell, elapsed) {
   const distance = Math.min(
     previous.length,
-    Math.max(0, (elapsed / glassTestPulseDuration) * previous.length),
+    Math.max(0, (elapsed / glassTestPulseDuration(previous.length)) * previous.length),
   );
   if (previous.d === next.d && previous.complete === next.complete)
     return { status: 'unchanged', elapsed, distance };
@@ -337,7 +349,7 @@ export function reconcileGlassPulse(previous, next, editedCell, elapsed) {
 
   return {
     status: 'continue',
-    elapsed: (distance / next.length) * glassTestPulseDuration,
+    elapsed: (distance / next.length) * glassTestPulseDuration(next.length),
     distance,
   };
 }
@@ -557,9 +569,8 @@ export function createGlassEnergy({ root, svg, sourceButton, reduced, onState, o
     }
     for (const relay of circuit?.crossoverRelays ?? []) {
       if (!relay.node) continue;
-      // The relay reacts as the transformer charge enters its sensing channel.
-      // Waiting for unlockDistance made the shutter look inert during the pass.
-      const opensAt = relay.firstDistance;
+      // The lower channel must be traversed before its upper shutters lift.
+      const opensAt = relay.unlockDistance;
       const secondOpensAt = Number.isFinite(relay.gateDistance) ? Math.max(opensAt + 95, relay.gateDistance - 95) : Infinity;
       const clearsAt = (relay.unlockDistance ?? opensAt) + 95;
       const state = glassRelayState({ opensAt, closesAt: relay.shuttersClearAfterFirst ? clearsAt : opensAt + 95,
@@ -798,14 +809,15 @@ export function createGlassEnergy({ root, svg, sourceButton, reduced, onState, o
       beaconPower =
         0.15 + 0.65 * Math.max(0, 1 - Math.abs(cycle - 180) / 100, 1 - Math.abs(cycle - 430) / 100);
     }
-    if (!run && !isPowered && !reducedMotion && clock >= nextPulse) {
+    if (!pulse && !run && !isPowered && !reducedMotion && clock >= nextPulse) {
       startTestPulse(false);
     }
     if (pulse) {
       const elapsed = clock - pulse.start,
-        progress = clamp(elapsed / glassTestPulseDuration),
-        distance = elapsed / glassTestPulseDuration * circuit.length,
-        duration = glassTestPulseDuration * (circuit.complete ? externalEnd() / circuit.length : 1);
+        travel = glassTestPulseDuration(circuit.length),
+        progress = clamp(elapsed / travel),
+        distance = elapsed / travel * circuit.length,
+        duration = travel * (circuit.complete ? externalEnd() / circuit.length : 1);
       externalDistance = distance;
       relayDistance = distance;
       externalStrength = 0.32 * (elapsed < duration ? 1 : fade(elapsed - duration, 250));
@@ -825,12 +837,13 @@ export function createGlassEnergy({ root, svg, sourceButton, reduced, onState, o
         circuit.breakCollar.softFlashAt = clock;
       }
       feed = Math.max(feed, 0.32 * fade(elapsed, 280));
-      if (!circuit.complete && elapsed >= glassTestPulseDuration - 50)
+      if (!circuit.complete && elapsed >= travel - 50)
         endGlow.style.opacity = String(
-          0.3 * fade(elapsed - glassTestPulseDuration, 250),
+          0.3 * fade(elapsed - travel, 250),
         );
       if (elapsed >= duration + 250) {
         pulse = null;
+        nextPulse = clock + 900;
         hideWave();
       }
     }

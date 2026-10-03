@@ -3,6 +3,7 @@ import { readPreferences, storageKey } from './preferences';
 import { installGameTouchGuard, installGameViewport } from './game-touch';
 import { createYandexRewardedHost } from './yandex-rewarded';
 import { installFrameLoading } from './frame-loading';
+import { isYandexGameHost, loadYandexSdk } from './yandex-sdk';
 
 let hosted = false;
 try {
@@ -14,6 +15,13 @@ try {
 if (hosted) {
   void import('./main');
 } else {
+  if (isYandexGameHost(location.hostname) || window.YaGames) {
+    void loadYandexSdk(window)
+      .then((sdk) => {
+        window.warmLanguage?.setPlatformLanguage(sdk.environment?.i18n?.lang);
+      })
+      .catch(() => {});
+  }
   installGameTouchGuard();
   installGameViewport();
   const base = new URL('./', location.href);

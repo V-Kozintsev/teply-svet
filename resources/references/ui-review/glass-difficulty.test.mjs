@@ -22,7 +22,7 @@ function corridors(level){
  walk(level.source.index,level.source.side,bit(level.source.index),crosses.map(()=>0),[level.source.index]);return paths;
 }
 
-for(const [number,length,clicks,timer]of [[6,21,35,65],[7,23,40,70],[8,23,42,75]])test(`visible ${number} has one dense corridor and no shorter geometric shortcut`,()=>{
+for(const [number,length,clicks,timer]of [[6,21,35,70],[7,23,40,70],[8,23,42,75]])test(`visible ${number} has one dense corridor and no shorter geometric shortcut`,()=>{
  const l=glassLevels.find(l=>l.displayNumber===number);
  assert.equal(l.size,5);assert.equal(l.solution.filter(c=>c.length===3).length,25);assert.deepEqual(l.stars,[]);assert.equal(l.hintsEnabled,false);assert.equal(l.timeLimitSeconds,timer);
  assert.deepEqual(corridors(l),l.paths);assert.equal(l.paths.length,1);assert.equal(l.paths[0].length,length);assert.equal(l.variants[0].actions.length,clicks);
@@ -31,7 +31,7 @@ for(const [number,length,clicks,timer]of [[6,21,35,65],[7,23,40,70],[8,23,42,75]
 
 test('visible 9 is a larger unique maze with deep false approaches from both ends',()=>{
  const l=glassLevels.find(level=>level.displayNumber===9),eight=glassLevels.find(level=>level.displayNumber===8);
- assert.equal(l.id,43);assert.equal(l.size,6);assert.equal(l.timeLimitSeconds,95);
+ assert.equal(l.id,43);assert.equal(l.size,6);assert.equal(l.timeLimitSeconds,75);
  assert.equal(l.solution.filter(cell=>cell.length===3).length,36);
  assert.deepEqual(l.stars,[]);assert.equal(l.outage,undefined);
  assert.deepEqual(corridors(l),l.paths);assert.equal(l.paths.length,1);assert.equal(l.hintRoute.length,34);

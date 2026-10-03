@@ -5,6 +5,8 @@
     #warm-glass-level { position:relative; isolation:isolate; overflow:hidden; box-sizing:border-box; width:100%; padding:24px 24px 22px; color:#ffe4aa; background:radial-gradient(ellipse at 40% 80%,#29564d,transparent 70%),linear-gradient(150deg,#102e3c,#153b42); font:16px/1.4 GlassMarmelad,'Segoe UI',sans-serif; }
     #warm-glass-level,#level-entry { -webkit-tap-highlight-color:transparent; }
     #warm-glass-level * { box-sizing:border-box; }
+    #warm-glass-level,#warm-glass-level * { -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+    #warm-glass-level :is(input,textarea,[contenteditable='true']) { -webkit-user-select:text; user-select:text; -webkit-touch-callout:default; }
     #warm-glass-level [hidden] { display:none !important; }
     #warm-glass-level[data-hints-enabled='false'] .hint-wrap { display:none; }
     #warm-glass-level img { display:block; max-width:none; user-select:none; -webkit-user-drag:none; }
@@ -171,9 +173,10 @@
     #warm-glass-level .switch-handle { transform-origin:32px 46px; transform:rotate(-135deg); transition:transform 280ms cubic-bezier(.22,.76,.2,1); }
     #warm-glass-level .switch-control[data-switch-on='true'] .switch-handle { transform:rotate(45deg); }
     #warm-glass-level .switch-control[data-energized='true'] .switch-indicator { fill:#ffd777; filter:drop-shadow(0 0 3px #ffcf67); }
-    #warm-glass-level .switch-control::before,#warm-glass-level .switch-linked::before { content:'◆'; position:absolute; z-index:4; right:8%; bottom:6%; color:#ffe5a3; font-size:clamp(8px,1vw,14px); text-shadow:0 1px 2px #082b33; }
+    #warm-glass-level .switch-control .switch-pair-rim { stroke:var(--link-color); stroke-width:1.8; }
+    #warm-glass-level .switch-control .switch-grip { fill:var(--link-color); stroke:var(--link-shade); }
     #warm-glass-level .switch-linked { pointer-events:none; }
-    #warm-glass-level .switch-linked::after { content:''; position:absolute; inset:9%; border:2px dashed #d9b868aa; border-radius:10px; box-shadow:inset 0 0 10px #f6ce5730; pointer-events:none; }
+    #warm-glass-level .switch-linked::after { content:''; position:absolute; inset:9%; border:2px dashed var(--link-color); border-radius:10px; box-shadow:inset 0 0 10px var(--link-glow); pointer-events:none; }
     #warm-glass-level .mechanic-bridge-cut { fill:none; stroke:#102f35; stroke-width:38; stroke-linecap:round; }
     #warm-glass-level .crossover-arrow-plate { fill:#3c3030; stroke:#c78e53; stroke-width:2; filter:drop-shadow(0 1px 2px #061b22cc); }
     #warm-glass-level .crossover-arrow { fill:#ffe49a; stroke:#815a2a; stroke-width:1; filter:drop-shadow(0 0 3px #ffc95a88); }
@@ -215,16 +218,18 @@
     #warm-glass-level .fixed-saddle-side { fill:#514c40; stroke:#8f7958; stroke-width:1; }
     #warm-glass-level .hatch-ground-shadow { fill:#071e24; opacity:.7; }
     #warm-glass-level :is(.hatch-rim-depth,.hatch-front-depth,.hatch-lid-depth) { fill:#72512d; stroke:#392e22; stroke-width:1.4; }
-    #warm-glass-level :is(.hatch-rim,.hatch-lid-rim,.hatch-front-rim) { fill:url(#glass-brass); stroke:#70502c; stroke-width:1.3; }
+    #warm-glass-level :is(.hatch-rim,.hatch-lid-rim,.hatch-front-rim) { fill:var(--hatch-pair-color,url(#glass-brass)); stroke:var(--hatch-pair-shade,#70502c); stroke-width:1.3; }
+    #warm-glass-level .hatch-mark[data-pair-color] .hatch-front-rim { fill:var(--hatch-pair-color); }
     #warm-glass-level .hatch-well { fill:#061c23; stroke:#594627; stroke-width:1.2; }
     #warm-glass-level .hatch-well-wall { fill:#102b30; }
-    #warm-glass-level .hatch-lid-face { fill:#8c713e; stroke:#4d3c26; stroke-width:1.3; }
+    #warm-glass-level .hatch-lid-face { fill:var(--hatch-pair-face,#8c713e); stroke:var(--hatch-pair-shade,#4d3c26); stroke-width:1.3; }
     #warm-glass-level :is(.hatch-lid-highlight,.hatch-front-highlight) { fill:none; stroke:#edcf8a; stroke-width:1.2; opacity:.7; }
     #warm-glass-level .hatch-hinge { fill:#937240; stroke:#523e27; stroke-width:1; }
     #warm-glass-level .hatch-lid-bolt { fill:#e6c381; stroke:#70522d; stroke-width:.7; }
     #warm-glass-level .hatch-pair-mark { fill:#ffe6a0; stroke:#704b2c; stroke-width:.8; }
     #warm-glass-level .hatch-scene-body { transform:rotate(var(--hatch-view-turn,0deg)); }
     #warm-glass-level[data-scene-layout='portrait'] { --hatch-view-turn:-90deg; }
+    #warm-glass-level[data-scene-layout='portrait'] .hatch-raised-lid[data-mirrored='true'] { transform:translate(9px,0) scale(-.82,.82); }
     #warm-glass-level .slider-rail { fill:#233d3d; stroke:#8c8267; stroke-width:2; }
     #warm-glass-level .slider-track-bed { fill:#102e32; stroke:#50615a; stroke-width:1; }
     #warm-glass-level .slider-stop { fill:#6e6651; stroke:#a68d5c; stroke-width:1.5; }
@@ -667,7 +672,7 @@
     }
   </style>
   <header class="level-header">
-    <div class="tool-row"><div class="hint-wrap"><button class="hint-button" type="button" data-action="hint" aria-label="Подсказки загружаются" aria-disabled="false" aria-describedby="glass-hint-tooltip"><img src="__hint_bulb__" alt="" draggable="false"><span class="hint-count" aria-hidden="true">…</span></button><span class="hint-tooltip" id="glass-hint-tooltip" role="tooltip"><span class="hint-tooltip-title">Повернуть нужную трубу</span><span class="hint-tooltip-detail">Будет использована 1 подсказка</span></span></div><button class="life-wrap" type="button" data-action="life-store" aria-label="Предохранители. Пополнить запас" aria-describedby="glass-life-tooltip"><span class="life-meter" aria-hidden="true"><img class="life-fuse" src="__life_fuse__" alt="" draggable="false"><span class="life-count" aria-hidden="true">5</span></span><span class="life-tooltip" id="glass-life-tooltip" role="tooltip">Запас попыток. Нажми, чтобы пополнить.</span></button></div>
+    <div class="tool-row"><div class="hint-wrap"><button class="hint-button" type="button" data-action="hint" aria-label="Подсказки загружаются" aria-disabled="false" aria-describedby="glass-hint-tooltip"><img src="__toolbar_bulb__" alt="" draggable="false"><span class="hint-count" aria-hidden="true">…</span></button><span class="hint-tooltip" id="glass-hint-tooltip" role="tooltip"><span class="hint-tooltip-title">Повернуть нужную трубу</span><span class="hint-tooltip-detail">Будет использована 1 подсказка</span></span></div><button class="life-wrap" type="button" data-action="life-store" aria-label="Предохранители. Пополнить запас" aria-describedby="glass-life-tooltip"><span class="life-meter" aria-hidden="true"><img class="life-fuse" src="__toolbar_fuse__" alt="" draggable="false"><span class="life-count" aria-hidden="true">…</span></span><span class="life-tooltip" id="glass-life-tooltip" role="tooltip">Запас попыток. Нажми, чтобы пополнить.</span></button></div>
     <div class="level-heading"><div class="level-number">Уровень __level_number__</div><div class="level-name">__level_name__</div></div>
     <button class="gear" type="button" aria-label="Настройки уровня" data-action="settings"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="glass-gear-face" x2="0" y2="1"><stop stop-color="#ffe4a1"/><stop offset="1" stop-color="#dab46a"/></linearGradient></defs><path fill-rule="evenodd" d="M21 3h6l1 6 3 1 5-3 4 4-3 5 1 3 6 1v6l-6 1-1 3 3 5-4 4-5-3-3 1-1 6h-6l-1-6-3-1-5 3-4-4 3-5-1-3-6-1v-6l6-1 1-3-3-5 4-4 5 3 3-1zM31 23a7 7 0 1 0-14 0 7 7 0 0 0 14 0"/></svg></button>
   </header>
@@ -723,6 +728,7 @@
   <div class="settings-overlay" hidden><section class="settings-panel" role="dialog" aria-modal="true" aria-label="Настройки уровня">
     <button class="settings-close" type="button" aria-label="Закрыть настройки" data-action="close"><img src="__close__" alt="" draggable="false"></button>
     <h2 class="settings-title">Настройки</h2>
+    <label class="language-choice"><span>Язык / Language</span><select data-language-select aria-label="Язык / Language"><option value="ru">Русский</option><option value="en">English</option></select></label>
     <div class="settings-controls">
       <button class="depth-key" type="button" aria-label="Звук" aria-pressed="true" data-action="sound"><span class="setting-icon speaker-icon"><i data-lucide="volume-2" aria-hidden="true"></i></span><span class="setting-off-mark"><i data-lucide="slash" aria-hidden="true"></i></span></button>
       <button class="depth-key" type="button" aria-label="Музыка" aria-pressed="true" data-action="music"><span class="setting-icon music-icon"><i data-lucide="music" aria-hidden="true"></i></span><span class="setting-off-mark"><i data-lucide="slash" aria-hidden="true"></i></span></button>
@@ -737,7 +743,7 @@
     <button class="result-button" type="button" data-action="hint-gift" aria-label="Получить 1 подсказку бесплатно"><span class="hint-shop-action"><span>Получить 1</span><span class="hint-shop-value">Бесплатно</span></span></button>
     <p class="hint-refill-copy"></p>
     <p class="hint-shop-balance"><span>Твои звёзды</span><span class="hint-shop-balance-value">★ <strong class="hint-shop-stars">—</strong></span></p>
-    <button class="result-button" type="button" data-action="hint-buy" aria-label="Купить 1 подсказку за 2 звезды"><span class="hint-shop-action"><span>Купить 1</span><span class="hint-shop-value hint-shop-price">★ 2</span></span></button>
+<button class="result-button" type="button" data-action="hint-buy" aria-label="Купить 1 подсказку за 5 звёзд"><span class="hint-shop-action"><span>Купить 1</span><span class="hint-shop-value hint-shop-price">★ 5</span></span></button>
     <button class="result-button" type="button" data-action="hint-ad" aria-label="Посмотреть видео и получить 1 подсказку"><span class="hint-shop-action"><span>Смотреть видео</span><span class="hint-shop-value">+1</span></span></button>
     <p class="hint-ad-note" hidden>Реклама доступна в Яндекс Играх.</p>
   </section></div>
@@ -776,7 +782,7 @@
     <div class="life-store-topup" hidden>
       <p class="life-store-balance"><span>Твои звёзды</span><span class="life-store-balance-value">★ <strong class="life-store-stars">—</strong></span></p>
       <p class="hint-refill-copy">Для предохранителя нужно 3 звезды.</p>
-      <button class="result-button" type="button" data-action="life-star-ad"><span>Смотреть рекламу · +1 ★</span></button>
+      <button class="result-button" type="button" data-action="life-star-ad"><span>Смотреть рекламу · +3 ★</span></button>
       <p class="hint-ad-note life-store-ad-note"></p>
       <div class="life-store-future" aria-label="Покупки за Яны пока недоступны">Покупка за Яны <span>позже</span></div>
       <button class="result-button result-secondary-button" type="button" data-action="life-stars-back"><span>К предохранителям</span></button>
@@ -834,7 +840,7 @@
       const timerVisitKey=`teply-svet.timer-visit.v1.${level.id}`;
       let refreshTimerOnEntry=false,leavingLevel=false;
       try{refreshTimerOnEntry=sessionStorage.getItem(timerVisitKey)!=='active';}catch{refreshTimerOnEntry=true;}
-      const outageTimeLimitMs=level.outage?Math.floor(timeLimitMs*.3):null;
+      const outageTimeLimitMs=level.outage?glassOutageRemainingMs(timeLimitMs,timeLimitMs):null;
       // Do not expose a playable-looking field before its saved attempt can accept moves.
       let opened;
       try{
@@ -874,7 +880,7 @@
       const lessonContent={
         stars:{title:'Собери звёзды',copy:'Проведи через них ток.',icon:`<img src="__star_gem__" alt="">`},
         route:{title:'Звёздный обход',copy:'Проведи свет через обе звезды к дому.',icon:''},
-        switch:{title:'Связанный рубильник',copy:'Рубильник поворачивает сразу две трубы.',icon:`<span class="lesson-switch"><img src="__switch_rail__" alt=""><img src="__switch_handle__" alt=""></span>`},
+        switch:{title:'Связанный рычаг',copy:'Рычаг поворачивает обе отмеченные трубы.',icon:`<span class="lesson-switch"><img src="__switch_rail__" alt=""><img src="__switch_handle__" alt=""></span>`},
         branch:{title:'Тройник',copy:'Тройник может увести ток в ложную ветку. Найди один цельный путь к дому.',icon:''},
         crossover:{title:'Крестовина с реле',copy:'Ток в нижней трубе открывает верхнюю.',icon:''},
         'one-way':{title:'Только по стрелке',copy:'Свет проходит через эту трубу лишь в направлении стрелки.',icon:''},
@@ -910,7 +916,7 @@
       function prepareLesson(){
         const content=lessonContent[level.intro];if(!content||introPending||lessonOpen)return;
         try{if(sessionStorage.getItem(lessonSeenKey)===currentAttempt?.id)return;}catch{}
-        lessonOverlay.dataset.kind=level.intro;if(spotlightLesson){lessonOverlay.querySelector('.lesson-spotlight')?.remove();lessonOverlay.insertAdjacentHTML('afterbegin',`<svg class="lesson-spotlight" aria-hidden="true"><defs><mask id="star-lesson-mask"><rect width="100%" height="100%" fill="white"/>${lessonCells.map(index=>`<circle class="lesson-hole" data-cell="${index}" fill="black"/>`).join('')}</mask></defs><rect width="100%" height="100%" fill="#031923cc" mask="url(#star-lesson-mask)"/></svg>`);if(starLesson)lessonCells.forEach(index=>svg.querySelector(`.star-chamber[data-cell='${index}']`).classList.add('star-lesson-target'));else lessonCells.forEach(index=>turnButtons.get(index).classList.add('lesson-target'));}const icon=lessonOverlay.querySelector('.lesson-icon');icon.dataset.kind=level.intro;icon.innerHTML=content.icon;lessonOverlay.querySelector('.lesson-title').textContent=content.title;lessonOverlay.querySelector('.lesson-copy').textContent=content.copy;queueEntryGuidance(()=>setLessonOpen(true));
+        lessonOverlay.dataset.kind=level.intro;if(spotlightLesson){lessonOverlay.querySelector('.lesson-spotlight')?.remove();lessonOverlay.insertAdjacentHTML('afterbegin',`<svg class="lesson-spotlight" aria-hidden="true"><defs><mask id="star-lesson-mask"><rect width="100%" height="100%" fill="white"/>${lessonCells.map(index=>`<circle class="lesson-hole" data-cell="${index}" fill="black"/>`).join('')}</mask></defs><rect width="100%" height="100%" fill="#031923cc" mask="url(#star-lesson-mask)"/></svg>`);if(starLesson)lessonCells.forEach(index=>svg.querySelector(`.star-chamber[data-cell='${index}']`).classList.add('star-lesson-target'));else lessonCells.forEach(index=>turnButtons.get(index).classList.add('lesson-target'));}const icon=lessonOverlay.querySelector('.lesson-icon');icon.dataset.kind=level.intro;icon.innerHTML=content.icon;lessonOverlay.querySelector('.lesson-title').textContent=level.lessonTitle??content.title;lessonOverlay.querySelector('.lesson-copy').textContent=level.lessonCopy??content.copy;queueEntryGuidance(()=>setLessonOpen(true));
       }
       let savedPreferences={sound:true,music:true};
       try{const stored=JSON.parse(sessionStorage.getItem('teply-svet.preferences.v1'));if(stored&&typeof stored==='object'){if(typeof stored.sound==='boolean')savedPreferences.sound=stored.sound;if(typeof stored.music==='boolean')savedPreferences.music=stored.music;}}catch{}
@@ -939,12 +945,13 @@
       }
       async function leaveLevelWithFeedback(action){
         if(state.powered&&!await saveCompletion())return;
+        
         const audible=soundButton.getAttribute('aria-pressed')==='true'&&!document.hidden;
         playActionSound('ui');
         if(audible)setTimeout(()=>leaveLevel(action),90);else leaveLevel(action);
       }
       for(let index=0;index<level.size*level.size;index++){
-        if((route.find(cell=>cell[0]===index)?.length??0)<2&&!sliderCells.has(index))continue;
+        if(![level.solution,level.outage?.solution].some(board=>(board?.find(cell=>cell[0]===index)?.length??0)>1)&&!sliderCells.has(index))continue;
         const button=turnTemplate.content.firstElementChild.cloneNode(true),row=Math.floor(index/level.size),column=index%level.size;
         button.dataset.cell=String(index);button.style.setProperty('--row',row);button.style.setProperty('--column',column);
         if(crossoverCells.has(index))button.classList.add('crossover-pipe');
@@ -954,16 +961,25 @@
         if(hatchCells.has(index))button.classList.add('tunnel-hatch');
         if(fixedCells.has(index)){button.classList.add('fixed-pipe');button.setAttribute('aria-label',`Закреплённая труба: строка ${row+1}, столбец ${column+1}`);}else button.setAttribute('aria-label',`Повернуть деталь: строка ${row+1}, столбец ${column+1}`);
         if(sliderCells.has(index)){button.classList.add('slider-control');button.setAttribute('aria-label',`Сдвинуть трубу: строка ${row+1}, столбец ${column+1}`);}
-        if(hatchCells.has(index)){button.disabled=true;button.tabIndex=-1;button.setAttribute('aria-label',`Неподвижный подземный люк: строка ${row+1}, столбец ${column+1}`);}
+        if(hatchCells.has(index)){button.disabled=true;button.tabIndex=-1;const color=level.hatches.length>1?` (${glassHatchPairTone(hatchCells.get(index).number).name})`:'';button.setAttribute('aria-label',`Неподвижный подземный люк${color}: строка ${row+1}, столбец ${column+1}`);}
         turnLayer.append(button);turnButtons.set(index,button);
       }
       turnTemplate.remove();
+      function syncTurnControls(){
+        for(const [index,button]of turnButtons){
+          const empty=(route.find(cell=>cell[0]===index)?.length??0)<2&&!sliderCells.has(index);
+          button.hidden=empty;button.disabled=empty||hatchCells.has(index);
+        }
+      }
+      syncTurnControls();
       const linkedSwitches=level.switches??[],actionableCell=cell=>linkedSwitches.find(item=>item.linked===cell)?.index??cell;
       for(const item of linkedSwitches){
         const control=turnButtons.get(item.index),linked=turnButtons.get(item.linked),device=document.createElement('span');
-        control.classList.add('switch-control');control.setAttribute('aria-label',`Переключить связанный рубильник: строка ${Math.floor(item.index/level.size)+1}, столбец ${item.index%level.size+1}`);
+        const [color,shade,glow,name]=[['#75d9ed','#28798e','#75d9ed30','бирюзовый'],['#f5a18b','#9b4c3a','#f5a18b30','коралловый']][linkedSwitches.indexOf(item)%2];
+        for(const button of [control,linked]){button.style.setProperty('--link-color',color);button.style.setProperty('--link-shade',shade);button.style.setProperty('--link-glow',glow);}
+        control.classList.add('switch-control');control.setAttribute('aria-label',`Переключить ${name} рычаг: строка ${Math.floor(item.index/level.size)+1}, столбец ${item.index%level.size+1}`);
         device.className='switch-device';device.setAttribute('aria-hidden','true');device.innerHTML=`__switch_art__`;control.append(device);
-        linked.classList.add('switch-linked');linked.setAttribute('aria-disabled','true');linked.tabIndex=-1;linked.setAttribute('aria-label','Труба связана с рубильником');
+        linked.classList.add('switch-linked');linked.setAttribute('aria-disabled','true');linked.tabIndex=-1;linked.setAttribute('aria-label',`Связанный рычаг: ${name}`);
       }
       const hintTitle=hintTooltip.querySelector('.hint-tooltip-title'),hintDetail=hintTooltip.querySelector('.hint-tooltip-detail');
       // The wallet and logical attempt are committed together before a visual turn.
@@ -1036,7 +1052,7 @@
       function updateChargeHud(){
         const ratio=timerDisabled?1:Math.max(0,Math.min(1,timerRemainingMs/timeLimitMs)),active=timerRemainingMs>0?Math.max(1,Math.ceil(ratio*chargeSegments.length)):0,lives=walletSnapshot?.lives??0;
         chargeSegments.forEach((segment,index)=>{const fill=Math.max(0,Math.min(1,ratio*chargeSegments.length-index));segment.dataset.active=String(fill>0);segment.style.setProperty('--charge-fill',`${(fill*100).toFixed(2)}%`);});chargeMeter.dataset.segments=String(active);chargeMeter.setAttribute('aria-label',`Запас энергии: ${active} из ${chargeSegments.length} секций`);
-        lifeCount.textContent=walletSnapshot?String(lives):'…';lifeMeter.dataset.empty=String(lives===0);lifeMeter.dataset.low=String(lives>0&&lives<=1);lifeButton.setAttribute('aria-label',`Предохранителей: ${lives}. Пополнить запас`);
+        lifeCount.textContent=walletSnapshot?String(lives):'…';lifeCount.style.setProperty('--hint-count-font',`${Math.max(10,18-Math.max(0,String(lives).length-2)*2)}px`);lifeMeter.dataset.empty=String(lives===0);lifeMeter.dataset.low=String(lives>0&&lives<=1);lifeButton.setAttribute('aria-label',`Предохранителей: ${lives}. Пополнить запас`);
         root.dataset.chargeWarning=String(!timerDisabled&&timerStarted&&ratio<=.25);
         root.dataset.chargeStage=!timerDisabled&&timerStarted&&!state.powered?(ratio<=.25?'critical':ratio<=.5?'low':'normal'):'normal';
         root.dataset.chargeLevel=!timerDisabled&&timerStarted&&!state.powered?String(active):'6';
@@ -1120,10 +1136,10 @@
         const lives=walletSnapshot?.lives??0,wait=walletSnapshot?.lifeRefillAt?Math.max(0,walletSnapshot.lifeRefillAt-Date.now()):0;
         lifeStoreCount.textContent=walletSnapshot?String(lives):'—';lifeStoreStars.forEach(node=>node.textContent=walletSnapshot?String(walletSnapshot.starBalance):'—');
         lifeStoreBuy.disabled=!walletSnapshot||inputBusy;
-        lifeStoreAd.disabled=inputBusy||!rewardedHost?.available;
+        lifeStoreAd.disabled=inputBusy||!rewardedHost?.available;lifeStoreAd.querySelector('span').textContent=`Смотреть рекламу · +${rewardedStarAmount} ★`;
         lifeStore.querySelector('[data-action="life-stars-back"]').disabled=inputBusy;
         lifeStore.querySelector('[data-action="life-close"]').disabled=inputBusy;
-        lifeStoreAdNote.textContent=rewardedHost?.available?'Звезда за полный просмотр.':'Видео появится в версии для Яндекс Игр.';
+        lifeStoreAdNote.textContent=rewardedHost?.available?'Звёзды за полный просмотр.':'Видео появится в версии для Яндекс Игр.';
         lifeStoreWait.textContent=lives<maxChargeLives&&wait>0?`+1 бесплатно через ${Math.ceil(wait/60_000)} мин`:'';lifeStoreWait.hidden=!lifeStoreWait.textContent;
       }
       function setLifeStoreView(stars){
@@ -1163,9 +1179,9 @@
         try{
           rewardedAdActive=true;syncChargeClock(true);
           const rewarded=await rewardedHost.showStarAd();
-          if(rewarded){const response=await hintWallet.acceptRewardedStar(`star:${createHintId()}`);acceptWallet(response.wallet,false);lifeStoreStatus.textContent=response.result?'Получена 1 звезда!':'Звезда уже получена.';}
+          if(rewarded){const response=await hintWallet.acceptRewardedStar(`star:${createHintId()}`);acceptWallet(response.wallet,false);lifeStoreStatus.textContent=response.result?`Получено ${rewardedStarAmount} ★!`:'Награда уже получена.';}
           else lifeStoreStatus.textContent='Просмотр не завершён.';
-        }catch{lifeStoreStatus.textContent='Не удалось сохранить звезду. Попробуй позже.';}
+        }catch{lifeStoreStatus.textContent='Не удалось сохранить звёзды. Попробуй позже.';}
         finally{rewardedAdActive=false;setInputBusy(false);syncChargeClock(true);lifeStoreAd.focus({preventScroll:true});}
       }
       function updateTimeoutPanel(){
@@ -1226,7 +1242,7 @@
         refillButton.hidden=!available;
         refillBuy.disabled=!walletSnapshot||walletSnapshot.starBalance<hintStarCost;
         refillBuy.querySelector('.hint-shop-price').textContent=`★ ${hintStarCost}`;
-        refillBuy.setAttribute('aria-label',`Купить 1 подсказку за ${hintStarCost} звезды`);
+        refillBuy.setAttribute('aria-label',`Купить 1 подсказку за ${hintStarCost} звёзд`);
         refillCount.textContent=walletSnapshot?String(walletSnapshot.balance):'—';refillStars.textContent=walletSnapshot?String(walletSnapshot.starBalance):'—';
         refillAd.hidden=!rewardedHost?.available;refillAdNote.hidden=!!rewardedHost?.available;
         const wait=walletSnapshot?Math.max(0,freeHintAvailableAt(walletSnapshot)-Date.now()):0;
@@ -1301,7 +1317,7 @@
       function saveCompletion(){
         if(progressSaved)return completionSave;progressSaved=true;
         const awardedStars=state.earnedStars;
-        completionSave=hintWallet.complete(level.id,currentAttempt.id,awardedStars).then(response=>{acceptWallet(response.wallet,false);root.dataset.progressSaved=String(response.result);return response.result;}).catch(()=>{progressSaved=false;root.dataset.progressSaved='false';root.querySelector('.screen-reader').textContent='Не удалось сохранить результат. Нажми продолжить ещё раз.';return false;});
+        completionSave=hintWallet.complete(level.id,currentAttempt.id,awardedStars).then(response=>{acceptWallet(response.wallet,false);const saved=response.result||response.wallet.attempts[level.id]?.completed;root.dataset.progressSaved=String(saved);return saved;}).catch(()=>{progressSaved=false;root.dataset.progressSaved='false';root.querySelector('.screen-reader').textContent='Не удалось сохранить результат. Нажми продолжить ещё раз.';return false;});
         return completionSave;
       }
       function showResult(){
@@ -1335,7 +1351,8 @@
       const edge=(index,side,inset=0)=>center(index).map((n,k)=>n+port[side][k]*(50-inset));
       function pathFor(index,...args){
         const inset=typeof args.at(-1)==='number'?args.pop():0,ports=args,c=center(index);
-        if(ports.length===1)return hatchCells.has(index)?glassHatchPipePath(index,ports[0],level.size,inset,false,level.hatchArtStyle):`M${edge(index,ports[0],inset)}L${c}`;
+        if(crossoverCells.has(index)){const geometry=glassCrossoverGeometry(index,level.size,sequentialCrossoverCells.get(index));return geometry.underpass+geometry.overpass;}
+        if(ports.length===1)return hatchCells.has(index)?glassHatchPipePath(index,ports[0],level.size,inset):`M${edge(index,ports[0],inset)}L${c}`;
         if(ports.length!==2||state.stars&&starCells.has(index))return ports.map(side=>`M${edge(index,side,inset)}L${c}`).join('');
         const [a,b]=ports,p=edge(index,a,inset),q=edge(index,b,inset);
         if(port[a][0]+port[b][0]===0&&port[a][1]+port[b][1]===0)return `M${p}L${q}`;
@@ -1375,8 +1392,8 @@
           mark.append(node('path',{class:'crossover-arrow',d:'M-11,-21H2V-26L12,-19L2,-12V-17H-11Z'}));container.append(mark);
         }
         if(sequentialCrossoverCells.has(index)){
-          const sequence=sequentialCrossoverCells.get(index),first=sequence.first??['N','S'],firstChannel=first.includes('W')||first.includes('E')?'bridge':'lower';
-          const mechanism=node('g',{class:'sequential-crossover-mechanism','data-cell':index,'data-sequence-state':'closed','data-first-channel':firstChannel,transform:`translate(${cx} ${cy})`});
+          const geometry=glassCrossoverGeometry(index,level.size,sequentialCrossoverCells.get(index));
+          const mechanism=node('g',{class:'sequential-crossover-mechanism','data-cell':index,'data-sequence-state':'closed','data-first-channel':'lower',transform:`translate(${cx} ${cy}) rotate(${geometry.rotation*90})`});
           const sideSlides=true;if(sideSlides)mechanism.dataset.relayArt='side-slides';
           if(!sideSlides)mechanism.append(node('path',{class:'crossover-relay-arm',d:'M-10,6L-7,-8M10,6L7,-8'}));
           if(sideSlides){
@@ -1465,6 +1482,7 @@
       }
       const pipePieces=new Map(),collarPieces=new Map(),maskPieces=new Map(),interiorMask=svg.querySelector('.interior-mask');
       function rebuildPipeBoard(){
+        syncTurnControls();
         fixedOverlay.replaceChildren();
         solutionByCell=new Map(route.map(cell=>[cell[0],cell]));const firstBuild=pipePieces.size===0;
         for(let index=0;index<level.size*level.size;index++){
@@ -1472,10 +1490,10 @@
           const pipePiece=pipePieces.get(index)??node('g',{class:'pipe-piece','data-cell':index}),collarPiece=collarPieces.get(index)??node('g',{class:'collar-piece','data-cell':index});
           pipePiece.replaceChildren();collarPiece.replaceChildren();
           pipePiece.style.transformOrigin=`${cx}px ${cy}px`;collarPiece.style.transformOrigin=`${cx}px ${cy}px`;
-          const hatch=hatchCells.get(index),hatchArt=hatch?createGlassHatchArt({node,index,cx,cy,side:ports[0],number:hatch.number,symbol:level.hatches.length>1?hatch.symbol:null,style:level.hatchArtStyle}):null;
+          const hatch=hatchCells.get(index),hatchArt=hatch?createGlassHatchArt({node,index,cx,cy,side:ports[0],number:hatch.number,symbol:level.hatches.length>1?hatch.symbol:null,colored:level.hatches.length>1}):null;
           if(hatchArt)pipePiece.append(hatchArt.shadow,hatchArt.back);
           if(crossoverCells.has(index)){
-            const vertical=`M${edge(index,'N')}L${edge(index,'S')}`,horizontal=`M${edge(index,'W')}L${[cx-22,cy]}Q${[cx,cy-18]} ${[cx+22,cy]}L${edge(index,'E')}`;
+            const {underpass:vertical,overpass:horizontal}=glassCrossoverGeometry(index,level.size,sequentialCrossoverCells.get(index));
             const layerStyle=sequentialCrossoverCells.has(index);appendPipeLayers(pipePiece,vertical,1,layerStyle?'crossover-underpass':'');pipePiece.append(node('path',{class:'mechanic-bridge-cut',d:horizontal}));appendPipeLayers(pipePiece,horizontal,1,layerStyle?'crossover-overpass':'');
           }else appendPipeLayers(pipePiece,d);
           appendMechanicArt(pipePiece,index,ports,fixedOverlay);
@@ -1554,8 +1572,8 @@
           let d='',length=0;
           strand.forEach(([index,entry,exit],order)=>{
             const isLast=order===strand.length-1,isGoal=goals.some(goal=>goal.index===index&&goal.side===exit),inset=isLast&&!isGoal?5:0;
-            const crossoverBridge=crossoverCells.has(index)?(state.rotations[index]%2===0?'horizontal':'vertical'):null;
-            const part=hatchCells.has(index)?glassHatchPipePath(index,entry||exit,level.size,inset,!entry,level.hatchArtStyle):glassFlowCellPath(index,entry,exit,starCells.has(index)||orientedByCell.get(index).length>2,inset,level.size,crossoverBridge),shape=node('path',{d:part}),size=shape.getTotalLength(),start=length;
+            const crossoverBridge=crossoverCells.has(index)?glassCrossoverGeometry(index,level.size,sequentialCrossoverCells.get(index),state.rotations[index]).bridge:null;
+            const part=hatchCells.has(index)?glassHatchPipePath(index,entry||exit,level.size,inset,!entry):glassFlowCellPath(index,entry,exit,starCells.has(index)||orientedByCell.get(index).length>2,inset,level.size,crossoverBridge),shape=node('path',{d:part}),size=shape.getTotalLength(),start=length;
             // The outgoing hatch begins a new visible strand. Never draw a
             // surface wire between remote mouths or restart its wave distance.
             d+=order&&entry?part.replace(/^M[^LQ]+/,''):part;length+=size;
@@ -1747,6 +1765,30 @@
         const spotlight=lessonOverlay.querySelector('.lesson-spotlight');spotlight.setAttribute('viewBox',`0 0 ${bounds.width} ${bounds.height}`);
         for(const hole of spotlight.querySelectorAll('.lesson-hole[data-cell]')){const cell=Number(hole.dataset.cell);hole.setAttribute('cx',board.left-bounds.left+((cell%level.size)+.5)*board.width/level.size);hole.setAttribute('cy',board.top-bounds.top+(Math.floor(cell/level.size)+.5)*board.height/level.size);hole.setAttribute('r',spotlightLesson&&!starLesson?board.width*.49/level.size:r);}
         card.style.width='';
+        if(level.size===6&&level.intro==='switch'){
+          const targets=lessonCells.map(cell=>turnButtons.get(cell).getBoundingClientRect()),normalWidth=card.offsetWidth,headerBottom=levelHeader.getBoundingClientRect().bottom-bounds.top+8;
+          let best=null;
+          for(const width of new Set([normalWidth,Math.min(normalWidth,226)])){
+            card.style.width=`${width}px`;
+            for(const [order,pair] of level.switches.entries())for(const below of [false,true]){
+              card.style.padding=below?'24px 18px 15px':'15px 18px 24px';
+              const target=turnButtons.get(pair.index).getBoundingClientRect(),height=card.offsetHeight,anchor=target.left-bounds.left+target.width/2,y=below?target.bottom-bounds.top+6:target.top-bounds.top-height-6;
+              for(const flip of [false,true]){
+                const x=anchor-width*(flip?.087:.913);
+                if(x<12||x+width>bounds.width-12||y<Math.max(8,headerBottom)||y+height>bounds.height-8)continue;
+                if(targets.some(t=>x<t.right-bounds.left+4&&x+width>t.left-bounds.left-4&&y<t.bottom-bounds.top+4&&y+height>t.top-bounds.top-4))continue;
+                const score=order*1000+(normalWidth-width)+(below?1:0);
+                if(!best||score<best.score)best={x,y,width,below,flip,score};
+              }
+            }
+          }
+          if(best){
+            card.style.width=`${best.width}px`;card.style.padding=best.below?'24px 18px 15px':'15px 18px 24px';
+            card.style.setProperty('--bubble-x',best.flip?-1:1);card.style.setProperty('--bubble-y',best.below?-1:1);
+            card.style.left=`${best.x}px`;card.style.top=`${best.y}px`;return;
+          }
+          card.style.width='';
+        }
         if(level.size===5&&level.intro==='switch'&&bounds.height<360){
           const leftSpace=cx-r-24;
           if(leftSpace>=160){
@@ -1879,7 +1921,7 @@
       reduced.addEventListener('change',()=>{if(reduced.matches){hintAnimations.forEach(animation=>animation.cancel());hintAnimations=[];idleCoachAnimation?.cancel();idleCoachAnimation=null;readyCoachAnimation?.cancel();readyCoachAnimation=null;}energy.setReduced(reduced.matches);syncPause();});
       hintWallet.subscribe(wallet=>acceptWallet(wallet,!inputBusy&&!hintBusy));
       const refreshWallet=()=>{void hintWallet.read().then(response=>acceptWallet(response.wallet,!inputBusy&&!hintBusy)).catch(()=>{walletError=true;updateHint();});};
-      window.addEventListener('focus',refreshWallet);window.addEventListener('pageshow',refreshWallet);window.addEventListener('pagehide',()=>{if(leavingLevel)return;syncChargeClock();saveChargeTimer(true);});document.addEventListener('visibilitychange',()=>{syncPause();if(document.hidden&&!leavingLevel)saveChargeTimer(true);else if(!document.hidden)refreshWallet();});
+      window.addEventListener('focus',refreshWallet);window.addEventListener('pageshow',refreshWallet);window.addEventListener('pagehide',()=>{if(leavingLevel)return;syncChargeClock();saveChargeTimer(true);});document.addEventListener('visibilitychange',()=>{syncPause();if(document.hidden&&!leavingLevel){saveChargeTimer(true);}else if(!document.hidden)refreshWallet();});
       refillOverlay.addEventListener('click',event=>{if(event.target===refillOverlay)setRefillOpen(false);});
       refillOverlay.addEventListener('keydown',event=>{if(event.key==='Escape')setRefillOpen(false);if(event.key==='Tab'){const controls=[...refillOverlay.querySelectorAll('button')].filter(b=>!b.hidden&&!b.disabled),first=controls[0],last=controls.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}}});
       timeoutOverlay.addEventListener('keydown',event=>{if(event.key!=='Tab')return;const controls=[...timeoutOverlay.querySelectorAll('button:not([hidden])')],first=controls[0],last=controls.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}});

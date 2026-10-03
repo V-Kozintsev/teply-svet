@@ -33,9 +33,9 @@ const originalLevels: readonly LevelSummary[] = [
   'Подземное переплетение',
   'Две тайные линии',
   'Труба на салазках',
-  'Нужное положение',
-  'Путь со звёздами',
-  'Согласованный свет',
+  'Дальний рычаг',
+  'Подвижный обход',
+  'Двойное управление',
 ].map((name, index) => ({
   id: index + 1,
   displayNumber: index === 0 ? 12 : index + 15,
@@ -78,6 +78,14 @@ export const levels: readonly LevelSummary[] = [
   originalLevels[0],
   ...openingLevels.slice(11),
   ...originalLevels.slice(1, 12),
+  {
+    id: 45,
+    chapter: 1,
+    name: 'Последний рубеж',
+    completed: false,
+    stars: 0 as StarScore,
+    path: './levels/45/index.html',
+  },
 ]
   .filter((level) => level.id !== 35)
   .map((level, index) => ({ ...level, displayNumber: index + 1 }));

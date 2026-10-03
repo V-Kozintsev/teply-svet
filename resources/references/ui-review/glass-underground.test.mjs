@@ -26,6 +26,7 @@ function geometricPaths(level,position=0){
 
 for(const number of [19,20,21,22])test(`visible ${number} certifies underground routes, rewards and legal hints`,()=>{
  const l=glassLevels.find(l=>l.displayNumber===number),full=l.variants.find(v=>v.stars===3);
+ if(number===22)assert.equal(l.timeLimitSeconds,160);
  assert.equal(l.size,6);assert.equal(l.stars.length,2);assert.equal(l.hatches.length,number===21?2:1);assert.equal(l.hintsEnabled,true);
  for(const index of l.hatches.flatMap(pair=>[pair.a,pair.b])){
   assert.ok(l.fixed.includes(index));
@@ -38,7 +39,7 @@ for(const number of [19,20,21,22])test(`visible ${number} certifies underground 
  assert.equal(paths.filter(p=>l.stars.every(i=>p.includes(i))).length,1);
  assert.ok(l.hatches.every(p=>full.path.includes(p.a)&&full.path.includes(p.b)));
  if(number===19){
-  assert.equal(l.timeLimitSeconds,130);
+  assert.equal(l.timeLimitSeconds,115);
   assert.deepEqual(l.hatches,[{a:1,b:25,symbol:'diamond'}]);
   assert.equal(l.hatchArtStyle,'mockup');
   assert.deepEqual([l.solution[1][1],l.solution[25][1]],['W','E']);
@@ -50,7 +51,7 @@ for(const number of [19,20,21,22])test(`visible ${number} certifies underground 
  if(number===20){
   assert.deepEqual(l.hatches,[{a:4,b:31,symbol:'diamond'}]);
   assert.equal(l.hatchArtStyle,'mockup');
-  assert.equal(l.timeLimitSeconds,160);
+  assert.equal(l.timeLimitSeconds,145);
   assert.deepEqual([l.solution[4][1],l.solution[31][1]],['E','W']);
   assert.equal(l.paths.length,1);assert.equal(full.path.length,35);assert.equal(full.actions.length,66);
   assert.ok(full.actions.length>glassLevels.find(other=>other.displayNumber===19).variants.at(-1).actions.length);

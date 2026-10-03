@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   createEmptyProgress,
   firstChapterLevelIds,
+  firstChapterFinalLevelId,
   firstChapterStars,
   getProgressStars,
   getSavedLevel,
@@ -51,14 +52,34 @@ test('zero stars never records a completion', () => {
   assert.deepEqual(recordLevelResult(empty, 2, 0), { progress: empty, gainedStars: 0 });
 });
 
-test('all 25 playable boards form chapter one and stable 12 is final', () => {
-  assert.equal(firstChapterLevelIds.length, 25);
+test('all 26 playable boards form chapter one and stable 45 is final', () => {
+  assert.equal(firstChapterLevelIds.length, 26);
   assert.deepEqual(
     levels.map((level) => level.id),
     [...firstChapterLevelIds],
   );
-  assert.equal(levels.at(-1)?.id, 12);
-  assert.equal(levels.at(-1)?.displayNumber, 25);
+  assert.equal(levels.at(-1)?.id, firstChapterFinalLevelId);
+  assert.equal(firstChapterFinalLevelId, 45);
+  assert.equal(levels.at(-1)?.displayNumber, 26);
+});
+
+test('new finale adds only its earned stars while keeping historical results', () => {
+  let progress = createEmptyProgress();
+  for (const id of firstChapterLevelIds.slice(0, -1))
+    progress = recordLevelResult(progress, id, 3).progress;
+  progress = recordLevelResult(progress, 35, 1).progress;
+  const restored = readProgress(JSON.stringify(progress));
+  assert.deepEqual(restored, progress);
+  assert.equal(firstChapterStars(restored), 51);
+  assert.equal(getProgressStars(restored), 52);
+  const finale = recordLevelResult(restored, 45, 3);
+  assert.equal(finale.gainedStars, 3);
+  assert.equal(firstChapterStars(finale.progress), 54);
+  assert.equal(getProgressStars(finale.progress), 55);
+  assert.deepEqual(finale.progress.levels[35], progress.levels[35]);
+  for (const id of [10, 11, 12]) assert.deepEqual(finale.progress.levels[id], progress.levels[id]);
+  assert.equal(recordLevelResult(finale.progress, 45, 3).gainedStars, 0);
+  assert.equal(isChapterUnlocked(finale.progress, 2), false);
 });
 
 test('removed legacy 13–24 saves remain data but cannot map to a playable board', () => {

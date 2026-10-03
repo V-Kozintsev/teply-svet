@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
+import './glass-first-energy-canvas.test.mjs';
 
 const source=fs.readFileSync(new URL('./glass-first-mobile-renderer.js',import.meta.url),'utf8');
 function scene({star=false,duration=0,slider=false}={}){

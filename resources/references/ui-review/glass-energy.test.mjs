@@ -1,5 +1,6 @@
 import test from 'node:test';
-import './glass-unused-pair.test.mjs';
+import './glass-late-boards.test.mjs';
+import './glass-middle-boards.test.mjs';
 import './glass-difficulty.test.mjs';
 import './glass-underground.test.mjs';
 import './glass-action-sounds.test.mjs';
@@ -8,6 +9,8 @@ import './glass-level-two.test.mjs';
 import './glass-level-three.test.mjs';
 import './glass-level-four.test.mjs';
 import './glass-hatch-art.test.mjs';
+import './glass-outage-controls.test.mjs';
+import './glass-level-twenty-one.test.mjs';
 import {readFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
 import {
@@ -18,6 +21,7 @@ import {
   glassLevels,
   glassFlowPaths,
   glassFlowCellPath,
+  glassCrossoverGeometry,
   getGlassEarnedStars,
   getGlassMaximumStars,
   glassPortsMatch,
@@ -29,6 +33,7 @@ import {
   nextGlassLevelHint,
   orientGlassCells,
   reconcileGlassPulse,
+  glassTestPulseDuration,
   rotateGlassCell,
   traceGlassCircuit,
 } from './glass-energy.js';
@@ -38,7 +43,7 @@ const solved = firstGlassLevel.solution;
 test('the fifth board is the retained outage, with consecutive navigation and its first-time lesson', () => {
   const ordered=[...glassLevels].sort((a,b)=>a.displayNumber-b.displayNumber);
   assert.equal(ordered.some(level=>level.id===35),false);
-  assert.deepEqual(ordered.map(level=>level.displayNumber),Array.from({length:25},(_,i)=>i+1));
+  assert.deepEqual(ordered.map(level=>level.displayNumber),Array.from({length:26},(_,i)=>i+1));
   for(const [i,level] of ordered.entries())assert.equal(level.nextLevelId,ordered[i+1]?.id??null);
   const level=ordered[4];
   assert.equal(level.id,36);assert.equal(level.timeLimitSeconds,70);
@@ -47,61 +52,24 @@ test('the fifth board is the retained outage, with consecutive navigation and it
   assert.equal(glassOutageRemainingMs(10_000,70_000),10_000);
   const html=readFileSync(new URL('./glass-level.template.html',import.meta.url),'utf8');
   assert.ok(html.includes('outageNeedsExplanation=level.id===36'));
-  assert.ok(html.includes('outageTimeLimitMs=level.outage?Math.floor(timeLimitMs*.3):null'));
+  assert.ok(html.includes('outageTimeLimitMs=level.outage?glassOutageRemainingMs(timeLimitMs,timeLimitMs):null'));
   const retired=readFileSync(new URL('../../../public/levels/35/index.html',import.meta.url),'utf8');
   assert.ok(retired.includes('../36/index.html'));assert.ok(!retired.includes('warm-glass-level'));
 });
 
 test('authored level timers override chapter defaults', () => {
   assert.deepEqual(Array.from({length:18},(_,i)=>glassLevels.find(level=>level.displayNumber===i+1).timeLimitSeconds),
-    [25,35,45,50,70,65,70,75,95,100,115,95,85,75,100,120,140,160]);
+    [25,35,45,50,70,70,70,75,75,100,115,90,70,75,85,120,140,160]);
   assert.equal(glassOutageRemainingMs(70_000,70_000),21_000);
   assert.equal(glassOutageRemainingMs(80_000,80_000),24_000);
 });
 
 // Revised levels 7–9 and 17–19 have exhaustive coverage in glass-difficulty.test.mjs.
 
-test('visible 15 places one fixed straight pipe inside a four-route maze', () => {
-  const level = glassLevels.find(candidate => candidate.displayNumber===15);
-  assert.deepEqual(level.fixed, [12]);
-  assert.equal(level.intro, 'fixed');
-  assert.deepEqual(level.lessonCells, [12]);
-  assert.deepEqual(level.solution[12], [12, 'S', 'N']);
-  assert.equal(level.initialRotations[12], 0);
-  assert.equal(applyGlassTurn(level, level.initialRotations, 12), null);
-  assert.deepEqual(level.variants.map(variant => [variant.stars, variant.path.length, variant.actions.length]), [[1, 9, 14], [2, 15, 23], [2, 17, 26], [3, 23, 35]]);
-  assert.ok(level.variants[3].path.includes(12));
-  assert.ok(level.variants[3].path.includes(1) && level.variants[3].path.includes(23));
-  for (const variant of level.variants) {
-    assert.equal(variant.rotations[12], 0);
-    assert.ok(!variant.actions.includes(12));
-    assert.equal(traceGlassCircuit(orientGlassCells(level.solution, variant.rotations), level).complete, true);
-  }
-  const steps = { N: -5, E: 1, S: 5, W: -1 }, opposite = { N: 'S', E: 'W', S: 'N', W: 'E' };
-  const routes = [];
-  const canConnect = (index, entry, exit) => [0, 1, 2, 3].some(turns =>
-    (!level.fixed.includes(index) || turns === 0) &&
-    glassPortsMatch(rotateGlassCell(level.solution[index], turns), [index, entry, exit]));
-  function walk(index, entry, visited, path) {
-    if (index === level.goal.index) {
-      if (canConnect(index, entry, level.goal.side)) routes.push(path);
-      return;
-    }
-    for (const side of Object.keys(steps)) {
-      const next = index + steps[side];
-      if (side === entry || next < 0 || next >= 25 ||
-          ((side === 'E' || side === 'W') && Math.floor(index / 5) !== Math.floor(next / 5)) ||
-          visited & (1 << next) || !canConnect(index, entry, side)) continue;
-      walk(next, opposite[side], visited | (1 << next), [...path, next]);
-    }
-  }
-  walk(level.source.index, level.source.side, 1 << level.source.index, [level.source.index]);
-  assert.deepEqual(routes.map(path => path.join()).sort(), level.variants.map(variant => variant.path.join()).sort());
-});
 
 test('relay introduction always breaks on its first charge and leaves three turns', () => {
   const level = glassLevels.find(candidate => candidate.displayNumber===11);
-  assert.equal(level.outage.breakCell, 13);
+  assert.equal(level.outage.breakCell, 32);
   assert.equal(level.outage.triggerAfterHalfTime, undefined);
   assert.equal(glassOutageRemainingMs(40_000, 95_000), 28_500);
   assert.equal(glassOutageRemainingMs(8_000, 95_000), 8_000);
@@ -111,7 +79,7 @@ test('relay introduction always breaks on its first charge and leaves three turn
   assert.equal(traceGlassCircuit(orientGlassCells(level.solution, broken), level).complete, false);
   for (const [cell] of level.outage.turns) broken = applyGlassTurn(level, broken, cell, 1).rotations;
   assert.equal(traceGlassCircuit(orientGlassCells(level.solution, broken), level).complete, true);
-  assert.deepEqual(level.outage.turns.map(([cell]) => cell).sort((a, b) => a - b), [11, 13, 23]);
+  assert.deepEqual(level.outage.turns.map(([cell]) => cell).sort((a, b) => a - b), [4, 32, 34]);
 });
 
 test('outage caps charge at thirty percent without reducing a smaller reserve', () => {
@@ -123,6 +91,18 @@ test('outage caps charge at thirty percent without reducing a smaller reserve', 
   assert.equal(glassOutageRemainingMs(40_000),40_000);
   assert.equal(glassOutageRemainingMs(70_000,80_000),24_000);
   assert.equal(glassOutageRemainingMs(40_000,200_000),40_000);
+});
+
+test('every outage caps a high reserve and preserves all reserves at or below thirty percent', () => {
+  for (const level of glassLevels.filter(level=>level.outage)) {
+    const full=level.timeLimitSeconds*1000,cap=full*.3;
+    assert.equal(level.outage.bonusSeconds,undefined);
+    for(const remaining of [full,cap+1,cap,cap-1,5_000,500,0]) {
+      const result=glassOutageRemainingMs(remaining,full);
+      assert.equal(result,Math.min(remaining,cap),`level ${level.displayNumber}, reserve ${remaining}`);
+      assert.ok(result<=remaining);
+    }
+  }
 });
 
 test('relay shutters and lamp close after a pulse passes their last channel', () => {
@@ -236,6 +216,22 @@ test('crossover electricity separates its lower channel from the raised bridge',
   assert.equal(lowerHorizontal,'M200,250L231,250M269,250L300,250');
 });
 
+test('every relay draws its sensing channel underneath the shuttered bridge at all rotations', () => {
+  const sides=['N','E','S','W'];
+  for(const level of glassLevels)for(const relay of level.sequentialCrossovers??[])for(let turns=0;turns<4;turns++){
+    const geometry=glassCrossoverGeometry(relay.index,level.size,relay,turns);
+    const rotate=port=>sides[(sides.indexOf(port)+turns)%4];
+    const first=(relay.first??['N','S']).map(rotate),then=(relay.then??['W','E']).map(rotate);
+    const lower=glassFlowCellPath(relay.index,...first,true,0,level.size,geometry.bridge);
+    const raised=glassFlowCellPath(relay.index,...then,true,0,level.size,geometry.bridge);
+    assert.equal(lower.includes('Q'),false,`level ${level.displayNumber}, cell ${relay.index}, turn ${turns}: sensing pipe is straight`);
+    assert.equal((lower.match(/M/g)??[]).length,2,'lower current is hidden beneath the bridge');
+    assert.ok(raised.includes('Q'),'shuttered channel carries current over the bridge');
+    assert.equal(raised.match(/Q[^ ]+/)[0],geometry.overpass.match(/Q[^ ]+/)[0],'current and artwork bend to the same side');
+    for(const path of [geometry.underpass,geometry.overpass])assert.ok(!path.includes('NaN'));
+  }
+});
+
 test('each sequential crossover opens its second channel only after the first pass', () => {
   for (const visible of [10,11,12]) {
     const level=glassLevels.find(item=>item.displayNumber===visible),cell=level.crossovers[0],solvedRotations=level.variants[0].rotations;
@@ -243,7 +239,8 @@ test('each sequential crossover opens its second channel only after the first pa
     const solvedTrace=traceGlassCircuit(orientGlassCells(level.solution,solvedRotations),level);
     assert.equal(solvedTrace.complete,true,`visible ${visible} solved sequence`);
     assert.ok(solvedTrace.unlockedCrossovers.has(cell),`visible ${visible} relay unlocks`);
-    assert.deepEqual(solvedTrace.flowPaths.flat().filter(item=>item[0]===cell),[[cell,...sequence.first],[cell,...sequence.then]]);
+    const channel=item=>[item[0],...item.slice(1).sort()];
+    assert.deepEqual(solvedTrace.flowPaths.flat().filter(item=>item[0]===cell).map(channel),[[cell,...sequence.first],[cell,...sequence.then]].map(channel));
     const halfTurn=[...solvedRotations];halfTurn[cell]=(halfTurn[cell]+2)%4;
     assert.equal(traceGlassCircuit(orientGlassCells(level.solution,halfTurn),level).complete,true,`visible ${visible} half-turn keeps the two channels`);
     for (const turn of [1,3]) {
@@ -304,65 +301,6 @@ test('a reachable relay unlocks on an incomplete board at every rotation',()=>{
   }
 });
 
-test('visible 13 retains its short starless route and a unique star-collecting route', () => {
-  const level=glassLevels.find(item=>item.displayNumber===13);
-  const [full,bypass]=level.variants;
-  assert.deepEqual(level.source,{index:10,side:'W'});
-  assert.equal(level.stars.length,1);
-  assert.equal(level.crossovers.length,1);
-  assert.deepEqual(level.sequentialCrossovers[0].first,['N','S']);
-  assert.deepEqual(level.sequentialCrossovers[0].then,['W','E']);
-  assert.ok(full.path.length>glassLevels.find(item=>item.displayNumber===12).variants[0].path.length);
-  assert.ok(full.actions.length>bypass.actions.length);
-  assert.ok(bypass.path.length<full.path.length);
-  assert.ok(!bypass.path.includes(level.stars[0]));
-  assert.equal(bypass.path.filter(index=>index===level.crossovers[0]).length,1);
-  assert.equal(full.path.filter(index=>index===level.crossovers[0]).length,2);
-  for(const variant of [full,bypass]){
-    const trace=traceGlassCircuit(orientGlassCells(level.solution,variant.rotations),level);
-    assert.equal(trace.complete,true);
-    assert.equal(getGlassEarnedStars(trace,level),variant.stars);
-    assert.deepEqual(trace.flowPaths[0].map(([index])=>index),variant.path);
-  }
-
-  const sides=['N','E','S','W'],opposite={N:'S',E:'W',S:'N',W:'E'},step={N:-5,E:1,S:5,W:-1};
-  const neighbour=(index,side)=>{
-    const next=index+step[side];
-    return next>=0&&next<25&&(side==='E'||side==='W'?Math.floor(index/5)===Math.floor(next/5):true)?next:-1;
-  };
-  const routes=[];
-  function walk(index,entry,visited,phase,rotation,path){
-    const ports=level.solution[index].slice(1),straight=ports.includes('N')&&ports.includes('S')||ports.includes('E')&&ports.includes('W');
-    if(ports.length<2)return;
-    if(index===level.goal.index){
-      if(entry!=='E'&&(straight?opposite[entry]==='E':opposite[entry]!=='E'))routes.push({phase,rotation,path});
-      return;
-    }
-    const exits=index===level.crossovers[0]?(rotation===null?[0,1,2,3]:[rotation]).flatMap(turns=>{
-      const from=sides[(sides.indexOf(phase===0?'N':'W')+turns)%4],to=sides[(sides.indexOf(phase===0?'S':'E')+turns)%4];
-      return phase<2&&entry===from?[[to,turns]]:[];
-    }):sides.filter(side=>side!==entry&&(straight?side===opposite[entry]:side!==opposite[entry])).map(side=>[side,rotation]);
-    for(const [side,nextRotation] of exits){
-      const next=neighbour(index,side),nextEntry=opposite[side],nextPhase=phase+(index===level.crossovers[0]?1:0);
-      if(next<0)continue;
-      if(next===level.crossovers[0]){if(nextPhase>=2)continue;}
-      else if(visited&(1<<next))continue;
-      walk(next,nextEntry,visited|1<<next,nextPhase,nextRotation,[...path,next]);
-    }
-  }
-  walk(level.source.index,level.source.side,1<<level.source.index,0,null,[level.source.index]);
-  assert.equal(routes.length,2,`visible 13 has only its two intended corridors: ${JSON.stringify(routes)}`);
-  assert.deepEqual(routes.filter(route=>route.path.includes(level.stars[0])).map(route=>route.path),[full.path]);
-  assert.ok(routes.some(route=>route.path.join()===bypass.path.join()&&!route.path.includes(level.stars[0])));
-
-  // The former short route through the lower-right tile cannot be restored
-  // by turning the relay sideways; the transformer feed stays on row two.
-  const shortcutRotations=[...full.rotations];
-  shortcutRotations[level.crossovers[0]]=1;
-  const shortcut=traceGlassCircuit(orientGlassCells(level.solution,shortcutRotations),level);
-  assert.equal(level.solution[24].length,1);
-  assert.equal(shortcut.complete,false);
-});
 
 test('every board can be solved by the same legal controls used by the hint tool', () => {
   for (const level of glassLevels) {
@@ -397,11 +335,11 @@ test('dead-end stars and a loop attached to one junction do not earn stars', () 
   assert.equal(getGlassEarnedStars(deadEnd, { ...level, stars:[5] }), 1);
 });
 
-test('the current catalog contains twenty-five solvable authored boards with stable IDs', () => {
-  assert.equal(glassLevels.length, 25);
+test('the current catalog contains twenty-six solvable authored boards with stable IDs', () => {
+  assert.equal(glassLevels.length, 26);
   assert.deepEqual(
     glassLevels.map((level) => level.id),
-    [...Array.from({length:12},(_,index)=>index+1),...Array.from({length:14},(_,index)=>index+31).filter(id=>id!==35)],
+    [...Array.from({length:12},(_,index)=>index+1),...Array.from({length:15},(_,index)=>index+31).filter(id=>id!==35)],
   );
   for (const level of glassLevels) {
     assert.equal(level.solution.length, level.size**2, `level ${level.id} cell count`);
@@ -561,10 +499,21 @@ test('extending the route ahead keeps the wave at the same visual distance', () 
       complete: false,
       segments: [{ index: 2, start: 500, end: 600 }],
     },
-    result = reconcileGlassPulse(previous, next, 2, 575);
+    result = reconcileGlassPulse(previous, next, 2, 900);
   assert.equal(result.status, 'continue');
   assert.equal(result.distance, 300);
-  assert.equal(result.elapsed, 383.3333333333333);
+  assert.equal(result.elapsed, 600);
+});
+
+test('diagnostic charge slows on short routes and keeps a readable speed on long ones',()=>{
+ assert.equal(glassTestPulseDuration(100),1800);
+ assert.equal(glassTestPulseDuration(800),1800);
+ assert.equal(glassTestPulseDuration(1500),3000);
+ assert.equal(glassTestPulseDuration(3500),7000);
+ const previous={d:'a',length:1500,segments:[{index:2,start:1400,end:1500}]};
+ const next={d:'b',length:3500,segments:[{index:2,start:1400,end:1500}]};
+ const result=reconcileGlassPulse(previous,next,2,2000);
+ assert.equal(result.status,'continue');assert.equal(result.distance,1000);assert.equal(result.elapsed,2000);
 });
 
 test('changing a segment behind the wave cancels it without restarting', () => {
@@ -599,22 +548,9 @@ test('automatic turns reject dependent controls and do not pay for straight-pipe
  const level=glassLevels[1],r=[...level.variants.at(-1).rotations],i=level.solution.find(c=>['NS','SN','EW','WE'].includes(c.slice(1).join('')))[0];r[i]+=2;assert.equal(planGlassHint(level,r).kind,'power');
 });
 
-// Visible 20–23 are exhaustively covered by glass-underground.test.mjs.
+// Visible 19–22 are exhaustively covered by glass-underground.test.mjs.
 
-test('legacy level 10 has an ambiguous interior pair and certified star routes',()=>{
- const proofs=JSON.parse(readFileSync(new URL('./glass-block-10-12.design.json',import.meta.url))),dirs=['N','E','S','W'],op=s=>dirs[(dirs.indexOf(s)+2)%4];
- // IDs 11/12 now have independent exhaustive coverage in glass-unused-pair.test.mjs.
- for(const id of [10]){const l=glassLevels[id-1],proof=proofs.find(p=>p.id===id),geometric=[],legal=[];assert.equal(l.size,5);assert.equal(l.routeStyle,'corridor');assert.equal(l.requireClosedCircuit,true);assert.ok(l.solution.every(c=>c.length===3));assert.deepEqual(l.source,{index:10,side:'W'});assert.deepEqual(l.goal,{index:14,side:'E'});
- function walk(path,mask,incoming,phases){const i=path.at(-1),exits=i===14?[[14,'E']]:[[i-5,'N'],[i+1,'E'],[i+5,'S'],[i-1,'W']].filter(([j,s])=>j>=0&&j<25&&(s==='N'||s==='S'||Math.floor(i/5)===Math.floor(j/5))&&!(mask&(1<<j)));for(const[j,out]of exits){if(out===incoming)continue;const qs=[0,1,2,3].filter(q=>glassPortsMatch(rotateGlassCell(l.solution[i],q),[i,incoming,out]));if(!qs.length)continue;const next={...phases,[i]:qs};if(i===14){geometric.push(path);if(l.switches.every(p=>!next[p.index]||!next[p.linked]||next[p.index].some(q=>next[p.linked].includes(q))))legal.push(path);}else walk([...path,j],mask|1<<j,op(out),next);}}
- walk([10],1<<10,'W',{});assert.equal(geometric.length,proof.geometricCount);assert.deepEqual(legal.map(p=>p.join()).sort(),proof.legalPaths.map(p=>p.join()).sort());assert.deepEqual(legal.map(p=>p.join()).sort(),l.variants.map(v=>v.path.join()).sort());
- for(const v of l.variants){let r=[...l.initialRotations];for(const i of v.actions)r=applyGlassTurn(l,r,i).rotations;assert.deepEqual(r,v.rotations);const trace=traceGlassCircuit(orientGlassCells(l.solution,r),l);assert.ok(trace.complete);assert.equal(getGlassEarnedStars(trace,l),v.stars);assert.deepEqual([...trace.visited],v.path);assert.equal(trace.segments.length,trace.visited.size-1);assert.deepEqual(trace.openEnds,[]);}
- let r=[...l.initialRotations];for(const i of proof.trap.actions)r=applyGlassTurn(l,r,i).rotations;const trap=traceGlassCircuit(orientGlassCells(l.solution,r),l);assert.equal(trap.complete,false);assert.equal(trap.reachedGoals.length,0);assert.deepEqual(trap.openEnds,proof.trap.openEnds);
- const pair=l.switches[0];assert.equal(l.switches.length,1);assert.equal(l.intro,undefined);for(const i of [pair.index,pair.linked])assert.ok([6,7,8,11,12,13,16,17,18].includes(i));assert.equal(applyGlassTurn(l,l.initialRotations,pair.linked),null);
- for(const t of proof.traps){let r=[...l.initialRotations];for(const i of t.actions)r=applyGlassTurn(l,r,i).rotations;const trace=traceGlassCircuit(orientGlassCells(l.solution,r),l);assert.equal(trace.complete,false);assert.equal(trace.reachedGoals.length,0);assert.ok(trace.visited.size>=9);}
- assert.ok(proof.rebuild.every(v=>v.changedCommonCells.length>=4));
- if(id===10)assert.ok(new Set(proof.traps.map(t=>t.rotations[pair.index])).size>=2);
- }
-});
+// The expanded linked-lever boards are certified in glass-late-boards.test.mjs.
 
 test('opening levels have short unbranched routes with controlled distractors and noninteractive empty tiles',()=>{
  for(const [id,count] of [[31,9],[32,18],[33,25],[34,25],[36,23],[37,25]]){

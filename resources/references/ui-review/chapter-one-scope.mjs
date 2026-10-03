@@ -3,6 +3,7 @@
 export const chapterOneIds = Object.freeze([
   ...Array.from({ length: 12 }, (_, i) => i + 1),
   ...Array.from({ length: 14 }, (_, i) => i + 31).filter(id => id !== 35),
+  45,
 ]);
 export const isChapterOne = id => chapterOneIds.includes(id);
 export const isAdaptiveLevel = isChapterOne;

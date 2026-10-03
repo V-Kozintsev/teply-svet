@@ -19,6 +19,7 @@ import {
   applyHintMutation,
   unlockHintTool,
   migrateHintWallet,
+  completeHintAttempt,
   freeHintAvailableAt,
   applyChargeAttemptFailure,
   capAttemptTimer,
@@ -38,6 +39,33 @@ const openedWallet = () => {
   unlockHintTool(wallet);
   return wallet;
 };
+
+test('profiles from the retired rating keep progress and resources without updating score data', () => {
+  const wallet = openedWallet();
+  wallet.balance = 7;
+  wallet.lives = 5;
+  wallet.starBalance = 12;
+  wallet.attempts[31] = attempt();
+  const oldRating = {
+    version: 1,
+    records: { 32: { score: 800 } },
+    series: { 31: { hintsUsed: 2 } },
+  };
+  const raw = Object.assign(JSON.parse(JSON.stringify(wallet)), { rating: oldRating });
+  const migrated = migrateHintWallet(raw);
+  assert.equal(migrated.balance, 7);
+  assert.equal(migrated.lives, 5);
+  assert.equal(migrated.starBalance, 12);
+  assert.equal(migrated.attempts[31].id, 'attempt');
+  assert.equal(completeHintAttempt(migrated, 31, 'attempt', 1), true);
+  assert.equal(completeHintAttempt(migrated, 31, 'attempt', 1), false);
+  assert.equal(migrated.starBalance, 13);
+  assert.equal(migrated.progress.levels[31].completed, true);
+  assert.equal(migrated.balance, 7);
+  assert.equal(migrated.lives, 5);
+  assert.deepEqual(raw.rating, oldRating);
+  assert.equal('rating' in createHintWallet(), false);
+});
 
 const attempt = (): HintAttempt => ({
   id: 'attempt',
@@ -98,12 +126,33 @@ test('a new visit restores full time while retaining the saved pipe arrangement'
   assert.equal(returningAttemptTimeLimit(saved, 80_000, 40_000), 80_000);
   saved.outageTriggered = true;
   assert.equal(returningAttemptTimeLimit(saved, 80_000, 40_000), 40_000);
+  for (const remaining of [7_000, 500, 0]) {
+    saved.timeRemainingMs = remaining;
+    refreshAttemptTimer(saved, returningAttemptTimeLimit(saved, 80_000, 40_000));
+    assert.equal(saved.timeRemainingMs, remaining);
+    assert.deepEqual(saved.rotations, [2, 1]);
+  }
 });
 
 test('timer-only signature changes preserve the saved puzzle attempt', () => {
   assert.equal(samePuzzleWithChangedTimer('43|layout|95', '43|layout|10'), true);
   assert.equal(samePuzzleWithChangedTimer('43|layout|95', '43|new-layout|10'), false);
   assert.equal(samePuzzleWithChangedTimer('43|layout|95', '43|layout|invalid'), false);
+});
+
+test('timer-only changes preserve slider attempts while changed rails invalidate the layout', () => {
+  const rails = '|sliders:[{"index":20,"slot":26}]';
+  assert.equal(samePuzzleWithChangedTimer(`9|layout|170${rails}`, `9|layout|160${rails}`), true);
+  assert.equal(samePuzzleWithChangedTimer(`9|layout|170${rails}`, `9|other|160${rails}`), false);
+  assert.equal(
+    samePuzzleWithChangedTimer(
+      `9|layout|170${rails}`,
+      '9|layout|160|sliders:[{"index":20,"slot":14}]',
+    ),
+    false,
+  );
+  assert.equal(samePuzzleWithChangedTimer(`9|layout|170${rails}`, '9|layout|160'), false);
+  assert.equal(samePuzzleWithChangedTimer('9|layout|170', `9|layout|160${rails}`), false);
 });
 
 test('changing only outage clocks preserves an authored attempt but changing its pipes does not', () => {
@@ -128,6 +177,10 @@ test('changing only outage clocks preserves an authored attempt but changing its
     ].join('|');
   const before = { breakCell: 12, retrySeconds: 40, turns: [[11, 3]] };
   assert.equal(
+    samePuzzleWithChangedTimer(signature(before), signature({ ...before, bonusSeconds: 10 })),
+    true,
+  );
+  assert.equal(
     samePuzzleWithChangedTimer(signature(before), signature({ ...before, retrySeconds: 50 }, 70)),
     true,
   );
@@ -143,6 +196,21 @@ test('changing only outage clocks preserves an authored attempt but changing its
     false,
   );
   assert.equal(samePuzzleWithChangedTimer(signature(null), signature(before, 70)), false);
+  const repair = { breakCell: 12, variants: [{ stars: 3, rotations: [0, 1] }] };
+  assert.equal(
+    samePuzzleWithChangedTimer(
+      signature(repair),
+      signature({ ...repair, bonusSeconds: 10, variants: [{ stars: 1, rotations: [0, 1] }] }),
+    ),
+    true,
+  );
+  assert.equal(
+    samePuzzleWithChangedTimer(
+      signature(repair),
+      signature({ ...repair, variants: [{ stars: 1, rotations: [1, 1] }] }),
+    ),
+    false,
+  );
 });
 
 test('rewarded star needs confirmation and is credited only once per receipt', () => {
@@ -152,8 +220,28 @@ test('rewarded star needs confirmation and is credited only once per receipt', (
   assert.equal(wallet.starBalance, 0);
   assert.equal(acceptConfirmedStarReward(wallet, { id: 'star:one', confirmed: true }), true);
   assert.equal(acceptConfirmedStarReward(wallet, { id: 'star:one', confirmed: true }), false);
-  assert.equal(wallet.starBalance, 1);
+  assert.equal(wallet.starBalance, 3);
   assert.deepEqual(wallet.rewardedReceipts, ['star:one']);
+});
+
+test('new economy preserves saved resources and old ad receipts without retroactive rewards', () => {
+  const saved = openedWallet();
+  saved.starBalance = 7;
+  saved.balance = 9;
+  saved.lives = 8;
+  saved.rewardedReceipts = ['star:old'];
+  const wallet = migrateHintWallet(JSON.parse(JSON.stringify(saved)));
+  assert.deepEqual(wallet, saved);
+  assert.equal(acceptConfirmedStarReward(wallet, { id: 'star:old', confirmed: true }), false);
+  assert.equal(wallet.starBalance, 7);
+  assert.equal(buyHintWithStars(wallet), true);
+  assert.equal(wallet.starBalance, 2);
+  assert.equal(wallet.balance, 10);
+  assert.equal(acceptConfirmedStarReward(wallet, { id: 'star:new', confirmed: true }), true);
+  assert.equal(wallet.starBalance, 5);
+  assert.equal(buyChargeLife(wallet, 1_000), true);
+  assert.equal(wallet.starBalance, 2);
+  assert.equal(wallet.lives, 9);
 });
 
 test('no hidden hints before the tool; its first opening saves three and the star baseline once', () => {
@@ -195,13 +283,13 @@ test('twenty new best stars award one across chapters, preserving remainder and 
   for (const id of firstChapterLevelIds.slice(15))
     progress = recordLevelResult(progress, id, 3).progress;
   syncHintProgress(wallet, progress);
-  assert.equal(wallet.balance, 5); // 50 new stars; two milestones
+  assert.equal(wallet.balance, 5); // 53 new stars; two milestones
   syncHintProgress(wallet, recordLevelResult(progress, 31, 3).progress);
   syncHintProgress(wallet, progress);
   syncHintProgress(wallet, oldProgress);
   syncHintProgress(wallet, createEmptyProgress());
   assert.equal(wallet.balance, 5);
-  assert.equal(getProgressStars(wallet.progress), 51);
+  assert.equal(getProgressStars(wallet.progress), 54);
 });
 
 test('entering a chapter never grants inventory or changes the twenty-star remainder', () => {
@@ -296,6 +384,12 @@ test('a hint costs stars only when the tool is unlocked and funds are sufficient
   wallet.starBalance = hintStarCost;
   assert.equal(buyHintWithStars(wallet), false);
   unlockHintTool(wallet);
+  assert.equal(hintStarCost, 5);
+  wallet.starBalance = 4;
+  assert.equal(buyHintWithStars(wallet), false);
+  assert.equal(wallet.starBalance, 4);
+  assert.equal(wallet.balance, 3);
+  wallet.starBalance = 5;
   assert.equal(buyHintWithStars(wallet), true);
   assert.equal(wallet.starBalance, 0);
   assert.equal(wallet.balance, 4);

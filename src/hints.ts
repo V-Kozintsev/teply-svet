@@ -15,7 +15,8 @@ export const maxChargeLives = 5;
 export const chargeLifeRechargeMs = 20 * 60 * 1000;
 export const dailyChargeCooldown = 24 * 60 * 60 * 1000;
 export const chargeLifeStarCost = 3;
-export const hintStarCost = 2;
+export const hintStarCost = 5;
+export const rewardedStarAmount = 3;
 
 // LAN previews use HTTP, where randomUUID is unavailable in mobile browsers.
 export function createHintId(): string {
@@ -54,7 +55,7 @@ export function capAttemptTimer(attempt: HintAttempt, timeLimitMs: number, now =
 }
 
 export function refreshAttemptTimer(attempt: HintAttempt, timeLimitMs: number) {
-  attempt.timeRemainingMs = Math.max(1_000, Math.floor(timeLimitMs));
+  attempt.timeRemainingMs = Math.max(0, Math.floor(timeLimitMs));
   attempt.timerStarted = false;
   attempt.timerDeadlineAt = null;
 }
@@ -64,10 +65,24 @@ export function returningAttemptTimeLimit(
   timeLimitMs: number,
   outageTimeLimitMs: number | null,
 ) {
-  return attempt.outageTriggered && outageTimeLimitMs !== null ? outageTimeLimitMs : timeLimitMs;
+  return attempt.outageTriggered && outageTimeLimitMs !== null
+    ? Math.min(attempt.timeRemainingMs ?? outageTimeLimitMs, outageTimeLimitMs)
+    : timeLimitMs;
 }
 
 export function samePuzzleWithChangedTimer(previous: string, next: string) {
+  const previousSlider = previous.indexOf('|sliders:');
+  const nextSlider = next.indexOf('|sliders:');
+  if (previousSlider >= 0 || nextSlider >= 0) {
+    if (
+      previousSlider < 0 ||
+      nextSlider < 0 ||
+      previous.slice(previousSlider) !== next.slice(nextSlider)
+    )
+      return false;
+    previous = previous.slice(0, previousSlider);
+    next = next.slice(0, nextSlider);
+  }
   const previousEnd = previous.lastIndexOf('|');
   const nextEnd = next.lastIndexOf('|');
   if (
@@ -81,7 +96,7 @@ export function samePuzzleWithChangedTimer(previous: string, next: string) {
     nextBoard = next.slice(0, nextEnd);
   if (previousBoard === nextBoard) return true;
   // Authored signatures contain fifteen board fields before the clock. Changes
-  // to an emergency clock or penalty preserve the same saved pipe arrangement.
+  // to clocks or advisory route scores preserve the same saved pipe arrangement.
   const a = previousBoard.split('|'),
     b = nextBoard.split('|');
   if (
@@ -94,7 +109,9 @@ export function samePuzzleWithChangedTimer(previous: string, next: string) {
     const withoutClock = (field: string) => {
       const outage = JSON.parse(field);
       if (outage === null || typeof outage !== 'object' || Array.isArray(outage)) return field;
-      const { retrySeconds, remainingPenaltySeconds, ...board } = outage;
+      const { retrySeconds, remainingPenaltySeconds, bonusSeconds, ...board } = outage;
+      if (Array.isArray(board.variants))
+        board.variants = board.variants.map(({ stars, ...route }: { stars?: number }) => route);
       return JSON.stringify(board);
     };
     return withoutClock(a[13]) === withoutClock(b[13]);
@@ -285,7 +302,7 @@ export function acceptConfirmedStarReward(
   )
     return false;
   wallet.rewardedReceipts.push(receipt.id);
-  wallet.starBalance++;
+  wallet.starBalance += rewardedStarAmount;
   return true;
 }
 
@@ -462,6 +479,21 @@ export function migrateHintWallet(value: unknown, incoming = createEmptyProgress
   }
   refreshChargeLives(wallet, Date.now());
   return wallet;
+}
+
+export function completeHintAttempt(
+  wallet: HintWallet,
+  levelId: number,
+  attemptId: string,
+  stars: number,
+): boolean {
+  const attempt = wallet.attempts[levelId];
+  if (!attempt || attempt.id !== attemptId || attempt.completed) return false;
+  const result = recordLevelResult(wallet.progress, levelId, stars);
+  syncHintProgress(wallet, result.progress);
+  wallet.starBalance += result.gainedStars;
+  attempt.completed = true;
+  return true;
 }
 
 export function createHintWalletStore() {
@@ -644,13 +676,7 @@ export function createHintWalletStore() {
     },
     complete(levelId: number, attemptId: string, stars: number) {
       return transact((wallet) => {
-        const attempt = wallet.attempts[levelId];
-        if (!attempt || attempt.id !== attemptId) return false;
-        const result = recordLevelResult(wallet.progress, levelId, stars);
-        syncHintProgress(wallet, result.progress);
-        wallet.starBalance += result.gainedStars;
-        attempt.completed = true;
-        return true;
+        return completeHintAttempt(wallet, levelId, attemptId, stars);
       });
     },
     saveTimer(

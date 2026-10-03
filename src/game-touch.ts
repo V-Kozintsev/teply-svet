@@ -5,6 +5,26 @@ export function installGameTouchGuard() {
   const block = (event: Event) => {
     if (event.cancelable) event.preventDefault();
   };
+  // The standalone level has its own document, separate from menu styles.
+  // Cancel native selection/callouts without cancelling taps or pipe turns.
+  const gameArtwork = (event: Event) => {
+    const target = event.target;
+    const element =
+      target instanceof Element ? target : target instanceof Node ? target.parentElement : null;
+    return (
+      !!element?.closest('#warm-glass-level') &&
+      !element.closest('input,textarea,[contenteditable]:not([contenteditable="false"])')
+    );
+  };
+  for (const type of ['selectstart', 'contextmenu', 'dragstart']) {
+    document.addEventListener(
+      type,
+      (event) => {
+        if (gameArtwork(event)) block(event);
+      },
+      true,
+    );
+  }
   const touch = (event: TouchEvent) => {
     if (event.type === 'touchstart' && event.touches.length === 1) multiple = false;
     if (event.touches.length > 1) multiple = true;

@@ -22,6 +22,10 @@ import { withFirstScenery } from './build-first-scenery.mjs';
 
 
 const root = fileURLToPath(new URL('../../../', import.meta.url));
+const languageRuntime = '(()=>{\n' + ['translations.ts', 'language.ts'].map(file => ts.transpileModule(
+  fs.readFileSync(path.join(root, 'src', file), 'utf8'),
+  { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, removeComments: true } },
+).outputText.replace(/^import .*;$/gm, '').replace(/^export /gm, '')).join('\n') + '\ninstallLanguage(window);\n})();\n';
 const loadingScreenStyles = fs.readFileSync(path.join(root, 'src/styles/loading-screen.css'), 'utf8')
   .replace('/assets/ui/loading-house.svg', `data:image/svg+xml;base64,${fs.readFileSync(path.join(root,'public/assets/ui/loading-house.svg')).toString('base64')}`);
 const loadingPipeStyles = fs.readFileSync(path.join(root, 'src/styles/loading-pipe.css'), 'utf8');
@@ -35,11 +39,16 @@ let html = fs.readFileSync(
   path.join(root, 'resources/references/ui-review/glass-level.template.html'),
   'utf8',
 );
+const chapterSource = fs.readFileSync(path.join(root, 'resources/references/ui-review/glass-chapter-one.js'), 'utf8')
+  .replace("import { applyMiddleBoards } from './glass-middle-boards.js';", fs.readFileSync(path.join(root, 'resources/references/ui-review/glass-middle-boards.js'), 'utf8').replace(/^export /gm, ''))
+  .replace("import { applyUndergroundBoards } from './glass-underground.js';", fs.readFileSync(path.join(root, 'resources/references/ui-review/glass-underground.js'), 'utf8').replace(/^export /gm, ''))
+  .replace("import { applyLateBoards } from './glass-late-boards.js';", fs.readFileSync(path.join(root, 'resources/references/ui-review/glass-late-boards.js'), 'utf8').replace(/^export /gm, ''))
+  .replace(/^export /gm, '');
 html = html.replace(
   '__energy_effect__',
   fs
     .readFileSync(path.join(root, 'resources/references/ui-review/glass-energy.js'), 'utf8')
-    .replace("import { redesignedLevels } from './glass-chapter-one.js';", fs.readFileSync(path.join(root, 'resources/references/ui-review/glass-chapter-one.js'), 'utf8').replace("import { applyUndergroundBoards } from './glass-underground.js';",fs.readFileSync(path.join(root,'resources/references/ui-review/glass-underground.js'),'utf8').replace(/^export /gm,'' )).replace(/^export /gm, ''))
+    .replace("import { redesignedLevels } from './glass-chapter-one.js';", chapterSource)
     .replace(/^export /gm, ''),
 );
 html = html.replace('__meadow_effect__', fs.readFileSync(path.join(root, 'resources/references/ui-review/glass-meadow.js'), 'utf8').replace(/^export /gm, ''));
@@ -126,6 +135,8 @@ const assets = {
   power: ['public/assets/menu/power.svg', 'image/svg+xml'],
   beacon: ['public/assets/menu/beacon.svg', 'image/svg+xml'],
   hint_bulb: ['resources/packs/noto-hint/emoji_u1f4a1.svg', 'image/svg+xml'],
+  toolbar_bulb: ['resources/references/ui-review/toolbar-bulb.svg', 'image/svg+xml'],
+  toolbar_fuse: ['resources/references/ui-review/toolbar-fuse.svg', 'image/svg+xml'],
   hint_bubble: ['resources/packs/kenney-emotes/speech-bubble-warm.svg', 'image/svg+xml'],
   source_bubble: ['resources/packs/kenney-emotes/speech-bubble-warm.svg', 'image/svg+xml'],
   lesson_bubble: ['resources/packs/kenney-emotes/speech-bubble-warm.svg', 'image/svg+xml'],
@@ -228,6 +239,7 @@ const renderDocument = (level) => {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
   <title>Тёплый свет — уровень ${level.number}</title>
+  <script src="../../../game-language.js"></script>
   <script>
     // Normal deep links enter the persistent music shell; diagnostic pages stay isolated.
     (() => {
@@ -315,8 +327,10 @@ const extraOutput = process.argv.slice(2).find((argument) => argument !== '--che
 const productionDocument = (document) =>
   document
     .replaceAll('../../../assets/', '../../assets/')
+    .replaceAll('../../../game-language.js', '../../game-language.js')
     .replace("new URL('../../../',location.href)", "new URL('../../',location.href)");
 const outputs = [
+  { file: path.join(root, 'public/game-language.js'), content: languageRuntime },
   {
     file: path.join(root, 'resources/references/ui-review/glass-level.html'),
     content: documents.get(31),

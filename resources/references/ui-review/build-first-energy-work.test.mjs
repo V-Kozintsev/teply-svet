@@ -3,14 +3,13 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import { refineFirstEnergyWork } from './build-first-energy-work.mjs';
-import { glassWaveTimeline, glassWaveDistance, reconcileGlassPulse, glassRelayState } from './glass-energy.js';
+import { glassWaveTimeline, glassWaveDistance, reconcileGlassPulse, glassRelayState, glassTestPulseDuration } from './glass-energy.js';
 
 // Exercise the transformed production controller, not another implementation of
 // its caches. DOM doubles count native writes and geometry measurements only.
 const read=name=>fs.readFileSync(new URL(name,import.meta.url),'utf8');
 const separator='\n/* ENERGY_WORK_TEST_TEMPLATE */\n';
 const refined=refineFirstEnergyWork(read('./glass-energy.js')+separator+read('./glass-level.template.html'));
-const glassTestPulseDuration=Number(read('./glass-energy.js').match(/const glassTestPulseDuration\s*=\s*(\d+)/)[1]);
 const runtime=refined.slice(refined.indexOf('export function createGlassEnergy'),refined.indexOf(separator)).replace('export function','function');
 
 function element(tag='g'){
@@ -107,12 +106,34 @@ test('reset closes a powered relay immediately even while paused with reduced mo
 test('a stopped diagnostic pulse cannot carry an open relay into a new paused attempt',()=>{
  const s=scene({withRelay:true});s.energy.setCircuit(s.circuit({complete:false}));s.energy.pulseNow();
  for(const now of [0,80,160,240,320,400,480])s.tick(now);
+ assert.equal(s.relay.dataset.sequenceState,'closed','entering the lower pipe cannot lift the upper shutters yet');
+ for(const now of [560,640,720,800,880,960,1040])s.tick(now);
  assert.equal(s.relay.dataset.sequenceState,'open');
  s.energy.setPaused(true);
  s.energy.setCircuit({...s.circuit({d:'M0 0L0 100',complete:false}),crossoverRelays:[]});
  assert.equal(s.relay.dataset.sequenceState,'closed');assert.equal(s.wave.style.opacity,'0');
  s.energy.setPaused(false);s.tick(2000);assert.equal(s.relay.dataset.sequenceState,'closed');
  s.tick(2080);assert.equal(s.relay.dataset.sequenceState,'closed');
+});
+
+test('final charge traverses the lower relay channel before opening the upper shutters',()=>{
+ const s=scene({withRelay:true});s.energy.setCircuit(s.circuit());assert.equal(s.energy.activate(),true);
+ for(const now of [0,80,160,240,320])s.tick(now);
+ assert.equal(s.relay.dataset.sequenceState,'closed');
+ for(const now of [400,480,560,640])s.tick(now);
+ assert.equal(s.relay.dataset.sequenceState,'open');
+});
+
+test('a long diagnostic pulse reaches the break without the repeat timer restarting it',()=>{
+ const s=scene();s.energy.setCircuit(s.circuit({length:4000,complete:false}));s.energy.pulseNow();
+ let previous=0;
+ for(let now=0;now<=8000;now+=80){
+  s.tick(now);const distance=95-Number(s.wave.children[0].style.strokeDashoffset);
+  assert.ok(distance>=previous,'the moving front never jumps back to the transformer');previous=distance;
+ }
+ assert.ok(previous>=3960&&previous<=4040,'the front takes about eight seconds to cover forty cells');
+ for(let now=8080;now<=8400;now+=80)s.tick(now);
+ assert.equal(s.wave.style.opacity,'0','the completed pulse fades before another starts');
 });
 
 test('endpoint cache uses both exact path data and logical length, retaining coordinates through cloned fronts',()=>{

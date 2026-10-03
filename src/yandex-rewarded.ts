@@ -1,17 +1,8 @@
-type RewardedCallbacks = {
-  onOpen: () => void;
-  onRewarded: () => void;
-  onClose: () => void;
-  onError: () => void;
-};
-
-type YandexGames = {
-  init(): Promise<{ adv: { showRewardedVideo(options: { callbacks: RewardedCallbacks }): void } }>;
-};
+import { isYandexGameHost, loadYandexSdk } from './yandex-sdk.ts';
+export { isYandexGameHost } from './yandex-sdk.ts';
 
 declare global {
   interface Window {
-    YaGames?: YandexGames;
     warmRewardedHost?: {
       available: boolean;
       readonly active: boolean;
@@ -21,51 +12,16 @@ declare global {
   }
 }
 
-export function isYandexGameHost(hostname: string): boolean {
-  return /(^|\.)(yandex\.(ru|com|net)|ya\.ru)$/.test(hostname);
-}
-
 export function createYandexRewardedHost(
   hostWindow: Window,
   suspendSound: (suspended: boolean) => void,
   { sdkTimeoutMs = 20_000, adStartTimeoutMs = 20_000 } = {},
 ) {
-  let sdk: Promise<Awaited<ReturnType<YandexGames['init']>>> | null = null;
   let busy = false;
   const openAds = new Set<object>();
   const available = isYandexGameHost(hostWindow.location.hostname) || !!hostWindow.YaGames;
 
-  function loadSdk() {
-    if (sdk) return sdk;
-    let script: HTMLScriptElement | undefined;
-    let timer: ReturnType<typeof setTimeout>;
-    const initialization = new Promise<YandexGames>((resolve, reject) => {
-      if (hostWindow.YaGames) return resolve(hostWindow.YaGames);
-      script = hostWindow.document.createElement('script');
-      script.src = '/sdk.js';
-      script.async = true;
-      script.onload = () =>
-        hostWindow.YaGames ? resolve(hostWindow.YaGames) : reject(new Error('SDK unavailable'));
-      script.onerror = () => reject(new Error('SDK unavailable'));
-      hostWindow.document.head.append(script);
-    }).then((games) => games.init());
-    sdk = Promise.race([
-      initialization,
-      new Promise<never>((_, reject) => {
-        timer = setTimeout(() => reject(new Error('SDK loading timed out')), sdkTimeoutMs);
-      }),
-    ])
-      .catch((error) => {
-        script?.remove();
-        sdk = null;
-        throw error;
-      })
-      .finally(() => {
-        clearTimeout(timer);
-        if (script) script.onload = script.onerror = null;
-      });
-    return sdk;
-  }
+  const loadSdk = () => loadYandexSdk(hostWindow, sdkTimeoutMs);
 
   // The portal expects the SDK to be initialized even before the first ad request.
   if (available) void loadSdk().catch(() => undefined);

@@ -1,4 +1,5 @@
 {
+  "runtime": ["game-language.js"],
   "licenses": [
     "licenses/Generated-Chapter-Courtyard.txt",
     "licenses/Generated-Chapter-Forest.txt",
@@ -41,6 +42,7 @@
     "levels/41/index.html",
     "levels/42/index.html",
     "levels/43/index.html",
-    "levels/44/index.html"
+    "levels/44/index.html",
+    "levels/45/index.html"
   ]
 }

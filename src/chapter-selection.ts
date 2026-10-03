@@ -66,10 +66,10 @@ export function mountChapterSelection(
     button.setAttribute(
       'aria-label',
       state === 'coming-soon'
-        ? `Глава ${chapter.id}. ${chapter.title}. Скоро`
+        ? `Глава ${chapter.id}. Скоро`
         : state === 'locked'
-          ? `Глава ${chapter.id}. ${chapter.title}. Закрыта. Звёзды первой главы: ${chapter.prerequisiteStars ?? 0} из ${chapter.unlockAt}`
-          : `Глава ${chapter.id}. ${chapter.title}. Пройдено ${chapter.completedLevels} из ${chapter.totalLevels} уровней`,
+          ? `Глава ${chapter.id}. Закрыта. Звёзды первой главы: ${chapter.prerequisiteStars ?? 0} из ${chapter.unlockAt}`
+          : `Глава ${chapter.id}. Пройдено ${chapter.completedLevels} из ${chapter.totalLevels} уровней`,
     );
 
     const status =
@@ -84,7 +84,6 @@ export function mountChapterSelection(
       <span class="chapter-card-copy">
         <span class="chapter-number">Глава ${chapter.id}</span>
         <span class="chapter-divider" aria-hidden="true"><i></i><b></b><i></i></span>
-        <span class="chapter-name">${chapter.title}</span>
       </span>`;
     button.addEventListener('click', () => {
       if (button.disabled || !isCenteredPage(page)) return;

@@ -15,9 +15,9 @@ export interface PlayerProgress {
 export const progressStorageKey = 'teply-svet.progress.v1';
 // Stable save IDs, not visible numbers. Keep this mapping checked against the catalog.
 export const firstChapterLevelIds = [
-  31, 32, 33, 34, 36, 37, 42, 38, 43, 44, 1, 41, 39, 40, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+  31, 32, 33, 34, 36, 37, 42, 38, 43, 44, 1, 41, 39, 40, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 45,
 ] as const;
-export const firstChapterFinalLevelId = 12;
+export const firstChapterFinalLevelId = 45;
 
 export function getLevelStarCap(levelId: number): Exclude<StarScore, 0> {
   // Retired results remain in the save and wallet history with their original cap.

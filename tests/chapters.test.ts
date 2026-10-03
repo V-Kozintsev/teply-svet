@@ -19,7 +19,7 @@ test('the concept has one playable chapter followed by the renamed coming-soon c
   );
   assert.deepEqual(
     chapters.map((chapter) => chapter.maxStars),
-    [51, 0],
+    [54, 0],
   );
   assert.deepEqual(
     chapters.map((chapter) => getChapterState(chapter, 0)),
@@ -29,8 +29,8 @@ test('the concept has one playable chapter followed by the renamed coming-soon c
 });
 
 test('a full playable chapter keeps its completed state', () => {
-  const complete: ChapterSummary = { ...chapters[0], earnedStars: 51 };
-  assert.equal(getChapterState(complete, 51), 'completed');
+  const complete: ChapterSummary = { ...chapters[0], earnedStars: 54 };
+  assert.equal(getChapterState(complete, 54), 'completed');
 });
 
 test('large chapter star totals use readable groups', () => {
@@ -46,7 +46,7 @@ test('chapter totals include every retained board in chapter one', () => {
   assert.equal(catalog[1].earnedStars, 0);
   assert.equal(getTotalStars(catalog), 1);
   assert.equal(catalog[0].completedLevels, 1);
-  assert.equal(catalog[0].totalLevels, 25);
+  assert.equal(catalog[0].totalLevels, 26);
   assert.equal(catalog[1].completedLevels, 0);
   assert.equal(catalog[1].totalLevels, 0);
 });
@@ -64,7 +64,7 @@ test('chapter completion counts levels once regardless of earned stars or repeat
     progress = recordLevelResult(progress, id, stars).progress;
   const catalog = applyChapterProgress(chapters, applyLevelProgress(levels, progress), progress);
   assert.equal(catalog[0].completedLevels, 4);
-  assert.equal(catalog[0].totalLevels, 25);
+  assert.equal(catalog[0].totalLevels, 26);
   assert.equal(catalog[0].earnedStars, 7);
   assert.equal(catalog[1].completedLevels, 0);
 });
@@ -76,6 +76,6 @@ test('completion covers the entire current chapter without requiring every colle
   for (const level of levels) progress = recordLevelResult(progress, level.id, 1).progress;
   const full = applyChapterProgress(chapters, applyLevelProgress(levels, progress), progress);
   assert.equal(full[0].completedLevels, full[0].totalLevels);
-  assert.equal(full[0].totalLevels, 25);
-  assert.equal(full[0].earnedStars, 25);
+  assert.equal(full[0].totalLevels, 26);
+  assert.equal(full[0].earnedStars, 26);
 });

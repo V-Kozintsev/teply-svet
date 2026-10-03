@@ -2,17 +2,40 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {glassHatchPipePath,createGlassHatchArt} from './glass-hatch-art.js';
-test('fixed hatch pipe and reverse current run straight into the well at every orientation',()=>{
- const sides=['W','N','E','S'],edge=[[200,250],[250,200],[300,250],[250,300]],end=[250,250];
+import {glassLevels} from './glass-energy.js';
+test('every hatch bends from its authored edge into the same well in either flow direction',()=>{
+ const sides=['W','N','E','S'],edge=[[200,250],[250,200],[300,250],[250,300]],ends=[[258,272],[258,272],[242,272],[242,228]];
  for(const [q,side] of sides.entries()){
   const forward=glassHatchPipePath(14,side,6),reverse=glassHatchPipePath(14,side,6,0,true);
-  assert.equal(forward,`M${edge[q].join(',')}L${end.join(',')}`);
-  assert.equal(reverse,`M${end.join(',')}L${edge[q].join(',')}`);
+  assert.ok(forward.startsWith(`M${edge[q].join(',')}L`));
+  assert.ok(forward.endsWith(`L${ends[q].join(',')}`));
+  assert.ok(reverse.startsWith(`M${ends[q].join(',')}L`));
+  assert.ok(reverse.endsWith(`L${edge[q].join(',')}`));
+  assert.match(forward,/[QC]/);assert.match(reverse,/[QC]/);
+  assert.ok(glassHatchPipePath(14,side,6,6).endsWith(`L${ends[q].join(',')}`));
  }
  const template=readFileSync(new URL('./glass-level.template.html',import.meta.url),'utf8');
  assert.ok(template.includes('hatchCells.has(index)?glassHatchPipePath'));
  assert.ok(template.includes('hatchCells.has(index)?glassHatchPipePath(index,entry||exit'));
  assert.ok(template.includes("if(hatchArt)collarPiece.append(hatchArt.front)"));
+ assert.ok(!template.includes('style:level.hatchArtStyle'));
+ assert.ok(!template.includes('!entry,level.hatchArtStyle'));
+});
+
+test('all underground boards share aligned open mouths including the north-facing second pair',()=>{
+ const node=(tag,attrs)=>({tag,attrs,children:[],append(...children){this.children.push(...children);}});
+ for(const level of glassLevels.filter(l=>l.hatches?.length))for(const pair of level.hatches)for(const index of [pair.a,pair.b]){
+  const side=level.solution[index][1],cx=index%level.size*100+50,cy=Math.floor(index/level.size)*100+50;
+  const art=createGlassHatchArt({node,index,cx,cy,side,number:1,symbol:level.hatches.length>1?pair.symbol:null});
+  const [x,y]=art.back.attrs.transform.match(/-?\d+/g).map(Number);
+  assert.equal(art.front.attrs.transform,art.back.attrs.transform);
+  assert.ok(glassHatchPipePath(index,side,level.size).endsWith(`L${x},${y+(side==='S'?-4:4)}`));
+  const lid=art.front.children[0].children[0].children.find(n=>n.attrs.class==='hatch-raised-lid');
+  assert.ok(lid.attrs.transform.includes('.82'));
+  assert.equal(lid.attrs['data-mirrored'],String(side==='E'||side==='S'));
+  assert.equal(lid.children.some(n=>n.attrs.class==='hatch-pair-mark'),level.hatches.length>1);
+ }
+ assert.equal(glassHatchPipePath(30,'N',6),'M50,500L50,530C50,550 58,550 58,568L58,572');
 });
 test('the open well sits beneath the glass; only double pairs have lid marks',()=>{
  const node=(tag,attrs)=>({tag,attrs,children:[],append(...children){this.children.push(...children);}});
@@ -42,5 +65,5 @@ test('level-19 mockup pipe bends into its offset open well in both flow directio
  assert.ok(body.children.find(n=>n.attrs.class==='hatch-raised-lid').attrs.transform.includes('scale(.82)'));
  const exit=createGlassHatchArt({node,index:25,cx:150,cy:450,side:'E',number:1,style:'mockup'});
  assert.equal(exit.front.attrs.transform,'translate(142 468)');
- assert.equal(exit.front.children[0].children[0].children.find(n=>n.attrs.class==='hatch-raised-lid').attrs.transform,'translate(-7 0) scale(-.82 .82)');
+ assert.equal(exit.front.children[0].children[0].children.find(n=>n.attrs.class==='hatch-raised-lid').attrs.transform,'translate(-3 0) scale(-.82 .82)');
 });

@@ -27,7 +27,7 @@ export const chapters: readonly ChapterSummary[] = [
     id: 1,
     title: 'Тихий двор',
     earnedStars: 0,
-    maxStars: 51,
+    maxStars: 54,
     completedLevels: 0,
     totalLevels: 0,
     unlockAt: 0,

@@ -136,13 +136,19 @@ function createFirstEnergyCanvas(root, svg, reduced = false) {
         interior.fill();
         continue;
       }
-      const [x, y] = el.style.transformOrigin.split(' ').map(parseFloat),
+      const offset = el.style.transform.match(/^translate\(([-\d.]+)px,\s*([-\d.]+)px\)$/),
+        [x, y] = el.style.transformOrigin.split(' ').map(parseFloat),
         angle =
           (number(el.style.transform.replace('rotate(', '')) * Math.PI) / 180;
       interior.save();
-      interior.translate(x, y);
-      interior.rotate(angle);
-      interior.translate(-x, -y);
+      if (offset) {
+        // Sliding pipes carry the light opening with their carriage.
+        interior.translate(Number(offset[1]), Number(offset[2]));
+      } else {
+        interior.translate(x, y);
+        interior.rotate(angle);
+        interior.translate(-x, -y);
+      }
       interior.stroke(shape(el));
       interior.restore();
     }

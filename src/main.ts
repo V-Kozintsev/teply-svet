@@ -1,5 +1,5 @@
 import './styles/index.css';
-import { createHintId, createHintWalletStore } from './hints';
+import { createHintId, createHintWalletStore, rewardedStarAmount } from './hints';
 const hintWallet = createHintWalletStore();
 import menuHtml from './ui/menu.html?raw';
 import settingsHtml from './ui/settings.html?raw';
@@ -373,8 +373,8 @@ function mountMenu() {
   function setActiveScreen(screen: 'menu' | 'chapters') {
     const chaptersOpen = screen === 'chapters';
     const screenChanged = menuScreen.hidden !== chaptersOpen;
-    menuScreen.hidden = chaptersOpen;
-    menuScreen.inert = chaptersOpen;
+    menuScreen.hidden = screen !== 'menu';
+    menuScreen.inert = screen !== 'menu';
     chapterScreen.hidden = !chaptersOpen;
     chapterScreen.inert = !chaptersOpen;
     if (screenChanged) window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -446,8 +446,8 @@ function mountMenu() {
     content.innerHTML = `
       <div class="star-store">
         <p class="star-store-balance"><img src="./assets/menu/star-filled.png" alt="" /> Доступно: <strong data-store-balance>—</strong></p>
-        <button type="button" class="game-button primary star-store-ad" ${rewardedHost?.available ? '' : 'disabled'}><span class="button-label">Смотреть рекламу · +1 ★</span></button>
-        <p class="star-store-ad-note">${rewardedHost?.available ? 'Звезда начисляется только после полного просмотра.' : 'Видео появится в версии для Яндекс Игр.'}</p>
+        <button type="button" class="game-button primary star-store-ad" ${rewardedHost?.available ? '' : 'disabled'}><span class="button-label">Смотреть рекламу · +${rewardedStarAmount} ★</span></button>
+        <p class="star-store-ad-note">${rewardedHost?.available ? 'Звёзды начисляются только после полного просмотра.' : 'Видео появится в версии для Яндекс Игр.'}</p>
         <div class="star-store-future" aria-label="Покупки за Яны пока недоступны">Покупка за Яны <span>позже</span></div>
         <p class="star-store-status" role="status" aria-live="polite"></p>
       </div>`;
@@ -474,9 +474,11 @@ function mountMenu() {
         }
         const result = await hintWallet.acceptRewardedStar(`star:${createHintId()}`);
         setBalance(result.wallet.starBalance);
-        status.textContent = result.result ? 'Получена 1 звезда!' : 'Звезда уже получена.';
+        status.textContent = result.result
+          ? `Получено ${rewardedStarAmount} ★!`
+          : 'Награда уже получена.';
       } catch {
-        status.textContent = 'Не удалось сохранить звезду. Попробуй позже.';
+        status.textContent = 'Не удалось сохранить звёзды. Попробуй позже.';
       } finally {
         ad.disabled = false;
       }
@@ -635,13 +637,10 @@ function mountMenu() {
       title.textContent = 'Уровни';
     } else {
       title.className = 'levels-dialog-heading';
-      const chapterLabel = document.createElement('span');
-      chapterLabel.className = 'levels-dialog-kicker';
-      chapterLabel.textContent = `Глава ${chapter.id}`;
       const chapterTitle = document.createElement('span');
       chapterTitle.className = 'levels-dialog-title';
-      chapterTitle.textContent = chapter.title;
-      title.append(chapterLabel, chapterTitle);
+      chapterTitle.textContent = `Глава ${chapter.id}`;
+      title.append(chapterTitle);
     }
     actions.hidden = true;
     const chapterLevels = levelsPreview
